@@ -54,21 +54,21 @@ const getDocpiazza = async () => {
     const body = await result.text();
     const $ = cheerio.load(body);
   
-    const headers = $('[id^=lunch] div header small')
+    const headers = $('[id^=lunch] div header small');
     const node = $('[id^=lunch] div ul').toArray();
 
     node.forEach((el, i) => {
-      answer[i] = { header: headers[i + 1].firstChild.data, contents: [] };
-      const titles = $(el).find('li div p strong')
+      const titles = $(el).find('li div p strong');
       const descriptions = $(el).find('li div div p');
+      let content = [];
       if (titles.length !== descriptions.length) throw new Error('Parsing failed');
       for (let j = 0; j < titles.length; j++) {
-        
+        content[j] = { title: $(titles[j]).text(), description: $(descriptions[j]).text() }
       }
+      answer[i] = { header: headers[i + 1].firstChild.data, contents: content };
     });
 
-    console.log(answer)
-    return { 'ok': 'ok' }
+    return answer;
   } catch (err) {
     console.log(err);
     return { error: err };
@@ -77,12 +77,10 @@ const getDocpiazza = async () => {
 }
 
 app.get('/scrape', async (req, res, next) => {
-  //const results = await Promise.all([getMiamarias(), getSpill()]);
-  //const answer = { mimarias: results[0], spill: results[1] };
+  const results = await Promise.all([getMiamarias(), getSpill(), getDocpiazza()]);
+  const answer = { mimarias: results[0], spill: results[1], docpiazza: results[2] };
 
-  getDocpiazza();
-
-  res.send('ok');
+  res.send(answer);
 })
 
 
