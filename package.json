@@ -1,7 +1,7 @@
 {
   "name": "malmofoods",
   "version": "1.0.0",
-  "description": "An app to find foods in Malmö. Hopefully-",
+  "description": "An app to find foods in Malmö. Hopefully.",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",

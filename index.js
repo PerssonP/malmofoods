@@ -47,11 +47,42 @@ const getSpill = async () => {
   }
 }
 
-app.get('/scrape', async (req, res, next) => {
-  const results = await Promise.all([getMiamarias(), getSpill()]);
-  const answer = { mimarias: results[0], spill: results[1] };
+const getDocpiazza = async () => {
+  const answer = [];
+  try {
+    const result = await fetch('http://malmo.kyparn.se/doc-piazza');
+    const body = await result.text();
+    const $ = cheerio.load(body);
+  
+    const headers = $('[id^=lunch] div header small')
+    const node = $('[id^=lunch] div ul').toArray();
 
-  res.send(answer);
+    node.forEach((el, i) => {
+      answer[i] = { header: headers[i + 1].firstChild.data, contents: [] };
+      const titles = $(el).find('li div p strong')
+      const descriptions = $(el).find('li div div p');
+      if (titles.length !== descriptions.length) throw new Error('Parsing failed');
+      for (let j = 0; j < titles.length; j++) {
+        
+      }
+    });
+
+    console.log(answer)
+    return { 'ok': 'ok' }
+  } catch (err) {
+    console.log(err);
+    return { error: err };
+  }
+
+}
+
+app.get('/scrape', async (req, res, next) => {
+  //const results = await Promise.all([getMiamarias(), getSpill()]);
+  //const answer = { mimarias: results[0], spill: results[1] };
+
+  getDocpiazza();
+
+  res.send('ok');
 })
 
 
