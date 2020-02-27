@@ -35,9 +35,9 @@ const getMiamarias = async () => {
     return { 'fish': parse[1], 'meat': parse[2], 'veg': parse[3] };
   } catch (err) {
     console.log(err);
-    return { error: err };
+    return { error: err.toString() };
   }
-}
+};
 
 const getSpill = async () => {
   const m = moment();
@@ -54,9 +54,9 @@ const getSpill = async () => {
     return text.split('<br>').filter(el => el !== '').map(el => el.trim()); // Split on breaklines, remove empty results and trim the rest
   } catch (err) {
     console.log(err);
-    return { error: err };
+    return { error: err.toString() };
   }
-}
+};
 
 const getDocpiazza = async () => {
   const m = moment();
@@ -81,13 +81,12 @@ const getDocpiazza = async () => {
       }
       answer[i] = { header: $(headers[i + 1].firstChild).text(), contents: content };
     });
-
     return answer;
   } catch (err) {
     console.log(err);
-    return { error: err };
+    return { error: err.toString() };
   }
-}
+};
 
 const getKolga = async () => {
   const m = moment();
@@ -104,16 +103,40 @@ const getKolga = async () => {
     return $(content).find('.td_title').map((_, el) => $(el).text().trim()).get();
   } catch (err) {
     console.log(err);
-    return { error: err };
+    return { error: err.toString() };
   }
-}
+};
+
+const getNamdo = async () => {
+  throw new Error('Not implemented');
+};
+
+const getVariation = async () => {
+  throw new Error('Not implemented');
+};
+
+const getCurryrepublic = async () => {
+  throw new Error('Not implemented');
+};
+
+const getP2 = async () => {
+  throw new Error('Not implemented');
+};
+
+const getGlasklart = async () => {
+  throw new Error('Not implemented');
+};
+
+const getÅrstiderna = async () => {
+  throw new Error('Not implemented');
+};
 
 app.get('/scrape', async (req, res, next) => {
   const results = await Promise.all([getMiamarias(), getSpill(), getDocpiazza(), getKolga()]);
   const answer = { mimarias: results[0], spill: results[1], docpiazza: results[2], kolga: results[3] };
 
   res.send(answer);
-})
+});
 
 app.get('/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', '../build/index.html'));

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CssBaseline } from '@material-ui/core'
 
 function App() {
-  const [data, setData] = useState('Testing...')
+  const [data, setData] = useState('Loading...')
 
 
   useEffect(() => {
