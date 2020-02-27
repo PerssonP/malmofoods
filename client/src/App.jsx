@@ -10,10 +10,10 @@ function App() {
       const result = await fetch('/scrape');
       const body = await result.text();
       setData(body);
-    }
+    };
 
     getData();
-  })
+  }, [])
 
   
 

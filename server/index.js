@@ -5,6 +5,7 @@ import moment from 'moment';
 import compression from 'compression';
 import cors from 'cors';
 import path from 'path';
+import pdfjslib from 'pdfjs-dist'
 
 const app = express();
 
@@ -108,11 +109,59 @@ const getKolga = async () => {
 };
 
 const getNamdo = async () => {
-  throw new Error('Not implemented');
+  const m = moment();
+  try {
+    const result = await fetch('http://namdo.se/meny/');
+    const body = await result.text();
+    const $ = cheerio.load(body);
+
+    const node = $(`.fdm-section-${m.format('dddd').replace('å', 'a').replace('ö', 'o')}-${m.week() % 2 === 0 ? 'jamn' : 'ojamn'}`)
+    if (!node) throw new Error('Parsing failed');
+
+    const titles = $(node).find('.fdm-item-title');
+    const descriptions = $(node).find('.fdm-item-content p');
+    if (titles.length !== descriptions.length) throw new Error('Parsing length mismatch!');
+    
+    const content = [];
+    titles.each((i, el) => {
+      content[i] = { title: $(el).text(), description: $(descriptions[i]).text() };
+    })
+
+    return content;
+  } catch (err) {
+    console.log(err);
+    return { error: err.toString() }
+  }
 };
 
 const getVariation = async () => {
-  throw new Error('Not implemented');
+  const m = moment();
+  try {
+    const result = await fetch(`https://www.nyavariation.se/files/matsedel/${m.format('YYYY')}/v-${m.week()}.pdf`);
+    if (!result.ok) throw new Error('Menu not found for current week');
+
+    const loadingTask = pdfjslib.getDocument(await result.arrayBuffer());
+    return await loadingTask.promise.then(async doc => {
+      const page = await doc.getPage(1);
+      const textContent = await page.getTextContent();
+      const text = textContent.items.filter(val => val.str.trim() !== '').map(val => val.str).join('');
+      
+      const today = m.format('dddd');
+      const tomorrow = m.add(1, 'day').format('dddd');
+      let list = text.slice(text.toLowerCase().indexOf(today), text.toLowerCase().indexOf(tomorrow)).split('•');
+      
+      if (list[list.length - 1].includes('svampsoppa') || list[list.length - 1].includes('Vi bjuder')) { // lol
+        list = list.slice(0, list.length - 1);
+      }
+
+      return list.slice(1);
+    }, err => {
+      return { error: err.toString() };
+    });
+  } catch (err) {
+    console.log(err);
+    return { error: err.toString() };
+  }
 };
 
 const getCurryrepublic = async () => {
@@ -132,9 +181,23 @@ const getÅrstiderna = async () => {
 };
 
 app.get('/scrape', async (req, res, next) => {
-  const results = await Promise.all([getMiamarias(), getSpill(), getDocpiazza(), getKolga()]);
-  const answer = { mimarias: results[0], spill: results[1], docpiazza: results[2], kolga: results[3] };
-
+  const results = await Promise.all([
+    getMiamarias(),
+    getSpill(),
+    getDocpiazza(),
+    getKolga(),
+    getNamdo(),
+    getVariation()
+  ]);
+  const answer = { 
+    mimarias: results[0],
+    spill: results[1],
+    docpiazza: results[2],
+    kolga: results[3],
+    namndo: results[4],
+    variation: results[5]
+  };
+  
   res.send(answer);
 });
 
