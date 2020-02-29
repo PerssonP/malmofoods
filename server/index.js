@@ -30,7 +30,7 @@ const getMiamarias = async () => {
       return el.firstChild.data.includes(m.format('D/M'));
     })
 
-    if (!node) throw new Error('Parsing failed');
+    if (!node) throw new Error('Wrong day');
 
     const parse = $(node.parentNode).find('span').toArray().map(el => el.firstChild.data).filter(val => !!val);
     return { 'fish': parse[1], 'meat': parse[2], 'veg': parse[3] };
@@ -48,7 +48,7 @@ const getSpill = async () => {
     const $ = cheerio.load(body, { decodeEntities: false });
 
     let node = $('h3').first().html();
-    if (!node.includes(m.format('D/M'))) throw new Error('Parsing failed');
+    if (!node.includes(m.format('D/M'))) throw new Error('Wrong day');
 
     const text = node.slice(node.indexOf(m.format('D/M')) + m.format('D/M').length).trim(); // Remove up to and including date from string
     //return text.split(/\s{2,}/); // Split on 2 or more blankspaces
@@ -97,10 +97,10 @@ const getKolga = async () => {
     const $ = cheerio.load(body);
 
     const currentDay = m.format('dddd D').charAt(0).toUpperCase() + m.format('dddd D').slice(1);
-    const header = $(`.menu_header h3:contains(${currentDay})`)
-    if (header.length !== 1) throw new Error('Current day not found');
+    const header = $(`.menu_header h3:contains(${currentDay})`).first();
+    if (header.length === 0) throw new Error('Wrong day');
 
-    const content = $(header[0]).parents('thead').siblings('tbody')[0];
+    const content = $(header).parents('thead').siblings('tbody')[0];
     return $(content).find('.td_title').map((_, el) => $(el).text().trim()).get();
   } catch (err) {
     console.log(err);
@@ -116,7 +116,7 @@ const getNamdo = async () => {
     const $ = cheerio.load(body);
 
     const node = $(`.fdm-section-${m.format('dddd').replace('å', 'a').replace('ö', 'o')}-${m.week() % 2 === 0 ? 'jamn' : 'ojamn'}`)
-    if (!node) throw new Error('Parsing failed');
+    if (node.length === 0) throw new Error('Wrong day');
 
     const titles = $(node).find('.fdm-item-title');
     const descriptions = $(node).find('.fdm-item-content p');
@@ -140,7 +140,7 @@ const getVariation = async () => {
     const result = await fetch(`https://www.nyavariation.se/files/matsedel/${m.format('YYYY')}/v-${m.week()}.pdf`);
     if (!result.ok) throw new Error('Menu not found for current week');
 
-    const loadingTask = pdfjslib.getDocument(await result.arrayBuffer());
+    const loadingTask = pdfjslib.getDocument(await result.arrayBufferI());
     return await loadingTask.promise.then(async doc => {
       const page = await doc.getPage(1);
       const textContent = await page.getTextContent();
@@ -149,7 +149,6 @@ const getVariation = async () => {
       const today = m.format('dddd');
       const tomorrow = m.add(1, 'day').format('dddd');
       let list = text.slice(text.toLowerCase().indexOf(today), text.toLowerCase().indexOf(tomorrow)).split('•');
-      
       if (list[list.length - 1].includes('svampsoppa') || list[list.length - 1].includes('Vi bjuder')) { // lol
         list = list.slice(0, list.length - 1);
       }
@@ -169,7 +168,27 @@ const getCurryrepublic = async () => {
 };
 
 const getP2 = async () => {
-  throw new Error('Not implemented');
+  const m = moment();
+  try {
+    const result = await fetch('https://www.restaurangp2.se/lunch');
+    const body = await result.text();
+    const $ = cheerio.load(body);
+
+    if($('.week_number').text().split(' ')[1] !== m.week()) throw new Error('Wrong week')
+
+    const node = $(`#${m.format('dddd')}`);
+    if (node.length === 0) throw new Error('Wrong day')
+    const courses = $(node).find('tr');
+    
+    return courses.map((_, el) => {
+      const arr = $(el).find('p').map((i, child) => $(child).text()).get();
+      if (arr.length !== 3) throw new Error('Parsing failed');
+      return { category: arr[0], food: arr[1], price: arr[2] };
+    }).get();
+  } catch (err) {
+    console.log(err);
+    return { error: err.toString() };
+  }
 };
 
 const getGlasklart = async () => {
@@ -187,7 +206,8 @@ app.get('/scrape', async (req, res, next) => {
     getDocpiazza(),
     getKolga(),
     getNamdo(),
-    getVariation()
+    getVariation(),
+    getP2()
   ]);
   const answer = { 
     mimarias: results[0],
@@ -195,9 +215,10 @@ app.get('/scrape', async (req, res, next) => {
     docpiazza: results[2],
     kolga: results[3],
     namndo: results[4],
-    variation: results[5]
+    variation: results[5],
+    P2: results[6]
   };
-  
+
   res.send(answer);
 });
 
