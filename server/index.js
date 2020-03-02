@@ -78,7 +78,7 @@ const getDocpiazza = async () => {
       let content = [];
       if (titles.length !== descriptions.length) throw new Error('Parsing failed');
       for (let j = 0; j < titles.length; j++) {
-        content[j] = { title: $(titles[j]).text(), description: $(descriptions[j]).text() }
+        content[j] = { title: $(titles[j]).text().trim(), description: $(descriptions[j]).text().trim() }
       }
       answer[i] = { header: $(headers[i + 1].firstChild).text(), contents: content };
     });
@@ -96,8 +96,8 @@ const getKolga = async () => {
     const body = await result.text();
     const $ = cheerio.load(body);
 
-    const currentDay = m.format('dddd D').charAt(0).toUpperCase() + m.format('dddd D').slice(1);
-    const header = $(`.menu_header h3:contains(${currentDay})`).first();
+    const currentDay = m.format('dddd').charAt(0).toUpperCase() + m.format('dddd').slice(1);
+    const header = $(`.menu_header h3:contains(${currentDay}):contains(${m.format('D')})`).first();
     if (header.length === 0) throw new Error('Wrong day');
 
     const content = $(header).parents('thead').siblings('tbody')[0];
@@ -140,7 +140,7 @@ const getVariation = async () => {
     const result = await fetch(`https://www.nyavariation.se/files/matsedel/${m.format('YYYY')}/v-${m.week()}.pdf`);
     if (!result.ok) throw new Error('Menu not found for current week');
 
-    const loadingTask = pdfjslib.getDocument(await result.arrayBufferI());
+    const loadingTask = pdfjslib.getDocument(await result.arrayBuffer());
     return await loadingTask.promise.then(async doc => {
       const page = await doc.getPage(1);
       const textContent = await page.getTextContent();
@@ -174,9 +174,9 @@ const getP2 = async () => {
     const body = await result.text();
     const $ = cheerio.load(body);
 
-    if($('.week_number').text().split(' ')[1] !== m.week()) throw new Error('Wrong week')
+    if($('.week_number').text().split(' ')[1] != m.week()) throw new Error('Wrong week')
 
-    const node = $(`#${m.format('dddd')}`);
+    const node = $(`#${m.locale('en').format('dddd').toLowerCase()}`);
     if (node.length === 0) throw new Error('Wrong day')
     const courses = $(node).find('tr');
     
@@ -200,6 +200,7 @@ const getÅrstiderna = async () => {
 };
 
 app.get('/scrape', async (req, res, next) => {
+  /*
   const results = await Promise.all([
     getMiamarias(),
     getSpill(),
@@ -217,7 +218,9 @@ app.get('/scrape', async (req, res, next) => {
     namndo: results[4],
     variation: results[5],
     P2: results[6]
-  };
+  };*/
+
+  const answer = { ok: 'OK' };
 
   res.send(answer);
 });
