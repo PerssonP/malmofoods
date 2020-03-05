@@ -200,27 +200,27 @@ const getÅrstiderna = async () => {
 };
 
 app.get('/scrape', async (req, res, next) => {
-  /*
+  
   const results = await Promise.all([
     getMiamarias(),
     getSpill(),
     getDocpiazza(),
-    getKolga(),
+    /*getKolga(),
     getNamdo(),
     getVariation(),
-    getP2()
+    getP2()*/
   ]);
   const answer = { 
-    mimarias: results[0],
+    miamarias: results[0],
     spill: results[1],
     docpiazza: results[2],
-    kolga: results[3],
+    /*kolga: results[3],
     namndo: results[4],
     variation: results[5],
-    P2: results[6]
-  };*/
+    P2: results[6]*/
+  };
 
-  const answer = { ok: 'OK' };
+  //const answer = { ok: 'OK' };
 
   res.send(answer);
 });
