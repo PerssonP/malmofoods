@@ -1,16 +1,112 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { CssBaseline, makeStyles, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Grid } from '@material-ui/core'
+import React, { Fragment, useState, useEffect, useRef } from 'react';
+import { CssBaseline, makeStyles, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Grid, Divider } from '@material-ui/core'
 import GoogleMapReact from 'google-map-react';
 
 import Pin from './components/Pin';
 
-import miamarias from './images/miamarias.png';
-import spill from './images/spill.png';
-import docpiazza from './images/docpiazza.png';
+import miamariasIcon from './images/miamarias.png';
+import spillIcon from './images/spill.png';
+import docpiazzaIcon from './images/docpiazza.png';
+import kolgaIcon from './images/kolga.png';
 
 const useStyles = makeStyles(theme => ({
 
 }));
+
+const Menu = React.forwardRef(({ header, icon, children }, ref) => (
+  <Paper ref={ref}>
+    <List>
+      <ListItem>
+        <ListItemAvatar>
+         <Avatar src={icon} />
+        </ListItemAvatar>
+        <ListItemText primary={header} />
+      </ListItem>
+      {children}
+    </List>
+  </Paper>
+));
+
+const SimpleArrayMenu = React.forwardRef(({ header, data, icon }, ref) => (
+  <Menu header={header} icon={icon} ref={ref}>
+    {data == null || data.error !== undefined ?
+      <ListItem>
+        {data?.error ?? 'Loading...'}
+      </ListItem>
+      :
+      <>
+        {data.map((row, i) => (
+          <ListItem key={i}>
+            <ListItemText primary={row} />
+          </ListItem>
+        ))}
+      </>
+    } 
+  </Menu>
+));
+
+const ArrayMenu = React.forwardRef(({ header, data, icon }, ref) => (
+  <Menu header={header} icon={icon} ref={ref}>
+    {data == null || data.error !== undefined ?
+      <ListItem>
+        {data?.error ?? 'Loading...'}
+      </ListItem>
+      :
+      <>
+        {data.map((row, i) => (
+          <ListItem key={i}>
+            <ListItemText primary={row.description} secondary={row.title} />
+          </ListItem>
+        ))}
+      </>
+    } 
+  </Menu>
+));
+
+const ObjectMenu = React.forwardRef(({ header, data, icon }, ref) => (
+  <Menu header={header} icon={icon} ref={ref}>
+    {data == null || data.error !== undefined ?
+      <ListItem>
+        {data?.error ?? 'Loading...'}
+      </ListItem>
+      :
+      <>
+        {Object.keys(data).map(key => (
+          <ListItem key={key}>
+            <ListItemText primary={data[key]} secondary={key} />
+          </ListItem>
+        ))}
+      </>
+    } 
+  </Menu>
+));
+
+const SegmentedMenu = React.forwardRef(({ header, data, icon }, ref) => (
+  <Menu header={header} icon={icon} ref={ref}>
+    {data == null || data.error !== undefined ?
+      <ListItem>
+        {data?.error ?? 'Loading...'}
+      </ListItem>
+      :
+      <>
+        {data.map(segment => (
+          <Fragment key={segment.header}>
+            <Divider />
+            <ListItem>
+              <ListItemText primary={segment.header} />
+            </ListItem>
+            <Divider />
+            {segment.contents.map(content => (
+              <ListItem key={content.title}>
+                <ListItemText primary={content.title} secondary={content.description} />
+              </ListItem>
+            ))}
+          </Fragment>
+        ))}
+      </>
+    } 
+  </Menu>
+));
 
 const App = () => {
   const classes = useStyles();
@@ -19,6 +115,7 @@ const App = () => {
   const miaRef = useRef(null);
   const spillRef = useRef(null);
   const docPiazzaRef = useRef(null);
+  const kolgaRef = useRef(null)
 
   useEffect(() => {
     const getData = async () => {
@@ -40,7 +137,7 @@ const App = () => {
           <GoogleMapReact
             bootstrapURLKeys={{ key: 'AIzaSyDbGGbzKd9xYlaw3V3efl262q-xz5fUtw0' }}
             center={{ lat: 55.6126202, lng: 12.9864192 }}
-            defaultZoom={17}
+            defaultZoom={16}
           >
             <Pin
               lat={55.613306}
@@ -54,114 +151,32 @@ const App = () => {
               text='Spill'
               handleClick={() => spillRef.current.scrollIntoView({ behavior: 'smooth' })}
             />
+            <Pin
+              lat={55.614333}
+              lng={12.989664}
+              text='Doc Piazza'
+              handleClick={() => docPiazzaRef.current.scrollIntoView({ behavior: 'smooth' })}
+            />
+            <Pin
+              lat={55.612290}
+              lng={12.998474}
+              text='Kolga'
+              handleClick={() => kolgaRef.current.scrollIntoView({ behavior: 'smooth' })}
+            />
           </GoogleMapReact>
         </div>
         <Grid container spacing={2} style={{ width: 'calc(100% - 5px)', margin: '5px' }}>
           <Grid item xs={2}>
-            <Paper ref={miaRef}>
-              <List>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar alt='Mia Marias' src={miamarias} />
-                  </ListItemAvatar>
-                  <ListItemText primary={'Mia Marias'} />
-                </ListItem>
-                {data === null || data.miamarias.error !== undefined ?
-                  <ListItem>
-                    {data?.miamarias?.error ?? 'Loading...'}
-                  </ListItem>
-                  :
-                  <>
-                    <ListItem>
-                      <ListItemText primary={`${data.miamarias.fish}`} secondary='Fisk' />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText primary={`${data.miamarias.meat}`} secondary='Kött' />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText primary={`${data.miamarias.veg}`} secondary='Veg' />
-                    </ListItem>
-                  </>
-                }
-              </List>
-            </Paper>
+            <ArrayMenu header={'Mia Marias'} icon={miamariasIcon} data={data?.miamarias} ref={miaRef} />
           </Grid>
           <Grid item xs={2}>
-            <Paper ref={spillRef} >
-              <List>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar alt='Spill' src={spill} />
-                  </ListItemAvatar>
-                  <ListItemText primary={'Spill'} />
-                </ListItem>
-                {data === null || data.spill.error !== undefined ?
-                  <ListItem>
-                    {data?.spill?.error ?? 'Loading...'}
-                  </ListItem>
-                  :
-                  <>
-                    {data.spill.map((row, i) => (
-                      <ListItem key={i}>
-                        <ListItemText primary={row} />
-                      </ListItem>
-                    ))}
-                  </>
-                }
-              </List>
-            </Paper>
+            <SimpleArrayMenu header={'Spill'} icon={spillIcon} data={data?.spill} ref={spillRef} />
           </Grid>
           <Grid item xs={2}>
-            <Paper ref={docPiazzaRef} >
-              <List>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar alt='docPiazza' src={docpiazza} />
-                  </ListItemAvatar>
-                  <ListItemText primary={'Doc Piazza'} />
-                </ListItem>
-                {data === null || data.docpiazza.error !== undefined ?
-                  <ListItem>
-                    {data?.docpiazza?.error ?? 'Loading...'}
-                  </ListItem>
-                  :
-                  <>
-                    {data.docpiazza.map((day, i) => (
-                      <>
-                        <ListItem key={i}>
-                          <ListItemText primary={day.header} />
-                        </ListItem>
-                        <List>
-                          {day.contents.map(content => (
-                            <ListItem>
-                              <ListItemText primary={content.title} secondary={content.description} />
-                            </ListItem>
-                          ))}
-                        </List>
-                      </>
-                    ))}
-                  </>
-                }
-              </List>
-            </Paper>
+            <SegmentedMenu header={'Doc Piazza'} icon={docpiazzaIcon} data={data?.docpiazza} ref={docPiazzaRef} />
           </Grid>
           <Grid item xs={2}>
-            <Paper>
-              <List>
-                <ListItem>
-                  Test
-                </ListItem>
-              </List>
-            </Paper>
-          </Grid>
-          <Grid item xs={2}>
-            <Paper>
-              <List>
-                <ListItem>
-                  Test
-                </ListItem>
-              </List>
-            </Paper>
+            <SimpleArrayMenu header={'Kolga'} icon={kolgaIcon} data={data?.kolga} ref={kolgaRef} />
           </Grid>
           <Grid item xs={2}>
             <Paper>
@@ -186,5 +201,7 @@ const App = () => {
     </>
   );
 }
+
+
 
 export default App;

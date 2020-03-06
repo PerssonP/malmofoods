@@ -5,7 +5,7 @@ import moment from 'moment';
 import compression from 'compression';
 import cors from 'cors';
 import path from 'path';
-import pdfjslib from 'pdfjs-dist'
+import pdfjslib from 'pdfjs-dist';
 
 const app = express();
 
@@ -32,8 +32,13 @@ const getMiamarias = async () => {
 
     if (!node) throw new Error('Wrong day');
 
-    const parse = $(node.parentNode).find('span').toArray().map(el => el.firstChild.data).filter(val => !!val);
-    return { 'fish': parse[1], 'meat': parse[2], 'veg': parse[3] };
+    const parse = $(node.parentNode).find('span').map((_, el) => $(el).text()).toArray().filter(x => !!x.trim());
+    //return { 'Fisk': parse[1], 'Kött': parse[3], 'Veg': parse[5] };
+    return [
+      { title: 'Fisk', description: parse[1] },
+      { title: 'Kött', description: parse[3] },
+      { title: 'Veg', description: parse[5] }
+    ]
   } catch (err) {
     console.log(err);
     return { error: err.toString() };
@@ -200,27 +205,24 @@ const getÅrstiderna = async () => {
 };
 
 app.get('/scrape', async (req, res, next) => {
-  
   const results = await Promise.all([
     getMiamarias(),
     getSpill(),
     getDocpiazza(),
-    /*getKolga(),
+    getKolga(),
     getNamdo(),
     getVariation(),
-    getP2()*/
+    getP2()
   ]);
   const answer = { 
     miamarias: results[0],
     spill: results[1],
     docpiazza: results[2],
-    /*kolga: results[3],
+    kolga: results[3],
     namndo: results[4],
     variation: results[5],
-    P2: results[6]*/
+    P2: results[6]
   };
-
-  //const answer = { ok: 'OK' };
 
   res.send(answer);
 });
