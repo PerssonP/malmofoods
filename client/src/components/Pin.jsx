@@ -1,6 +1,6 @@
 import React from 'react';
-import { makeStyles, IconButton, Tooltip } from '@material-ui/core'
-import { Room } from '@material-ui/icons'
+import { makeStyles, IconButton, Tooltip } from '@material-ui/core';
+import { Room } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
   pin: {  // Keeps the pin in place on the map when zooming. Don't ask me why/how.
@@ -23,7 +23,7 @@ const Pin = ({ text, handleClick }) => {
         <Room fontSize='large' />
       </IconButton>
     </Tooltip>
-  )
-}
+  );
+};
 
 export default Pin;

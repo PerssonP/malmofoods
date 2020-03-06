@@ -26,7 +26,7 @@ const getFile = path => {
     console.log(err);
     return {};
   }
-}
+};
 
 const getMiamarias = async force => {
   const m = moment();
@@ -47,7 +47,7 @@ const getMiamarias = async force => {
     const node = h5arr.find(el => {
       if (el.firstChild === null) return false;
       return el.firstChild.data.includes(m.format('D/M'));
-    })
+    });
 
     if (!node) throw new Error('Wrong day');
 
@@ -128,7 +128,7 @@ const getDocpiazza = async force => {
       let content = [];
       if (titles.length !== descriptions.length) throw new Error('Parsing failed');
       for (let j = 0; j < titles.length; j++) {
-        content[j] = { title: $(titles[j]).text().trim(), description: $(descriptions[j]).text().trim() }
+        content[j] = { title: $(titles[j]).text().trim(), description: $(descriptions[j]).text().trim() };
       }
       answer[i] = { header: $(headers[i + 1].firstChild).text(), contents: content };
     });
@@ -190,7 +190,7 @@ const getNamdo = async force => {
     const body = await result.text();
     const $ = cheerio.load(body);
 
-    const node = $(`.fdm-section-${m.format('dddd').replace('å', 'a').replace('ö', 'o')}-${m.week() % 2 === 0 ? 'jamn' : 'ojamn'}`)
+    const node = $(`.fdm-section-${m.format('dddd').replace('å', 'a').replace('ö', 'o')}-${m.week() % 2 === 0 ? 'jamn' : 'ojamn'}`);
     if (node.length === 0) throw new Error('Wrong day');
 
     const titles = $(node).find('.fdm-item-title');
@@ -200,7 +200,7 @@ const getNamdo = async force => {
     const answer = [];
     titles.each((i, el) => {
       answer[i] = { title: $(el).text(), description: $(descriptions[i]).text() };
-    })
+    });
 
     fs.writeFile('./files/namdo.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
@@ -209,7 +209,7 @@ const getNamdo = async force => {
     return answer;
   } catch (err) {
     console.log(err);
-    return { error: err.toString() }
+    return { error: err.toString() };
   }
 };
 
@@ -273,10 +273,10 @@ const getP2 = async force => {
     const body = await result.text();
     const $ = cheerio.load(body);
 
-    if($('.week_number').text().split(' ')[1] != m.week()) throw new Error('Wrong week')
+    if($('.week_number').text().split(' ')[1] != m.week()) throw new Error('Wrong week');
 
     const node = $(`#${m.locale('en').format('dddd').toLowerCase()}`);
-    if (node.length === 0) throw new Error('Wrong day')
+    if (node.length === 0) throw new Error('Wrong day');
     const courses = $(node).find('tr');
     
     const answer = courses.map((_, el) => {
@@ -321,7 +321,7 @@ app.get('/scrape', async (req, res, next) => {
     spill: results[1],
     docpiazza: results[2],
     kolga: results[3],
-    namndo: results[4],
+    namdo: results[4],
     variation: results[5],
     P2: results[6]
   };
@@ -343,7 +343,7 @@ app.use((req, res, next) => {
 });
 
 
-const port = process.env.APP_SERVER_PORT || 8081
+const port = process.env.APP_SERVER_PORT || 8081;
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
