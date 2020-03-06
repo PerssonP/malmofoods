@@ -6,6 +6,7 @@ import compression from 'compression';
 import cors from 'cors';
 import path from 'path';
 import pdfjslib from 'pdfjs-dist';
+import fs from 'fs';
 
 const app = express();
 
@@ -16,9 +17,27 @@ app.use(express.static(path.join(path.resolve(), 'build')));
 
 moment.locale('sv'); // Set global locale to Swedish
 
-const getMiamarias = async () => {
+const getFile = path => {
+  try {
+    const data = fs.readFileSync(path);
+    const file = JSON.parse(data);
+    return file;
+  } catch (err) {
+    console.log(err);
+    return {};
+  }
+}
+
+const getMiamarias = async force => {
   const m = moment();
   try {
+    if (force !== true) {
+      const file = getFile('./files/miamarias.json');
+      if (file.date === m.format('YYYY-MM-DD')) {
+        return file.content;
+      }
+    }
+
     const result = await fetch('http://www.miamarias.nu/');
     const body = await result.text();
     const $ = cheerio.load(body);
@@ -34,20 +53,33 @@ const getMiamarias = async () => {
 
     const parse = $(node.parentNode).find('span').map((_, el) => $(el).text()).toArray().filter(x => !!x.trim());
     //return { 'Fisk': parse[1], 'Kött': parse[3], 'Veg': parse[5] };
-    return [
+    const answer = [
       { title: 'Fisk', description: parse[1] },
       { title: 'Kött', description: parse[3] },
       { title: 'Veg', description: parse[5] }
-    ]
+    ];
+
+    fs.writeFile('./files/miamarias.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
+      if (err) throw err;
+    });
+
+    return answer;
   } catch (err) {
     console.log(err);
     return { error: err.toString() };
   }
 };
 
-const getSpill = async () => {
+const getSpill = async force => {
   const m = moment();
   try {
+    if (force !== true) {
+      const file = getFile('./files/spill.json');
+      if (file.date === m.format('YYYY-MM-DD')) {
+        return file.content;
+      }
+    }
+
     const result = await fetch('https://restaurangspill.se/');
     const body = await result.text();
     const $ = cheerio.load(body, { decodeEntities: false });
@@ -56,27 +88,40 @@ const getSpill = async () => {
     if (!node.includes(m.format('D/M'))) throw new Error('Wrong day');
 
     const text = node.slice(node.indexOf(m.format('D/M')) + m.format('D/M').length).trim(); // Remove up to and including date from string
-    //return text.split(/\s{2,}/); // Split on 2 or more blankspaces
-    return text.split('<br>').filter(el => el !== '').map(el => el.trim()); // Split on breaklines, remove empty results and trim the rest
+    //const answer = text.split(/\s{2,}/); // Split on 2 or more blankspaces
+    const answer = text.split('<br>').filter(el => el !== '').map(el => el.trim()); // Split on breaklines, remove empty results and trim the rest
+
+    fs.writeFile('./files/spill.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
+      if (err) throw err;
+    });
+
+    return answer;
   } catch (err) {
     console.log(err);
     return { error: err.toString() };
   }
 };
 
-const getDocpiazza = async () => {
+const getDocpiazza = async force => {
   const m = moment();
-  const answer = [];
   try {
+    if (force !== true) {
+      const file = getFile('./files/docpiazza.json');
+      if (file.date === m.format('YYYY-MM-DD')) {
+        return file.content;
+      }
+    }
+
     const result = await fetch('http://malmo.kyparn.se/doc-piazza');
     const body = await result.text();
     const $ = cheerio.load(body);
-  
+
     const headers = $('[id^=lunch] div header small');
     const node = $('[id^=lunch] div ul').toArray();
 
     if($(headers[1].firstChild).text().toLowerCase() !== m.format('dddd')) throw new Error('Wrong day');
 
+    const answer = [];
     node.forEach((el, i) => {
       const titles = $(el).find('li div p strong');
       const descriptions = $(el).find('li div div p');
@@ -87,6 +132,11 @@ const getDocpiazza = async () => {
       }
       answer[i] = { header: $(headers[i + 1].firstChild).text(), contents: content };
     });
+
+    fs.writeFile('./files/docpiazza.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
+      if (err) throw err;
+    });
+
     return answer;
   } catch (err) {
     console.log(err);
@@ -94,9 +144,16 @@ const getDocpiazza = async () => {
   }
 };
 
-const getKolga = async () => {
+const getKolga = async force => {
   const m = moment();
   try {
+    if (force !== true) {
+      const file = getFile('./files/kolga.json');
+      if (file.date === m.format('YYYY-MM-DD')) {
+        return file.content;
+      }
+    }
+
     const result = await fetch('https://kolga.gastrogate.com/lunch/');
     const body = await result.text();
     const $ = cheerio.load(body);
@@ -106,16 +163,29 @@ const getKolga = async () => {
     if (header.length === 0) throw new Error('Wrong day');
 
     const content = $(header).parents('thead').siblings('tbody')[0];
-    return $(content).find('.td_title').map((_, el) => $(el).text().trim()).get();
+    const answer = $(content).find('.td_title').map((_, el) => $(el).text().trim()).get();
+
+    fs.writeFile('./files/kolga.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
+      if (err) throw err;
+    });
+
+    return answer;
   } catch (err) {
     console.log(err);
     return { error: err.toString() };
   }
 };
 
-const getNamdo = async () => {
+const getNamdo = async force => {
   const m = moment();
   try {
+    if (force !== true) {
+      const file = getFile('./files/namdo.json');
+      if (file.date === m.format('YYYY-MM-DD')) {
+        return file.content;
+      }
+    }
+
     const result = await fetch('http://namdo.se/meny/');
     const body = await result.text();
     const $ = cheerio.load(body);
@@ -127,32 +197,43 @@ const getNamdo = async () => {
     const descriptions = $(node).find('.fdm-item-content p');
     if (titles.length !== descriptions.length) throw new Error('Parsing length mismatch!');
     
-    const content = [];
+    const answer = [];
     titles.each((i, el) => {
-      content[i] = { title: $(el).text(), description: $(descriptions[i]).text() };
+      answer[i] = { title: $(el).text(), description: $(descriptions[i]).text() };
     })
 
-    return content;
+    fs.writeFile('./files/namdo.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
+      if (err) throw err;
+    });
+
+    return answer;
   } catch (err) {
     console.log(err);
     return { error: err.toString() }
   }
 };
 
-const getVariation = async () => {
+const getVariation = async force => {
   const m = moment();
   try {
+    if (force !== true) {
+      const file = getFile('./files/variation.json');
+      if (file.date === m.format('YYYY-MM-DD')) {
+        return file.content;
+      }
+    }
+
     const result = await fetch(`https://www.nyavariation.se/files/matsedel/${m.format('YYYY')}/v-${m.week()}.pdf`);
     if (!result.ok) throw new Error('Menu not found for current week');
 
     const loadingTask = pdfjslib.getDocument(await result.arrayBuffer());
-    return await loadingTask.promise.then(async doc => {
+    const answer = await loadingTask.promise.then(async doc => {
       const page = await doc.getPage(1);
       const textContent = await page.getTextContent();
       const text = textContent.items.filter(val => val.str.trim() !== '').map(val => val.str).join('');
       
       const today = m.format('dddd');
-      const tomorrow = m.add(1, 'day').format('dddd');
+      const tomorrow = moment().add(1, 'day').format('dddd');
       let list = text.slice(text.toLowerCase().indexOf(today), text.toLowerCase().indexOf(tomorrow)).split('•');
       if (list[list.length - 1].includes('svampsoppa') || list[list.length - 1].includes('Vi bjuder')) { // lol
         list = list.slice(0, list.length - 1);
@@ -160,8 +241,14 @@ const getVariation = async () => {
 
       return list.slice(1);
     }, err => {
-      return { error: err.toString() };
+      throw err;
     });
+
+    fs.writeFile('./files/variation.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
+      if (err) throw err;
+    });
+
+    return answer;
   } catch (err) {
     console.log(err);
     return { error: err.toString() };
@@ -172,9 +259,16 @@ const getCurryrepublic = async () => {
   throw new Error('Not implemented');
 };
 
-const getP2 = async () => {
+const getP2 = async force => {
   const m = moment();
   try {
+    if (force !== true) {
+      const file = getFile('./files/p2.json');
+      if (file.date === m.format('YYYY-MM-DD')) {
+        return file.content;
+      }
+    }
+
     const result = await fetch('https://www.restaurangp2.se/lunch');
     const body = await result.text();
     const $ = cheerio.load(body);
@@ -185,11 +279,17 @@ const getP2 = async () => {
     if (node.length === 0) throw new Error('Wrong day')
     const courses = $(node).find('tr');
     
-    return courses.map((_, el) => {
+    const answer = courses.map((_, el) => {
       const arr = $(el).find('p').map((i, child) => $(child).text()).get();
       if (arr.length !== 3) throw new Error('Parsing failed');
       return { category: arr[0], food: arr[1], price: arr[2] };
     }).get();
+
+    fs.writeFile('./files/p2.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
+      if (err) throw err;
+    });
+
+    return answer;
   } catch (err) {
     console.log(err);
     return { error: err.toString() };
@@ -205,14 +305,16 @@ const getÅrstiderna = async () => {
 };
 
 app.get('/scrape', async (req, res, next) => {
+  const force = req.query.forceAll === 'true';
+
   const results = await Promise.all([
-    getMiamarias(),
-    getSpill(),
-    getDocpiazza(),
-    getKolga(),
-    getNamdo(),
-    getVariation(),
-    getP2()
+    getMiamarias(force),
+    getSpill(force),
+    getDocpiazza(force),
+    getKolga(force),
+    getNamdo(force),
+    getVariation(force),
+    getP2(force)
   ]);
   const answer = { 
     miamarias: results[0],
