@@ -382,7 +382,7 @@ app.get('/scrape', async (req, res, next) => {
   const force = req.query.forceAll === 'true';
   
   const results = await Promise.all([
-    /*getMiamarias(force),
+    getMiamarias(force),
     getSpill(force),
     getDocpiazza(force),
     getKolga(force),
@@ -390,10 +390,10 @@ app.get('/scrape', async (req, res, next) => {
     getVariation(force),
     getP2(force),
     getGlasklart(force),
-    getÅrstiderna(force)*/
+    getÅrstiderna(force)
   ]);
   const answer = { 
-    /*miamarias: results[0],
+    miamarias: results[0],
     spill: results[1],
     docpiazza: results[2],
     kolga: results[3],
@@ -401,7 +401,7 @@ app.get('/scrape', async (req, res, next) => {
     variation: results[5],
     p2: results[6],
     glasklart: results[7],
-    arstiderna: results[8]*/
+    arstiderna: results[8]
   };
 
   res.send(answer);
