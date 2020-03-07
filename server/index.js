@@ -244,6 +244,8 @@ const getVariation = async force => {
       throw err;
     });
 
+    if (answer.length === 0) throw new Error('Wrong day!');
+
     fs.writeFile('./files/variation.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
     });
@@ -253,10 +255,6 @@ const getVariation = async force => {
     console.log(err);
     return { error: err.toString() };
   }
-};
-
-const getCurryrepublic = async () => {
-  throw new Error('Not implemented');
 };
 
 const getP2 = async force => {
@@ -282,7 +280,7 @@ const getP2 = async force => {
     const answer = courses.map((_, el) => {
       const arr = $(el).find('p').map((i, child) => $(child).text()).get();
       if (arr.length !== 3) throw new Error('Parsing failed');
-      return { category: arr[0], food: arr[1], price: arr[2] };
+      return { title: arr[0], description: arr[1] };
     }).get();
 
     fs.writeFile('./files/p2.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
@@ -296,17 +294,93 @@ const getP2 = async force => {
   }
 };
 
-const getGlasklart = async () => {
-  throw new Error('Not implemented');
+const getGlasklart = async force => {
+  const m = moment();
+  try {
+    if (force !== true) {
+      const file = getFile('./files/glasklart.json');
+      if (file.date === m.format('YYYY-MM-DD')) {
+        return file.content;
+      }
+    }
+
+    const result = await fetch('https://glasklart.eu/sv/lunch/');
+    const body = await result.text();
+    const $ = cheerio.load(body);
+
+    const weekNode = $('ul h2').first();
+    if (!weekNode.text().endsWith(m.week())) throw new Error('Wrong week!');
+
+    const h4 = weekNode.siblings('h4').toArray();
+    const todayNode = $(h4.find(el => $(el).text().toLowerCase() === m.format('dddd')));
+    if (todayNode.length !== 1) throw new Error('Wrong day!');
+
+    const vegNode = $(h4[h4.length - 1]);
+
+    const answer = [
+      { title: '', description: todayNode.next().text() },
+      { title: vegNode.text(), description: vegNode.next().text() }
+    ];
+
+    fs.writeFile('./files/glasklart.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
+      if (err) throw err;
+    });
+
+    return answer;
+  } catch (err) {
+    console.log(err);
+    return { error: err.toString() };
+  }
 };
 
-const getÅrstiderna = async () => {
+const getÅrstiderna = async force => {
+  const m = moment();
+  try {
+    if (force !== true) {
+      const file = getFile('./files/arstiderna.json');
+      if (file.date === m.format('YYYY-MM-DD')) {
+        return file.content;
+      }
+    }
+
+    const result = await fetch('http://arstidernabythesea.se/lunch/');
+    const body = await result.text();
+    const $ = cheerio.load(body);
+
+    const weekNode = $('.fy-content h3 span');
+    if (!weekNode.text().endsWith(m.week())) throw new Error('Wrong week!');
+
+    const today = m.format('dddd').charAt(0).toUpperCase() + m.format('dddd').slice(1);
+    const tomorrow = moment().add(4, 'day').add(1, 'day').format('dddd');
+    const todayNode = weekNode.parent().siblings(`:contains(${today})`);
+    if (todayNode.length !== 1) throw new Error('Wrong day!');
+
+    const answer = [];
+    let current = todayNode.next();
+    while(current.text().toLowerCase() !== tomorrow && current.text().trim() !== '') {
+      answer.push(current.text().slice(0, current.text().lastIndexOf(' ')).trim());
+      current = current.next();
+    }
+
+    
+    fs.writeFile('./files/arstiderna.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
+      if (err) throw err;
+    });
+
+    return answer;
+  } catch (err) {
+    console.log(err);
+    return { error: err.toString() };
+  }
+};
+
+const getCurryrepublic = async () => {
   throw new Error('Not implemented');
 };
 
 app.get('/scrape', async (req, res, next) => {
   const force = req.query.forceAll === 'true';
-
+  
   const results = await Promise.all([
     getMiamarias(force),
     getSpill(force),
@@ -314,7 +388,9 @@ app.get('/scrape', async (req, res, next) => {
     getKolga(force),
     getNamdo(force),
     getVariation(force),
-    getP2(force)
+    getP2(force),
+    getGlasklart(force),
+    getÅrstiderna(force)
   ]);
   const answer = { 
     miamarias: results[0],
@@ -323,7 +399,9 @@ app.get('/scrape', async (req, res, next) => {
     kolga: results[3],
     namdo: results[4],
     variation: results[5],
-    P2: results[6]
+    p2: results[6],
+    glasklart: results[7],
+    arstiderna: results[8]
   };
 
   res.send(answer);
