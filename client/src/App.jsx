@@ -30,6 +30,9 @@ const useStyles = makeStyles(theme => ({
     '100%': {
       boxShadow: '0 0 3pt 2pt rgba(230,0,0, 0)'
     }
+  },
+  item: {
+    minWidth: '300px'
   }
 }));
 
@@ -138,31 +141,31 @@ const App = () => {
           </GoogleMapReact>
         </div>
         <Grid container spacing={2} style={{ width: 'calc(100% - 5px)', margin: '5px' }}>
-          <Grid item xs={2}>
+          <Grid item xs={2} className={classes.item}>
             <ArrayMenu header={'Mia Marias'} url={'http://www.miamarias.nu/'} icon={miamariasIcon} data={data?.miamarias} ref={miaRef} />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={2} className={classes.item}>
             <SimpleArrayMenu header={'Spill'} url={'https://restaurangspill.se/'} icon={spillIcon} data={data?.spill} ref={spillRef} />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={2} className={classes.item}>
             <SegmentedMenu header={'Doc Piazza'} url={'http://malmo.kyparn.se/doc-piazza'} icon={docpiazzaIcon} data={data?.docpiazza} ref={docPiazzaRef} />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={2} className={classes.item}>
             <SimpleArrayMenu header={'Kolga'} url={'https://kolga.gastrogate.com/lunch/'} icon={kolgaIcon} data={data?.kolga} ref={kolgaRef} />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={2} className={classes.item}>
             <SimpleArrayMenu header={'Variation'} url={'https://www.nyavariation.se/matsedel'} icon={variationIcon} data={data?.variation} ref={variationRef} />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={2} className={classes.item}>
             <ArrayMenu header={'P2'} url={'https://www.restaurangp2.se/lunch'} icon={p2Icon} data={data?.p2} ref={p2Ref} />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={2} className={classes.item}>
             <ArrayMenu header={'Glasklart'} url={'https://glasklart.eu/sv/lunch/'} icon={glasklartIcon} data={data?.glasklart} ref={glasklartRef} />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={2} className={classes.item}>
             <SimpleArrayMenu header={'Årstiderna by the sea'} url={'http://arstidernabythesea.se/lunch/'} icon={''} data={data?.arstiderna} ref={arstidernaRef} />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={2} className={classes.item}>
             <ArrayMenu header={'Nam Do'} url={'http://namdo.se/meny/'} icon={''} data={data?.namdo} ref={namdoRef} />
           </Grid>
         </Grid>
