@@ -1,12 +1,12 @@
-import express from 'express';
-import cheerio from 'cheerio';
-import fetch from 'node-fetch';
-import moment from 'moment';
-import compression from 'compression';
-import cors from 'cors';
-import path from 'path';
-import pdfjslib from 'pdfjs-dist';
-import fs from 'fs';
+const express = require('express');
+const cheerio = require('cheerio');
+const fetch = require('node-fetch');
+const moment = require('moment');
+const compression = require('compression');
+const cors = require('cors');
+const path = require('path');
+const pdfjslib = require('pdfjs-dist');
+const fs = require('fs');
 
 const app = express();
 
