@@ -12,6 +12,8 @@ import kolgaIcon from './images/kolga.png';
 import variationIcon from './images/variation.png';
 import p2Icon from './images/p2.png';
 import glasklartIcon from './images/glasklart.svg';
+import lol from './images/lol.png';
+import vhp from './images/vhp.png';
 
 const useStyles = makeStyles(theme => ({
   selected: {
@@ -49,6 +51,9 @@ const App = () => {
   const p2Ref = useRef(null);
   const glasklartRef = useRef(null);
   const arstidernaRef = useRef(null);
+  const curryRef = useRef(null);
+  const vphRef = useRef(null);
+  const docksideRef = useRef(null);
 
   const getData = async force => {
     const result = await fetch(`/scrape${force ? '?forceAll=true' : ''}`);
@@ -138,6 +143,24 @@ const App = () => {
               text='Årstiderna by the sea'
               handleClick={() => showSelected(arstidernaRef.current)}
             />
+            <Pin
+              lat={55.611586}
+              lng={12.980412}
+              text='Curry Republik'
+              handleClick={() => showSelected(curryRef.current)}
+            />
+            <Pin
+              lat={55.616906}
+              lng={12.979608}
+              text='Västra Hamnens Pizzeria'
+              handleClick={() => showSelected(vphRef.current)}
+            />
+            <Pin
+              lat={55.614418}
+              lng={12.990020}
+              text='Dockside Burgers'
+              handleClick={() => showSelected(docksideRef.current)}
+            />
           </GoogleMapReact>
         </div>
         <Grid container spacing={2} style={{ width: 'calc(100% - 5px)', margin: '5px' }}>
@@ -166,7 +189,16 @@ const App = () => {
             <SimpleArrayMenu header={'Årstiderna by the sea'} url={'http://arstidernabythesea.se/lunch/'} icon={''} data={data?.arstiderna} ref={arstidernaRef} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
+            <SimpleArrayMenu header={'Curry Republik'} url={'https://www.wokkitchen.se/curry_meny.html'} icon={lol} data={null} ref={curryRef} />
+          </Grid>
+          <Grid item xs={2} className={classes.item}>
             <ArrayMenu header={'Nam Do'} url={'http://namdo.se/meny/'} icon={''} data={data?.namdo} ref={namdoRef} />
+          </Grid>
+          <Grid item xs={2} className={classes.item}>
+            <SimpleArrayMenu header={'Västra Hamnens Pizzeria'} url={'http://www.vhpizzeria.se/'} icon={vhp} data={['Pizzabuffé']} ref={vphRef} />
+          </Grid>
+          <Grid item xs={2} className={classes.item}>
+            <SimpleArrayMenu header={'Dockside Burgers'} url={'https://www.docksideburgers.se/'} icon={''} data={['Burgare']} ref={docksideRef} />
           </Grid>
         </Grid>
         <Grid container justify='flex-end'>
