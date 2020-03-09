@@ -119,6 +119,7 @@ const getDocpiazza = async force => {
     const headers = $('[id^=lunch] div header small');
     const node = $('[id^=lunch] div ul').toArray();
 
+    if(headers.length < 1) throw new Error('Parsing failed');
     if($(headers[1].firstChild).text().toLowerCase() !== m.format('dddd')) throw new Error('Wrong day');
 
     const answer = [];
@@ -351,7 +352,7 @@ const getÅrstiderna = async force => {
     if (!weekNode.text().endsWith(m.week())) throw new Error('Wrong week!');
 
     const today = m.format('dddd').charAt(0).toUpperCase() + m.format('dddd').slice(1);
-    const tomorrow = moment().add(4, 'day').add(1, 'day').format('dddd');
+    const tomorrow = moment().add(1, 'day').format('dddd');
     const todayNode = weekNode.parent().siblings(`:contains(${today})`);
     if (todayNode.length !== 1) throw new Error('Wrong day!');
 

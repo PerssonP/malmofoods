@@ -80,7 +80,7 @@ const App = () => {
       <main>
         <div style={{ height: '800px', width: '100%' }}>
           <GoogleMapReact
-            bootstrapURLKeys={{ key: 'AIzaSyDbGGbzKd9xYlaw3V3efl262q-xz5fUtw0' }}
+            bootstrapURLKeys={{ key: process.env.REACT_APP_MAPS_KEY }}
             center={{ lat: 55.6126202, lng: 12.9864192 }}
             defaultZoom={16}
           >
