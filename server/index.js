@@ -7,11 +7,21 @@ const cors = require('cors');
 const path = require('path');
 const pdfjslib = require('pdfjs-dist');
 const fs = require('fs');
+const useragent = require('express-useragent');
 
 const app = express();
 
 app.use(compression());
 app.use(cors());
+app.use(useragent.express());
+
+app.use('/*', (req, res, next) => {
+  if (req.useragent.browser === 'IE') {
+    res.send('Please use an actual browser.').status(400);
+  } else {
+    next();
+  }
+});
 
 app.use(express.static(path.join(path.resolve(), 'build')));
 
@@ -375,8 +385,8 @@ const getÅrstiderna = async force => {
   }
 };
 
-const getCurryrepublic = async () => {
-  throw new Error('Not implemented');
+const getVarvsgatan = async force => {
+  return null;
 };
 
 app.get('/scrape', async (req, res, next) => {
@@ -391,7 +401,8 @@ app.get('/scrape', async (req, res, next) => {
     getVariation(force),
     getP2(force),
     getGlasklart(force),
-    getÅrstiderna(force)
+    getÅrstiderna(force),
+    getVarvsgatan(force)
   ]);
   const answer = { 
     miamarias: results[0],
@@ -402,13 +413,14 @@ app.get('/scrape', async (req, res, next) => {
     variation: results[5],
     p2: results[6],
     glasklart: results[7],
-    arstiderna: results[8]
+    arstiderna: results[8],
+    varvsgatan: results[9]
   };
 
   res.send(answer);
 });
 
-app.get('/*', function (req, res) {
+app.get('/*', function (req, res, next) {
   res.sendFile(path.join(__dirname, 'build', '../build/index.html'));
 });
 
