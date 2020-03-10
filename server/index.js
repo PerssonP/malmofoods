@@ -385,9 +385,7 @@ const getÅrstiderna = async force => {
   }
 };
 
-const getVarvsgatan = async force => {
-  return null;
-};
+const getVarvsgatan = async force => null;
 
 app.get('/scrape', async (req, res, next) => {
   const force = req.query.forceAll === 'true';

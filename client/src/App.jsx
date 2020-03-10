@@ -42,18 +42,86 @@ const App = () => {
   const classes = useStyles();
   const [data, setData] = useState(null);
 
-  const miaRef = useRef(null);
-  const spillRef = useRef(null);
-  const docPiazzaRef = useRef(null);
-  const kolgaRef = useRef(null);
-  const variationRef = useRef(null);
-  const namdoRef = useRef(null);
-  const p2Ref = useRef(null);
-  const glasklartRef = useRef(null);
-  const arstidernaRef = useRef(null);
-  const curryRef = useRef(null);
-  const vphRef = useRef(null);
-  const docksideRef = useRef(null);
+  const pins = {
+    miamarias: {
+      name: 'Mia Marias',
+      lat: 55.613306,
+      lng: 12.992183,
+      ref: useRef(null),
+    },
+    spill: {
+      name: 'Spill',
+      lat: 55.612801,
+      lng: 12.988404,
+      ref: useRef(null)
+    },
+    docPiazza: {
+      text: 'Doc Piazza',
+      lat: 55.614333,
+      lng: 12.989664,
+      ref: useRef(null)
+    },
+    kolga: {
+      name: 'Kolga',
+      lat: 55.612290,
+      lng: 12.998474,
+      ref: useRef(null)
+    },
+    variation: {
+      name: 'Variation',
+      lat: 55.607990,
+      lng: 12.981666,
+      ref: useRef(null)
+    },
+    namndo: {
+      name: 'Nam Do',
+      lat: 55.604493,
+      lng: 12.997683,
+      ref: useRef(null)
+    },
+    p2: {
+      name: 'P2',
+      lat: 55.614380,
+      lng: 12.988521,
+      ref: useRef(null)
+    },
+    glasklart: {
+      name: 'Glasklart',
+      lat: 55.614924,
+      lng: 12.990561,
+      ref: useRef(null)
+    },
+    arstiderna: {
+      name: 'Årstiderna by the sea',
+      lat: 55.615186,
+      lng: 12.988838,
+      ref: useRef(null)
+    },
+    curryRepublik: {
+      name: 'Curry Republik',
+      lat: 55.611586,
+      lng: 12.980412,
+      ref: useRef(null)
+    },
+    vhp: {
+      name: 'Västra Hamnens Pizzeria',
+      lat: 55.616906,
+      lng: 12.979608,
+      ref: useRef(null)
+    },
+    dockside: {
+      name: 'Dockside Burgers',
+      lat: 55.614418,
+      lng: 12.990020,
+      ref: useRef(null)
+    },
+    varvsgatan: {
+      name: 'Stora Varvsgatan 6',
+      lat: 55.612501,
+      lng: 12.991662,
+      ref: useRef(null)
+    }
+  };
 
   const getData = async force => {
     const result = await fetch(`/scrape${force ? '?forceAll=true' : ''}`);
@@ -89,116 +157,55 @@ const App = () => {
             center={{ lat: 55.6126202, lng: 12.9864192 }}
             defaultZoom={16}
           >
-            <Pin
-              lat={55.613306}
-              lng={12.992183}
-              text='MiaMarias'
-              handleClick={() => showSelected(miaRef.current)}
-            />
-            <Pin
-              lat={55.612801}
-              lng={12.988404}
-              text='Spill'
-              handleClick={() => showSelected(spillRef.current)}
-            />
-            <Pin
-              lat={55.614333}
-              lng={12.989664}
-              text='Doc Piazza'
-              handleClick={() => showSelected(docPiazzaRef.current)}
-            />
-            <Pin
-              lat={55.612290}
-              lng={12.998474}
-              text='Kolga'
-              handleClick={() => showSelected(kolgaRef.current)}
-            />
-            <Pin
-              lat={55.607990}
-              lng={12.981666}
-              text='Variation'
-              handleClick={() => showSelected(variationRef.current)}
-            />
-            <Pin
-              lat={55.604493}
-              lng={12.997683}
-              text='Nam Do'
-              handleClick={() => showSelected(namdoRef.current)}
-            />
-            <Pin
-              lat={55.614380}
-              lng={12.988521}
-              text='P2'
-              handleClick={() => showSelected(p2Ref.current)}
-            />
-            <Pin
-              lat={55.614924}
-              lng={12.990561}
-              text='Glasklart'
-              handleClick={() => showSelected(glasklartRef.current)}
-            />
-            <Pin
-              lat={55.615186}
-              lng={12.988838}
-              text='Årstiderna by the sea'
-              handleClick={() => showSelected(arstidernaRef.current)}
-            />
-            <Pin
-              lat={55.611586}
-              lng={12.980412}
-              text='Curry Republik'
-              handleClick={() => showSelected(curryRef.current)}
-            />
-            <Pin
-              lat={55.616906}
-              lng={12.979608}
-              text='Västra Hamnens Pizzeria'
-              handleClick={() => showSelected(vphRef.current)}
-            />
-            <Pin
-              lat={55.614418}
-              lng={12.990020}
-              text='Dockside Burgers'
-              handleClick={() => showSelected(docksideRef.current)}
-            />
+            {Object.values(pins).map(value => (
+              <Pin
+                text={value.name}
+                lat={value.lat}
+                lng={value.lng}
+                handleClick={() => showSelected(value.ref.current)}
+              />
+            ))}
           </GoogleMapReact>
         </div>
         <Grid container spacing={2} style={{ width: 'calc(100% - 5px)', margin: '5px' }}>
           <Grid item xs={2} className={classes.item}>
-            <ArrayMenu header={'Mia Marias'} url={'http://www.miamarias.nu/'} icon={miamariasIcon} data={data?.miamarias} ref={miaRef} />
+            <ArrayMenu header={'Mia Marias'} url={'http://www.miamarias.nu/'} icon={miamariasIcon} data={data?.miamarias} ref={pins.miamarias.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <SimpleArrayMenu header={'Spill'} url={'https://restaurangspill.se/'} icon={spillIcon} data={data?.spill} ref={spillRef} />
+            <SimpleArrayMenu header={'Spill'} url={'https://restaurangspill.se/'} icon={spillIcon} data={data?.spill} ref={pins.spill.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <SegmentedMenu header={'Doc Piazza'} url={'http://malmo.kyparn.se/doc-piazza'} icon={docpiazzaIcon} data={data?.docpiazza} ref={docPiazzaRef} />
+            <SegmentedMenu header={'Doc Piazza'} url={'http://malmo.kyparn.se/doc-piazza'} icon={docpiazzaIcon} data={data?.docpiazza} ref={pins.docPiazza.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <SimpleArrayMenu header={'Kolga'} url={'https://kolga.gastrogate.com/lunch/'} icon={kolgaIcon} data={data?.kolga} ref={kolgaRef} />
+            <SimpleArrayMenu header={'Kolga'} url={'https://kolga.gastrogate.com/lunch/'} icon={kolgaIcon} data={data?.kolga} ref={pins.kolga.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <SimpleArrayMenu header={'Variation'} url={'https://www.nyavariation.se/matsedel'} icon={variationIcon} data={data?.variation} ref={variationRef} />
+            <SimpleArrayMenu header={'Variation'} url={'https://www.nyavariation.se/matsedel'} icon={variationIcon} data={data?.variation} ref={pins.variation.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <ArrayMenu header={'P2'} url={'https://www.restaurangp2.se/lunch'} icon={p2Icon} data={data?.p2} ref={p2Ref} />
+            <ArrayMenu header={'P2'} url={'https://www.restaurangp2.se/lunch'} icon={p2Icon} data={data?.p2} ref={pins.p2.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <ArrayMenu header={'Glasklart'} url={'https://glasklart.eu/sv/lunch/'} icon={glasklartIcon} data={data?.glasklart} ref={glasklartRef} />
+            <ArrayMenu header={'Glasklart'} url={'https://glasklart.eu/sv/lunch/'} icon={glasklartIcon} data={data?.glasklart} ref={pins.glasklart.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <SimpleArrayMenu header={'Årstiderna by the sea'} url={'http://arstidernabythesea.se/lunch/'} icon={''} data={data?.arstiderna} ref={arstidernaRef} />
+            <SimpleArrayMenu header={'Årstiderna by the sea'} url={'http://arstidernabythesea.se/lunch/'} icon={''} data={data?.arstiderna} ref={pins.arstiderna.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <SimpleArrayMenu header={'Curry Republik'} url={'https://www.wokkitchen.se/curry_meny.html'} icon={lol} data={null} ref={curryRef} />
+            <SimpleArrayMenu header={'Curry Republik'} url={'https://www.wokkitchen.se/curry_meny.html'} icon={lol} data={null} ref={pins.curryRepublik.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <ArrayMenu header={'Nam Do'} url={'http://namdo.se/meny/'} icon={''} data={data?.namdo} ref={namdoRef} />
+            <ArrayMenu header={'Nam Do'} url={'http://namdo.se/meny/'} icon={''} data={data?.namdo} ref={pins.variation.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <SimpleArrayMenu header={'Västra Hamnens Pizzeria'} url={'http://www.vhpizzeria.se/'} icon={vhp} data={['Pizzabuffé']} ref={vphRef} />
+            <SimpleArrayMenu header={'Västra Hamnens Pizzeria'} url={'http://www.vhpizzeria.se/'} icon={vhp} data={['Pizzabuffé']} ref={pins.vhp.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <SimpleArrayMenu header={'Dockside Burgers'} url={'https://www.docksideburgers.se/'} icon={''} data={['Burgare']} ref={docksideRef} />
+            <SimpleArrayMenu header={'Dockside Burgers'} url={'https://www.docksideburgers.se/'} icon={''} data={['Burgare', 'Månadens burgare']} ref={pins.dockside.ref} />
+          </Grid>
+          <Grid item xs={2} className={classes.item}>
+            <ArrayMenu header={'Stora Varvsgatan 6'} url={'https://www.storavarvsgatan6.se/projects.html'} icon={''} data={data?.varvsgatan} ref={pins.varvsgatan.ref} />
           </Grid>
         </Grid>
         <Grid container justify='flex-end'>
