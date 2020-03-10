@@ -388,7 +388,7 @@ const getVarvsgatan = async force => null;
 
 app.get('/scrape', async (req, res, next) => {
   const force = req.query.forceAll === 'true';
-  
+
   const results = await Promise.all([
     getMiamarias(force),
     getSpill(force),
