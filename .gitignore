@@ -1,4 +1,5 @@
 node_modules
 client/build
 server/files/*
+!server/files/empty.txt
 .env

@@ -61,12 +61,11 @@ const getMiamarias = async force => {
 
     if (!node) throw new Error('Wrong day');
 
-    const parse = $(node.parentNode).find('span').map((_, el) => $(el).text()).toArray().filter(x => !!x.trim());
-    //return { 'Fisk': parse[1], 'Kött': parse[3], 'Veg': parse[5] };
+    const parse = $(node.parentNode).find('span').map((_, el) => $(el).text().trim()).toArray().filter(x => !!x).filter(x => !x.endsWith(' kr'));
     const answer = [
-      { title: 'Fisk', description: parse[1] },
-      { title: 'Kött', description: parse[3] },
-      { title: 'Veg', description: parse[5] }
+      { title: 'Fisk', description: parse[0] },
+      { title: 'Kött', description: parse[1] },
+      { title: 'Veg', description: parse[2] }
     ];
 
     fs.writeFile('./files/miamarias.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
@@ -100,11 +99,11 @@ const getSpill = async force => {
     const text = node.slice(node.indexOf(m.format('D/M')) + m.format('D/M').length).trim(); // Remove up to and including date from string
     //const answer = text.split(/\s{2,}/); // Split on 2 or more blankspaces
     const answer = text.split('<br>').filter(el => el !== '').map(el => el.trim()); // Split on breaklines, remove empty results and trim the rest
-
+    
     fs.writeFile('./files/spill.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
     });
-
+    
     return answer;
   } catch (err) {
     console.log(err);

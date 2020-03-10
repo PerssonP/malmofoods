@@ -146,7 +146,7 @@ const App = () => {
 
     el.scrollIntoView({ behavior: 'smooth' });
   };
-
+  
   return (
     <>
       <CssBaseline />

@@ -1,2 +1,4 @@
 node_modules
-files/*
+server/files/*
+!server/files/empty.txt
+.env
