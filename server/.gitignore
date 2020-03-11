@@ -1,4 +1,4 @@
 node_modules
-server/files/*
-!server/files/empty.txt
+files/*
+!files/empty.txt
 .env
