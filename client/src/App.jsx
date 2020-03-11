@@ -15,6 +15,7 @@ import glasklartIcon from './images/glasklart.svg';
 import lolIcon from './images/lol.png';
 import vhpIcon from './images/vhp.png';
 import lazizaIcon from './images/laziza.webp';
+import thaiSushiIcon from './images/thaisushi.png';
 
 const useStyles = makeStyles(theme => ({
   selected: {
@@ -128,6 +129,12 @@ const App = () => {
       lat: 55.614113,
       lng: 12.988982,
       ref: useRef(null)
+    },
+    thaiSushiForYou: {
+      name: 'Thai n Sushi for you',
+      lat: 55.614201,
+      lng: 12.981888,
+      ref: useRef(null)
     }
   };
 
@@ -217,6 +224,9 @@ const App = () => {
           </Grid>
           <Grid item xs={2} className={classes.item}>
             <SimpleArrayMenu header={'Laziza Dockan'} url={'https://www.laziza.se/restaurang/'} icon={lazizaIcon} data={['Libanesisk buffé']} ref={pins.laziza.ref} />
+          </Grid>
+          <Grid item xs={2} className={classes.item}>
+            <SimpleArrayMenu header={'Thai n Sushi for you'} url={'https://thainsushiforyou.se/'} icon={thaiSushiIcon} data={null} ref={pins.thaiSushiForYou.ref} />
           </Grid>
         </Grid>
         <Grid container justify='flex-end'>

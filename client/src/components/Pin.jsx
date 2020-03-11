@@ -19,6 +19,7 @@ const Pin = ({ text, handleClick }) => {
         color='secondary'
         onClick={handleClick}
         className={classes.pin}
+        size='small'
       >
         <Room fontSize='large' />
       </IconButton>
