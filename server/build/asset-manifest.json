@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.js": "/static/js/main.beb132f5.chunk.js",
+    "main.js.map": "/static/js/main.beb132f5.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.09b85ec0.js",
+    "runtime-main.js.map": "/static/js/runtime-main.09b85ec0.js.map",
+    "static/js/2.e2d0e542.chunk.js": "/static/js/2.e2d0e542.chunk.js",
+    "static/js/2.e2d0e542.chunk.js.map": "/static/js/2.e2d0e542.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.97a5becbb1e6a1f9b138efee50516949.js": "/precache-manifest.97a5becbb1e6a1f9b138efee50516949.js",
+    "service-worker.js": "/service-worker.js",
+    "static/js/2.e2d0e542.chunk.js.LICENSE.txt": "/static/js/2.e2d0e542.chunk.js.LICENSE.txt",
+    "static/media/docpiazza.png": "/static/media/docpiazza.8b7a8245.png",
+    "static/media/glasklart.svg": "/static/media/glasklart.71ecc5f0.svg",
+    "static/media/laziza.webp": "/static/media/laziza.806fe540.webp",
+    "static/media/lol.png": "/static/media/lol.66e4acac.png",
+    "static/media/miamarias.png": "/static/media/miamarias.9d4f1d37.png",
+    "static/media/p2.png": "/static/media/p2.b042da6a.png",
+    "static/media/variation.png": "/static/media/variation.e385be86.png",
+    "static/media/vhp.png": "/static/media/vhp.6d1d37a0.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.09b85ec0.js",
+    "static/js/2.e2d0e542.chunk.js",
+    "static/js/main.beb132f5.chunk.js"
+  ]
+}

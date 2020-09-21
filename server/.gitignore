@@ -1,0 +1,4 @@
+node_modules
+files/*
+!files/empty.txt
+.env
