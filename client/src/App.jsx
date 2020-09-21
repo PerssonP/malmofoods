@@ -161,7 +161,7 @@ const App = () => {
 
     el.scrollIntoView({ behavior: 'smooth' });
   };
-  
+
   return (
     <>
       <CssBaseline />
@@ -174,6 +174,7 @@ const App = () => {
           >
             {Object.values(pins).map(value => (
               <Pin
+                key={value.name}
                 text={value.name}
                 lat={value.lat}
                 lng={value.lng}

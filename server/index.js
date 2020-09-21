@@ -17,7 +17,7 @@ app.use(useragent.express());
 
 app.use('/*', (req, res, next) => {
   if (req.useragent.browser === 'IE') {
-    res.send('Please use a real browser.').status(400);
+    res.send('Please use a real browser..').status(400);
   } else {
     next();
   }
