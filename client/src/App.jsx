@@ -3,7 +3,7 @@ import { CssBaseline, makeStyles, Grid, Button } from '@material-ui/core';
 import GoogleMapReact from 'google-map-react';
 
 import Pin from './components/Pin';
-import { ArrayMenu, SimpleArrayMenu, ObjectMenu, SegmentedMenu } from './components/Menus';
+import { ArrayMenu, SimpleArrayMenu, ObjectMenu, SegmentedMenu, HyperlinkMenu } from './components/Menus';
 
 import miamariasIcon from './images/miamarias.png';
 import spillIcon from './images/spill.png';
@@ -16,6 +16,7 @@ import lolIcon from './images/lol.png';
 import vhpIcon from './images/vhp.png';
 import lazizaIcon from './images/laziza.webp';
 import thaiSushiIcon from './images/thaisushi.png';
+import mrsSaigonIcon from './images/mrsSaigon.png';
 
 const useStyles = makeStyles(theme => ({
   selected: {
@@ -135,6 +136,12 @@ const App = () => {
       lat: 55.614201,
       lng: 12.981888,
       ref: useRef(null)
+    },
+    mrsSaigon: {
+      name: 'Mrs Saigon',
+      lat: 55.603335,
+      lng: 12.998333,
+      ref: useRef(null)
     }
   };
 
@@ -228,6 +235,9 @@ const App = () => {
           </Grid>
           <Grid item xs={2} className={classes.item}>
             <SimpleArrayMenu header={'Thai n Sushi for you'} url={'https://thainsushiforyou.se/'} icon={thaiSushiIcon} data={data?.thaiSushi} ref={pins.thaiSushiForYou.ref} />
+          </Grid>
+          <Grid item xs={2} className={classes.item}>
+            <HyperlinkMenu header={'Mrs Saigon'} url={'https://www.mrs-saigon.se/'} icon={mrsSaigonIcon} href={'https://www.mrs-saigon.se/menyer'} ref={pins.mrsSaigon.ref} />
           </Grid>
         </Grid>
         <Grid container justify='flex-end'>

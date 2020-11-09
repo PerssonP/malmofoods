@@ -97,3 +97,15 @@ export const SegmentedMenu = React.forwardRef(({ header, url, icon, data }, ref)
     } 
   </Menu>
 ));
+
+export const HyperlinkMenu = React.forwardRef(({ header, url, icon, href }, ref) => (
+  <Menu header={header} url={url} icon={icon} ref={ref}>
+    <ListItem>
+      <Link href={href}>
+        <ListItemText>
+          Oförändrande lunchmeny
+        </ListItemText>
+      </Link>
+    </ListItem>
+  </Menu>
+));
