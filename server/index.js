@@ -115,7 +115,8 @@ const getSpill = async force => {
 
 const getDocpiazza = async force => {
   const m = moment();
-  const answer = { name: 'docpiazza', data: null };
+  const enM = moment().locale('en');
+  const answer = { name: 'docpiazza', data: [] };
   try {
     if (force !== true) {
       const file = getFile('./files/docpiazza.json');
@@ -124,27 +125,23 @@ const getDocpiazza = async force => {
       }
     }
 
-    const result = await fetch('http://malmo.kyparn.se/doc-piazza');
+    const result = await fetch('https://kyparn.se/ort/malmo/doc-piazza');
     const body = await result.text();
     const $ = cheerio.load(body);
 
-    const headers = $('[id^=lunch] div header small');
-    const node = $('[id^=lunch] div ul').toArray();
+    const headers = $('div.restaurang-content h2.rubrik');
 
-    if(headers.length < 1) throw new Error('Parsing failed');
-    if($(headers[1].firstChild).text().toLowerCase() !== m.format('dddd')) throw new Error('Wrong day');
+    if (headers.length < 1) throw new Error('Parsing failed');
+    if (!$(headers[0]).text().endsWith(m.week())) throw new Error('Wrong week');
 
-    answer.data = [];
-    node.forEach((el, i) => {
-      const titles = $(el).find('li div p strong');
-      const descriptions = $(el).find('li div div p');
-      let content = [];
-      if (titles.length !== descriptions.length) throw new Error('Parsing failed');
-      for (let j = 0; j < titles.length; j++) {
-        content[j] = { title: $(titles[j]).text().trim(), description: $(descriptions[j]).text().trim() };
-      }
-      answer.data[i] = { header: $(headers[i + 1].firstChild).text(), contents: content };
-    });
+
+    let weekday = moment.localeData('en').weekdays()[enM.weekday()];
+    const titles = $(`div.${weekday.toLowerCase()} h3.rubrik`)
+    const descriptions = $(`div.${weekday.toLowerCase()} p.beskrivning`).toArray();
+
+    if (titles.length !== descriptions.length) throw new Error('Parsing failed');
+
+    answer.data = titles.map((i, el) => ({ title: $(descriptions[i]).text(), description: $(el).text() })).toArray(); // Yes, title and description is reversed
 
     fs.writeFile('./files/docpiazza.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
