@@ -91,19 +91,18 @@ const getSpill = async force => {
 
     const result = await fetch('https://restaurangspill.se/');
     const body = await result.text();
-    const $ = cheerio.load(body, { decodeEntities: false });
+    const $ = cheerio.load(body);
 
-    let node = $('h3').first().html();
-    if (!node.includes(m.format('D/M'))) throw new Error('Wrong day');
-
-    const text = node.slice(node.indexOf(m.format('D/M')) + m.format('D/M').length).trim(); // Remove up to and including date from string
-    //const answer = text.split(/\s{2,}/); // Split on 2 or more blankspaces
-    const answer = text.split('<br>').filter(el => el !== '').map(el => el.trim()); // Split on breaklines, remove empty results and trim the rest
+    let node = $('#dagens .uppercase');
+    let currentDay = node.text().split(',')[1].trim();
+    if (currentDay != m.format('DD/M')) throw new Error('Wrong day');
+    
+    let answer = $(node).siblings().children().map((_, el) => $(el).text().trim()).toArray().filter(el => el != '');
     
     fs.writeFile('./files/spill.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
     });
-    
+
     return answer;
   } catch (err) {
     console.log(err);
@@ -113,7 +112,10 @@ const getSpill = async force => {
 
 const getDocpiazza = async force => {
   const m = moment();
-  try {
+
+  return { error: 'Meny saknas' };
+  //return [[{"header": "", content: []}]];
+  /*try {
     if (force !== true) {
       const file = getFile('./files/docpiazza.json');
       if (file.date === m.format('YYYY-MM-DD')) {
@@ -151,7 +153,7 @@ const getDocpiazza = async force => {
   } catch (err) {
     console.log(err);
     return { error: err.toString() };
-  }
+  }*/
 };
 
 const getKolga = async force => {
@@ -204,7 +206,9 @@ const getNamdo = async force => {
     if (node.length === 0) throw new Error('Wrong day');
 
     const titles = $(node).find('.fdm-item-title');
-    const descriptions = $(node).find('.fdm-item-content p');
+    const descriptions = $(node).find('.fdm-item-content');
+    console.log(titles.length);
+    console.log(descriptions.length);
     if (titles.length !== descriptions.length) throw new Error('Parsing length mismatch!');
     
     const answer = [];
@@ -233,29 +237,19 @@ const getVariation = async force => {
       }
     }
 
-    const result = await fetch(`https://www.nyavariation.se/files/matsedel/${m.format('YYYY')}/v-${m.week()}.pdf`);
-    if (!result.ok) throw new Error('Menu not found for current week');
+    const result = await fetch('https://www.nyavariation.se/matsedel');
+    const body = await result.text();
+    const $ = cheerio.load(body);
 
-    const loadingTask = pdfjslib.getDocument(await result.arrayBuffer());
-    const answer = await loadingTask.promise.then(async doc => {
-      const page = await doc.getPage(1);
-      const textContent = await page.getTextContent();
-      const text = textContent.items.filter(val => val.str.trim() !== '').map(val => val.str).join('');
-      
-      const today = m.format('dddd');
-      const tomorrow = moment().add(1, 'day').format('dddd');
-      let list = text.slice(text.toLowerCase().indexOf(today), text.toLowerCase().indexOf(tomorrow)).split('•');
-      if (list[list.length - 1].includes('svampsoppa') || list[list.length - 1].includes('Vi bjuder')) { // lol
-        list = list.slice(0, list.length - 1);
-      }
+    let dayOfWeek = m.format('dddd').charAt(0).toUpperCase() + m.format('dddd').slice(1);
 
-      return list.slice(1);
-    }, err => {
-      throw err;
-    });
-
-    if (answer.length === 0) throw new Error('Wrong day!');
-
+    let node = $(`h4:contains("${dayOfWeek}")`);
+    if (!$(node)[0]) throw new Error('Wrong day!');
+    
+    node = $(node.parents()[2]).children()[2];
+    let answer = $(node).find('li').map((_, el) => $(el).text()).toArray();
+    answer = ['Dagens buffé:', ...answer];
+    
     fs.writeFile('./files/variation.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
     });
@@ -289,7 +283,7 @@ const getP2 = async force => {
     
     const answer = courses.map((_, el) => {
       const arr = $(el).find('p').map((i, child) => $(child).text()).get();
-      if (arr.length !== 3) throw new Error('Parsing failed');
+      if (arr.length < 2) throw new Error('Parsing failed');
       return { title: arr[0], description: arr[1] };
     }).get();
 
@@ -306,6 +300,8 @@ const getP2 = async force => {
 
 const getGlasklart = async force => {
   const m = moment();
+  return { error: 'Tillsvidare håller lunchrestaurangen stängt.' };
+  /*
   try {
     if (force !== true) {
       const file = getFile('./files/glasklart.json');
@@ -340,12 +336,13 @@ const getGlasklart = async force => {
   } catch (err) {
     console.log(err);
     return { error: err.toString() };
-  }
+  }*/
 };
 
-const getÅrstiderna = async force => {
+const getDockanshamnkrog = async force => {
   const m = moment();
-  try {
+  return { error: 'Not implemented' };
+  /*try {
     if (force !== true) {
       const file = getFile('./files/arstiderna.json');
       if (file.date === m.format('YYYY-MM-DD')) {
@@ -353,6 +350,15 @@ const getÅrstiderna = async force => {
       }
     }
 
+    
+    const result = await fetch('http://dockanshamnkrog.se/lunchmeny/');
+    const body = await result.text();
+    const $ = cheerio.load(body);
+
+    let weekNode = $()
+    
+
+    
     const result = await fetch('http://arstidernabythesea.se/lunch/');
     const body = await result.text();
     const $ = cheerio.load(body);
@@ -371,6 +377,7 @@ const getÅrstiderna = async force => {
       answer.push(current.text().slice(0, current.text().lastIndexOf(' ')).trim());
       current = current.next();
     }
+    
 
     
     fs.writeFile('./files/arstiderna.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
@@ -378,13 +385,19 @@ const getÅrstiderna = async force => {
     });
 
     return answer;
+    
+    return null;
   } catch (err) {
     console.log(err);
     return { error: err.toString() };
-  }
+  }*/
 };
 
-const getVarvsgatan = async force => null;
+const getVarvsgatan = async force => ({ error: 'Not implemented' });
+
+const getThaisushiforyou = async force => ({ error: 'Not implemented' });
+
+const getCurryrepublic = async force => ({ error: 'Meny saknas'});
 
 app.get('/scrape', async (req, res, next) => {
   const force = req.query.forceAll === 'true';
@@ -398,8 +411,10 @@ app.get('/scrape', async (req, res, next) => {
     getVariation(force),
     getP2(force),
     getGlasklart(force),
-    getÅrstiderna(force),
-    getVarvsgatan(force)
+    getDockanshamnkrog(force),
+    getVarvsgatan(force),
+    getThaisushiforyou(force),
+    getCurryrepublic(force)
   ]);
   const answer = { 
     miamarias: results[0],
@@ -410,8 +425,10 @@ app.get('/scrape', async (req, res, next) => {
     variation: results[5],
     p2: results[6],
     glasklart: results[7],
-    arstiderna: results[8],
-    varvsgatan: results[9]
+    dockanshamnkrog: results[8],
+    varvsgatan: results[9],
+    thaisushiforyou: results[10],
+    curryrepublic: results[11]
   };
 
   res.send(answer);
