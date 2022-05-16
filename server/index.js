@@ -17,7 +17,7 @@ app.use(useragent.express());
 
 app.use('/*', (req, res, next) => {
   if (req.useragent.browser === 'IE') {
-    res.send('Please use an actual browser.').status(400);
+    res.send('Please use a real browser..').status(400);
   } else {
     next();
   }
@@ -40,6 +40,7 @@ const getFile = path => {
 
 const getMiamarias = async force => {
   const m = moment();
+  const answer = { name: 'miamarias', data: null };
   try {
     if (force !== true) {
       const file = getFile('./files/miamarias.json');
@@ -62,7 +63,7 @@ const getMiamarias = async force => {
     if (!node) throw new Error('Wrong day');
 
     const parse = $(node.parentNode).find('span').map((_, el) => $(el).text().trim()).toArray().filter(x => !!x).filter(x => !x.endsWith(' kr'));
-    const answer = [
+    answer.data = [
       { title: 'Fisk', description: parse[0] },
       { title: 'Kött', description: parse[1] },
       { title: 'Veg', description: parse[2] }
@@ -75,12 +76,13 @@ const getMiamarias = async force => {
     return answer;
   } catch (err) {
     console.log(err);
-    return { error: err.toString() };
+    return { name: answer.name, data: { error: err.toString() } };
   }
 };
 
 const getSpill = async force => {
   const m = moment();
+  const answer = { name: 'spill', data: null };
   try {
     if (force !== true) {
       const file = getFile('./files/spill.json');
@@ -98,7 +100,7 @@ const getSpill = async force => {
 
     const text = node.slice(node.indexOf(m.format('D/M')) + m.format('D/M').length).trim(); // Remove up to and including date from string
     //const answer = text.split(/\s{2,}/); // Split on 2 or more blankspaces
-    const answer = text.split('<br>').filter(el => el !== '').map(el => el.trim()); // Split on breaklines, remove empty results and trim the rest
+    answer.data = text.split('<br>').filter(el => el !== '').map(el => el.trim()); // Split on breaklines, remove empty results and trim the rest
     
     fs.writeFile('./files/spill.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
@@ -107,12 +109,14 @@ const getSpill = async force => {
     return answer;
   } catch (err) {
     console.log(err);
-    return { error: err.toString() };
+    return { name: answer.name, data: { error: err.toString() } };
   }
 };
 
 const getDocpiazza = async force => {
   const m = moment();
+  const enM = moment().locale('en');
+  const answer = { name: 'docpiazza', data: [] };
   try {
     if (force !== true) {
       const file = getFile('./files/docpiazza.json');
@@ -121,27 +125,23 @@ const getDocpiazza = async force => {
       }
     }
 
-    const result = await fetch('http://malmo.kyparn.se/doc-piazza');
+    const result = await fetch('https://kyparn.se/ort/malmo/doc-piazza');
     const body = await result.text();
     const $ = cheerio.load(body);
 
-    const headers = $('[id^=lunch] div header small');
-    const node = $('[id^=lunch] div ul').toArray();
+    const headers = $('div.restaurang-content h2.rubrik');
 
-    if(headers.length < 1) throw new Error('Parsing failed');
-    if($(headers[1].firstChild).text().toLowerCase() !== m.format('dddd')) throw new Error('Wrong day');
+    if (headers.length < 1) throw new Error('Parsing failed');
+    if (!$(headers[0]).text().endsWith(m.week())) throw new Error('Wrong week');
 
-    const answer = [];
-    node.forEach((el, i) => {
-      const titles = $(el).find('li div p strong');
-      const descriptions = $(el).find('li div div p');
-      let content = [];
-      if (titles.length !== descriptions.length) throw new Error('Parsing failed');
-      for (let j = 0; j < titles.length; j++) {
-        content[j] = { title: $(titles[j]).text().trim(), description: $(descriptions[j]).text().trim() };
-      }
-      answer[i] = { header: $(headers[i + 1].firstChild).text(), contents: content };
-    });
+
+    let weekday = moment.localeData('en').weekdays()[enM.weekday()];
+    const titles = $(`div.${weekday.toLowerCase()} h3.rubrik`)
+    const descriptions = $(`div.${weekday.toLowerCase()} p.beskrivning`).toArray();
+
+    if (titles.length !== descriptions.length) throw new Error('Parsing failed');
+
+    answer.data = titles.map((i, el) => ({ title: $(descriptions[i]).text(), description: $(el).text() })).toArray(); // Yes, title and description is reversed
 
     fs.writeFile('./files/docpiazza.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
@@ -150,12 +150,13 @@ const getDocpiazza = async force => {
     return answer;
   } catch (err) {
     console.log(err);
-    return { error: err.toString() };
+    return { name: answer.name, data: { error: err.toString() } };
   }
 };
 
 const getKolga = async force => {
   const m = moment();
+  const answer = { name: 'kolga', data: null };
   try {
     if (force !== true) {
       const file = getFile('./files/kolga.json');
@@ -173,7 +174,7 @@ const getKolga = async force => {
     if (header.length === 0) throw new Error('Wrong day');
 
     const content = $(header).parents('thead').siblings('tbody')[0];
-    const answer = $(content).find('.td_title').map((_, el) => $(el).text().trim()).get();
+    answer.data = $(content).find('.td_title').map((_, el) => $(el).text().trim()).get();
 
     fs.writeFile('./files/kolga.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
@@ -182,12 +183,13 @@ const getKolga = async force => {
     return answer;
   } catch (err) {
     console.log(err);
-    return { error: err.toString() };
+    return { name: answer.name, data: { error: err.toString() } };
   }
 };
 
 const getNamdo = async force => {
   const m = moment();
+  const answer = { name: 'namdo', data: null };
   try {
     if (force !== true) {
       const file = getFile('./files/namdo.json');
@@ -207,9 +209,9 @@ const getNamdo = async force => {
     const descriptions = $(node).find('.fdm-item-content p');
     if (titles.length !== descriptions.length) throw new Error('Parsing length mismatch!');
     
-    const answer = [];
+    answer.data = [];
     titles.each((i, el) => {
-      answer[i] = { title: $(el).text(), description: $(descriptions[i]).text() };
+      answer.data[i] = { title: $(el).text(), description: $(descriptions[i]).text() };
     });
 
     fs.writeFile('./files/namdo.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
@@ -219,12 +221,13 @@ const getNamdo = async force => {
     return answer;
   } catch (err) {
     console.log(err);
-    return { error: err.toString() };
+    return { name: answer.name, data: { error: err.toString() } };
   }
 };
 
 const getVariation = async force => {
   const m = moment();
+  const answer = { name: 'variation', data: null };
   try {
     if (force !== true) {
       const file = getFile('./files/variation.json');
@@ -237,7 +240,7 @@ const getVariation = async force => {
     if (!result.ok) throw new Error('Menu not found for current week');
 
     const loadingTask = pdfjslib.getDocument(await result.arrayBuffer());
-    const answer = await loadingTask.promise.then(async doc => {
+    answer.data = await loadingTask.promise.then(async doc => {
       const page = await doc.getPage(1);
       const textContent = await page.getTextContent();
       const text = textContent.items.filter(val => val.str.trim() !== '').map(val => val.str).join('');
@@ -263,12 +266,13 @@ const getVariation = async force => {
     return answer;
   } catch (err) {
     console.log(err);
-    return { error: err.toString() };
+    return { name: answer.name, data: { error: err.toString() } };
   }
 };
 
 const getP2 = async force => {
   const m = moment();
+  const answer = { name: 'p2', data: null };
   try {
     if (force !== true) {
       const file = getFile('./files/p2.json');
@@ -287,7 +291,7 @@ const getP2 = async force => {
     if (node.length === 0) throw new Error('Wrong day');
     const courses = $(node).find('tr');
     
-    const answer = courses.map((_, el) => {
+    answer.data = courses.map((_, el) => {
       const arr = $(el).find('p').map((i, child) => $(child).text()).get();
       if (arr.length !== 3) throw new Error('Parsing failed');
       return { title: arr[0], description: arr[1] };
@@ -300,12 +304,13 @@ const getP2 = async force => {
     return answer;
   } catch (err) {
     console.log(err);
-    return { error: err.toString() };
+    return { name: answer.name, data: { error: err.toString() } };
   }
 };
 
 const getGlasklart = async force => {
   const m = moment();
+  const answer = { name: 'glasklart', data: null };
   try {
     if (force !== true) {
       const file = getFile('./files/glasklart.json');
@@ -327,7 +332,7 @@ const getGlasklart = async force => {
 
     const vegNode = $(h4[h4.length - 1]);
 
-    const answer = [
+    answer.data = [
       { title: '', description: todayNode.next().text() },
       { title: vegNode.text(), description: vegNode.next().text() }
     ];
@@ -339,12 +344,13 @@ const getGlasklart = async force => {
     return answer;
   } catch (err) {
     console.log(err);
-    return { error: err.toString() };
+    return { name: answer.name, data: { error: err.toString() } };
   }
 };
 
 const getÅrstiderna = async force => {
   const m = moment();
+  const answer = { name: 'arstiderna', data: null };
   try {
     if (force !== true) {
       const file = getFile('./files/arstiderna.json');
@@ -365,14 +371,13 @@ const getÅrstiderna = async force => {
     const todayNode = weekNode.parent().siblings(`:contains(${today})`);
     if (todayNode.length !== 1) throw new Error('Wrong day!');
 
-    const answer = [];
+    answer.data = [];
     let current = todayNode.next();
     while(current.text().toLowerCase() !== tomorrow && current.text().trim() !== '') {
-      answer.push(current.text().slice(0, current.text().lastIndexOf(' ')).trim());
+      answer.data.push(current.text().slice(0, current.text().lastIndexOf(' ')).trim());
       current = current.next();
     }
 
-    
     fs.writeFile('./files/arstiderna.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
     });
@@ -380,16 +385,20 @@ const getÅrstiderna = async force => {
     return answer;
   } catch (err) {
     console.log(err);
-    return { error: err.toString() };
+    return { name: answer.name, data: { error: err.toString() } };
   }
 };
 
-const getVarvsgatan = async force => null;
+const getStoraVarvsgatan = async force => ({ name: 'storaVarvsgatan', data: { error: 'Not implemented' } });
+
+const getCurryRepublik = async force => ({ name: 'curryRepublik', data: { error: 'Not implemented' } });
+
+const getThaiSushi = async force => ({ name: 'thaiSushi', data: { error: 'Not implemented' } });
 
 app.get('/scrape', async (req, res, next) => {
   const force = req.query.forceAll === 'true';
 
-  const results = await Promise.all([
+  const answer = (await Promise.all([
     getMiamarias(force),
     getSpill(force),
     getDocpiazza(force),
@@ -399,20 +408,13 @@ app.get('/scrape', async (req, res, next) => {
     getP2(force),
     getGlasklart(force),
     getÅrstiderna(force),
-    getVarvsgatan(force)
-  ]);
-  const answer = { 
-    miamarias: results[0],
-    spill: results[1],
-    docpiazza: results[2],
-    kolga: results[3],
-    namdo: results[4],
-    variation: results[5],
-    p2: results[6],
-    glasklart: results[7],
-    arstiderna: results[8],
-    varvsgatan: results[9]
-  };
+    getStoraVarvsgatan(force),
+    getCurryRepublik(force),
+    getThaiSushi(force)
+  ])).reduce((obj, curr) => {
+    obj[curr.name] = curr.data;
+    return obj;
+  }, {});
 
   res.send(answer);
 });

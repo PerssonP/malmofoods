@@ -3,7 +3,7 @@ import { CssBaseline, makeStyles, Grid, Button } from '@material-ui/core';
 import GoogleMapReact from 'google-map-react';
 
 import Pin from './components/Pin';
-import { ArrayMenu, SimpleArrayMenu, ObjectMenu, SegmentedMenu } from './components/Menus';
+import { ArrayMenu, SimpleArrayMenu, ObjectMenu, SegmentedMenu, HyperlinkMenu } from './components/Menus';
 
 import miamariasIcon from './images/miamarias.png';
 import spillIcon from './images/spill.png';
@@ -16,6 +16,7 @@ import lolIcon from './images/lol.png';
 import vhpIcon from './images/vhp.png';
 import lazizaIcon from './images/laziza.webp';
 import thaiSushiIcon from './images/thaisushi.png';
+import mrsSaigonIcon from './images/mrsSaigon.png';
 
 const useStyles = makeStyles(theme => ({
   selected: {
@@ -26,13 +27,13 @@ const useStyles = makeStyles(theme => ({
   },
   '@keyframes pulse': {
     '0%': {
-      boxShadow: '0 0 3pt 2pt rgba(230,0,0, 0)'
+      boxShadow: '0 0 3pt 2pt rgba(230, 0, 0, 0)'
     },
     '50%': {
-      boxShadow: '0 0 3pt 2pt rgba(230,0,0, 0.75)'
+      boxShadow: '0 0 3pt 2pt rgba(230, 0, 0, 0.75)'
     },
     '100%': {
-      boxShadow: '0 0 3pt 2pt rgba(230,0,0, 0)'
+      boxShadow: '0 0 3pt 2pt rgba(230, 0, 0, 0)'
     }
   },
   item: {
@@ -59,7 +60,7 @@ const App = () => {
       ref: useRef(null)
     },
     docPiazza: {
-      text: 'Doc Piazza',
+      name: 'Doc Piazza',
       lat: 55.614333,
       lng: 12.989664,
       ref: useRef(null)
@@ -135,6 +136,12 @@ const App = () => {
       lat: 55.614201,
       lng: 12.981888,
       ref: useRef(null)
+    },
+    mrsSaigon: {
+      name: 'Mrs Saigon',
+      lat: 55.603335,
+      lng: 12.998333,
+      ref: useRef(null)
     }
   };
 
@@ -161,7 +168,7 @@ const App = () => {
 
     el.scrollIntoView({ behavior: 'smooth' });
   };
-  
+
   return (
     <>
       <CssBaseline />
@@ -174,6 +181,7 @@ const App = () => {
           >
             {Object.values(pins).map(value => (
               <Pin
+                key={value.name}
                 text={value.name}
                 lat={value.lat}
                 lng={value.lng}
@@ -190,7 +198,7 @@ const App = () => {
             <SimpleArrayMenu header={'Spill'} url={'https://restaurangspill.se/'} icon={spillIcon} data={data?.spill} ref={pins.spill.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <SegmentedMenu header={'Doc Piazza'} url={'http://malmo.kyparn.se/doc-piazza'} icon={docpiazzaIcon} data={data?.docpiazza} ref={pins.docPiazza.ref} />
+            <ArrayMenu header={'Doc Piazza'} url={'https://kyparn.se/ort/malmo/doc-piazza'} icon={docpiazzaIcon} data={data?.docpiazza} ref={pins.docPiazza.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
             <SimpleArrayMenu header={'Kolga'} url={'https://kolga.gastrogate.com/lunch/'} icon={kolgaIcon} data={data?.kolga} ref={pins.kolga.ref} />
@@ -208,10 +216,10 @@ const App = () => {
             <SimpleArrayMenu header={'Årstiderna by the sea'} url={'http://arstidernabythesea.se/lunch/'} icon={''} data={data?.arstiderna} ref={pins.arstiderna.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <SimpleArrayMenu header={'Curry Republik'} url={'https://www.wokkitchen.se/curry_meny.html'} icon={lolIcon} data={null} ref={pins.curryRepublik.ref} />
+            <SimpleArrayMenu header={'Curry Republik'} url={'https://www.wokkitchen.se/curry_meny.html'} icon={lolIcon} data={data?.curryRepublik} ref={pins.curryRepublik.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <ArrayMenu header={'Nam Do'} url={'http://namdo.se/meny/'} icon={''} data={data?.namdo} ref={pins.variation.ref} />
+            <ArrayMenu header={'Nam Do'} url={'http://namdo.se/meny/'} icon={''} data={data?.namdo} ref={pins.namndo.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
             <SimpleArrayMenu header={'Västra Hamnens Pizzeria'} url={'http://www.vhpizzeria.se/'} icon={vhpIcon} data={['Pizzabuffé']} ref={pins.vhp.ref} />
@@ -220,13 +228,16 @@ const App = () => {
             <SimpleArrayMenu header={'Dockside Burgers'} url={'https://www.docksideburgers.se/'} icon={''} data={['Burgare', 'Månadens burgare']} ref={pins.dockside.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <ArrayMenu header={'Stora Varvsgatan 6'} url={'https://www.storavarvsgatan6.se/projects.html'} icon={''} data={data?.varvsgatan} ref={pins.varvsgatan.ref} />
+            <ArrayMenu header={'Stora Varvsgatan 6'} url={'https://www.storavarvsgatan6.se/projects.html'} icon={''} data={data?.storaVarvsgatan} ref={pins.varvsgatan.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
             <SimpleArrayMenu header={'Laziza Dockan'} url={'https://www.laziza.se/restaurang/'} icon={lazizaIcon} data={['Libanesisk buffé']} ref={pins.laziza.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <SimpleArrayMenu header={'Thai n Sushi for you'} url={'https://thainsushiforyou.se/'} icon={thaiSushiIcon} data={null} ref={pins.thaiSushiForYou.ref} />
+            <SimpleArrayMenu header={'Thai n Sushi for you'} url={'https://thainsushiforyou.se/'} icon={thaiSushiIcon} data={data?.thaiSushi} ref={pins.thaiSushiForYou.ref} />
+          </Grid>
+          <Grid item xs={2} className={classes.item}>
+            <HyperlinkMenu header={'Mrs Saigon'} url={'https://www.mrs-saigon.se/'} icon={mrsSaigonIcon} href={'https://www.mrs-saigon.se/menyer'} ref={pins.mrsSaigon.ref} />
           </Grid>
         </Grid>
         <Grid container justify='flex-end'>
