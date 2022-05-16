@@ -1,6 +1,6 @@
 {
   "name": "malmofoods",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "An app to find foods in Malmö. Hopefully.",
   "main": "index.js",
   "scripts": {
