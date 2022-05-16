@@ -1,23 +1,27 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "a3f9713d978a5ba26016cd53a7d92e13",
+    "revision": "fdb5275185e16be9adea729dcd2abc8e",
     "url": "/index.html"
   },
   {
-    "revision": "74062110ebe78804b3e6",
-    "url": "/static/js/2.91d5f032.chunk.js"
+    "revision": "0f5139337ad6a6229a2c",
+    "url": "/static/js/2.879188a8.chunk.js"
   },
   {
     "revision": "52f2b118afdffb7f849cd417ea92d7d5",
-    "url": "/static/js/2.91d5f032.chunk.js.LICENSE.txt"
+    "url": "/static/js/2.879188a8.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "c224078d47e3e6b5b864",
-    "url": "/static/js/main.2b9edfa4.chunk.js"
+    "revision": "1d0642b26ed1404ebaf1",
+    "url": "/static/js/main.3dd3fdb7.chunk.js"
   },
   {
     "revision": "cda345fb50b7e11c0025",
     "url": "/static/js/runtime-main.844668cf.js"
+  },
+  {
+    "revision": "c1f03fd8037c47838845097fed39d414",
+    "url": "/static/media/dockanshamnkrog.c1f03fd8.png"
   },
   {
     "revision": "8b7a8245b1fcfa28e496991a71f64066",

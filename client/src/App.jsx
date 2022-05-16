@@ -17,6 +17,7 @@ import vhpIcon from './images/vhp.png';
 import lazizaIcon from './images/laziza.webp';
 import thaiSushiIcon from './images/thaisushi.png';
 import mrsSaigonIcon from './images/mrsSaigon.png';
+import dockanshamnkrogIcon from './images/dockanshamnkrog.png';
 
 const useStyles = makeStyles(theme => ({
   selected: {
@@ -95,8 +96,8 @@ const App = () => {
       lng: 12.990561,
       ref: useRef(null)
     },
-    arstiderna: {
-      name: 'Årstiderna by the sea',
+    dockanshamnkrog: {
+      name: 'Dockans Hamnkrog',
       lat: 55.615186,
       lng: 12.988838,
       ref: useRef(null)
@@ -131,7 +132,7 @@ const App = () => {
       lng: 12.988982,
       ref: useRef(null)
     },
-    thaiSushiForYou: {
+    thaisushiforyou: {
       name: 'Thai n Sushi for you',
       lat: 55.614201,
       lng: 12.981888,
@@ -156,8 +157,9 @@ const App = () => {
     getData();
   }, []);
 
-  const recheck = async () => {
-    getData(true);
+  const recheck = async (force) => {
+    setData(null);
+    getData(force);
   };
 
   const showSelected = el => {
@@ -213,10 +215,10 @@ const App = () => {
             <ArrayMenu header={'Glasklart'} url={'https://glasklart.eu/sv/lunch/'} icon={glasklartIcon} data={data?.glasklart} ref={pins.glasklart.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <SimpleArrayMenu header={'Årstiderna by the sea'} url={'http://arstidernabythesea.se/lunch/'} icon={''} data={data?.arstiderna} ref={pins.arstiderna.ref} />
+            <SimpleArrayMenu header={'Dockans Hamnkrog'} url={'http://dockanshamnkrog.se/lunchmeny/'} icon={dockanshamnkrogIcon} data={data?.dockanshamnkrog} ref={pins.dockanshamnkrog.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <SimpleArrayMenu header={'Curry Republik'} url={'https://www.wokkitchen.se/curry_meny.html'} icon={lolIcon} data={data?.curryRepublik} ref={pins.curryRepublik.ref} />
+            <SimpleArrayMenu header={'Curry Republik'} url={'https://www.wokkitchen.se/curry_meny.html'} icon={lolIcon} data={data?.curryrepublic} ref={pins.curryRepublik.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
             <ArrayMenu header={'Nam Do'} url={'http://namdo.se/meny/'} icon={''} data={data?.namdo} ref={pins.namndo.ref} />
@@ -228,20 +230,21 @@ const App = () => {
             <SimpleArrayMenu header={'Dockside Burgers'} url={'https://www.docksideburgers.se/'} icon={''} data={['Burgare', 'Månadens burgare']} ref={pins.dockside.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <ArrayMenu header={'Stora Varvsgatan 6'} url={'https://www.storavarvsgatan6.se/projects.html'} icon={''} data={data?.storaVarvsgatan} ref={pins.varvsgatan.ref} />
+            <ArrayMenu header={'Stora Varvsgatan 6'} url={'https://storavarvsgatan6.se/meny.html'} icon={''} data={data?.varvsgatan} ref={pins.varvsgatan.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
             <SimpleArrayMenu header={'Laziza Dockan'} url={'https://www.laziza.se/restaurang/'} icon={lazizaIcon} data={['Libanesisk buffé']} ref={pins.laziza.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <SimpleArrayMenu header={'Thai n Sushi for you'} url={'https://thainsushiforyou.se/'} icon={thaiSushiIcon} data={data?.thaiSushi} ref={pins.thaiSushiForYou.ref} />
+            <SimpleArrayMenu header={'Thai n Sushi for you'} url={'https://vhamnen.thainsushiforyou.se/'} icon={thaiSushiIcon} data={data?.thaisushiforyou} ref={pins.thaisushiforyou.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
             <HyperlinkMenu header={'Mrs Saigon'} url={'https://www.mrs-saigon.se/'} icon={mrsSaigonIcon} href={'https://www.mrs-saigon.se/menyer'} ref={pins.mrsSaigon.ref} />
           </Grid>
         </Grid>
         <Grid container justify='flex-end'>
-          <Button onClick={recheck}>Force recheck</Button>
+          <Button onClick={() => recheck(false)}>Recheck</Button>
+          <Button onClick={() => recheck(true)}>Recheck (force)</Button>
         </Grid>
       </main>
     </>
