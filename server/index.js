@@ -421,6 +421,8 @@ app.get('/scrape', async (req, res, next) => {
     return obj;
   }, {});
 
+  // TODO: Oops I broke it. Add .name to all functions
+
   res.send(answer);
 });
 
