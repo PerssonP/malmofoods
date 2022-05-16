@@ -99,7 +99,7 @@ const getSpill = async force => {
     let currentDay = node.text().split(',')[1].trim();
     if (currentDay != m.format('DD/M')) throw new Error('Wrong day');
     
-    let answer = $(node).siblings().children().map((_, el) => $(el).text().trim()).toArray().filter(el => el != '');
+    answer.data = $(node).siblings().children().map((_, el) => $(el).text().trim()).toArray().filter(el => el != '');
     
     fs.writeFile('./files/spill.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
@@ -114,9 +114,9 @@ const getSpill = async force => {
 
 const getDocpiazza = async force => {
   const m = moment();
+  const answer = { name: 'docpiazza', data: { error: 'Meny saknas' } };
 
-  return { error: 'Meny saknas' };
-  //return [[{"header": "", content: []}]];
+  return answer;
   /*try {
     if (force !== true) {
       const file = getFile('./files/docpiazza.json');
@@ -207,8 +207,6 @@ const getNamdo = async force => {
 
     const titles = $(node).find('.fdm-item-title');
     const descriptions = $(node).find('.fdm-item-content');
-    console.log(titles.length);
-    console.log(descriptions.length);
     if (titles.length !== descriptions.length) throw new Error('Parsing length mismatch!');
     
     answer.data = [];
@@ -248,8 +246,8 @@ const getVariation = async force => {
     if (!$(node)[0]) throw new Error('Wrong day!');
     
     node = $(node.parents()[2]).children()[2];
-    let answer = $(node).find('li').map((_, el) => $(el).text()).toArray();
-    answer = ['Dagens buffé:', ...answer];
+    let meals = $(node).find('li').map((_, el) => $(el).text()).toArray();
+    answer.data = ['Dagens buffé:', ...meals];
     
     fs.writeFile('./files/variation.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
@@ -302,7 +300,8 @@ const getP2 = async force => {
 
 const getGlasklart = async force => {
   const m = moment();
-  return { error: 'Tillsvidare håller lunchrestaurangen stängt.' };
+  const answer = { name: 'glasklart', data: { error: 'Tillsvidare håller lunchrestaurangen stängt.' } };
+  return answer;
   /*
   try {
     if (force !== true) {
@@ -343,7 +342,8 @@ const getGlasklart = async force => {
 
 const getDockanshamnkrog = async force => {
   const m = moment();
-  return { error: 'Not implemented' };
+  const answer = { name: 'dockanshamnkrog', data: { error: 'Not implemented' } };
+  return answer;
   /*try {
     if (force !== true) {
       const file = getFile('./files/arstiderna.json');
@@ -394,11 +394,11 @@ const getDockanshamnkrog = async force => {
   }*/
 };
 
-const getVarvsgatan = async force => ({ error: 'Not implemented' });
+const getStoravarvsgatan = async force => ({ name: 'storavarvsgatan', data: { error: 'Not implemented' } });
 
-const getThaisushiforyou = async force => ({ error: 'Not implemented' });
+const getThaisushiforyou = async force => ({ name: 'thaisushiforyou', data: { error: 'Not implemented' } });
 
-const getCurryrepublic = async force => ({ error: 'Meny saknas'});
+const getCurryrepublic = async force => ({ name: 'curryrepublik', data: { error: 'Not implemented' } });
 
 app.get('/scrape', async (req, res, next) => {
   const force = req.query.forceAll === 'true';
@@ -413,15 +413,13 @@ app.get('/scrape', async (req, res, next) => {
     getP2(force),
     getGlasklart(force),
     getDockanshamnkrog(force),
-    getVarvsgatan(force),
+    getStoravarvsgatan(force),
     getThaisushiforyou(force),
     getCurryrepublic(force)
   ])).reduce((obj, curr) => {
     obj[curr.name] = curr.data;
     return obj;
   }, {});
-
-  // TODO: Oops I broke it. Add .name to all functions
 
   res.send(answer);
 });

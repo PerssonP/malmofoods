@@ -102,7 +102,7 @@ const App = () => {
       lng: 12.988838,
       ref: useRef(null)
     },
-    curryRepublik: {
+    curryrepublik: {
       name: 'Curry Republik',
       lat: 55.611586,
       lng: 12.980412,
@@ -120,7 +120,7 @@ const App = () => {
       lng: 12.990020,
       ref: useRef(null)
     },
-    varvsgatan: {
+    storavarvsgatan: {
       name: 'Stora Varvsgatan 6',
       lat: 55.612501,
       lng: 12.991662,
@@ -218,7 +218,7 @@ const App = () => {
             <SimpleArrayMenu header={'Dockans Hamnkrog'} url={'http://dockanshamnkrog.se/lunchmeny/'} icon={dockanshamnkrogIcon} data={data?.dockanshamnkrog} ref={pins.dockanshamnkrog.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <SimpleArrayMenu header={'Curry Republik'} url={'https://www.wokkitchen.se/curry_meny.html'} icon={lolIcon} data={data?.curryrepublic} ref={pins.curryRepublik.ref} />
+            <SimpleArrayMenu header={'Curry Republik'} url={'https://www.wokkitchen.se/curry_meny.html'} icon={lolIcon} data={data?.curryrepublik} ref={pins.curryrepublik.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
             <ArrayMenu header={'Nam Do'} url={'http://namdo.se/meny/'} icon={''} data={data?.namdo} ref={pins.namndo.ref} />
@@ -230,7 +230,7 @@ const App = () => {
             <SimpleArrayMenu header={'Dockside Burgers'} url={'https://www.docksideburgers.se/'} icon={''} data={['Burgare', 'Månadens burgare']} ref={pins.dockside.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <ArrayMenu header={'Stora Varvsgatan 6'} url={'https://storavarvsgatan6.se/meny.html'} icon={''} data={data?.varvsgatan} ref={pins.varvsgatan.ref} />
+            <ArrayMenu header={'Stora Varvsgatan 6'} url={'https://storavarvsgatan6.se/meny.html'} icon={''} data={data?.storavarvsgatan} ref={pins.storavarvsgatan.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
             <SimpleArrayMenu header={'Laziza Dockan'} url={'https://www.laziza.se/restaurang/'} icon={lazizaIcon} data={['Libanesisk buffé']} ref={pins.laziza.ref} />
