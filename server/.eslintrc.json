@@ -8,6 +8,9 @@
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
   },
+  "parserOptions": {
+    "sourceType": "module"
+  },
   "rules": {
     "no-unused-vars": [
       "warn",

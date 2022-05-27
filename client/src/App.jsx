@@ -200,7 +200,7 @@ const App = () => {
             <SimpleArrayMenu header={'Spill'} url={'https://restaurangspill.se/'} icon={spillIcon} data={data?.spill} ref={pins.spill.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
-            <ArrayMenu header={'Doc Piazza'} url={'https://kyparn.se/ort/malmo/doc-piazza'} icon={docpiazzaIcon} data={data?.docpiazza} ref={pins.docPiazza.ref} />
+            <ArrayMenu header={'Doc Piazza'} url={'https://www.facebook.com/docpiazza'} icon={docpiazzaIcon} data={data?.docpiazza} ref={pins.docPiazza.ref} />
           </Grid>
           <Grid item xs={2} className={classes.item}>
             <SimpleArrayMenu header={'Kolga'} url={'https://kolga.gastrogate.com/lunch/'} icon={kolgaIcon} data={data?.kolga} ref={pins.kolga.ref} />

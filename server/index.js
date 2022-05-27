@@ -1,13 +1,12 @@
-const express = require('express');
-const cheerio = require('cheerio');
-const fetch = require('node-fetch');
-const moment = require('moment');
-const compression = require('compression');
-const cors = require('cors');
-const path = require('path');
-const pdfjslib = require('pdfjs-dist');
-const fs = require('fs');
-const useragent = require('express-useragent');
+import express from 'express';
+import cheerio from 'cheerio';
+import fetch from "node-fetch";
+import moment from "moment";
+import compression from "compression";
+import cors from "cors";
+import path from "path";
+import fs from "fs";
+import useragent from 'express-useragent';
 
 const app = express();
 
@@ -114,10 +113,10 @@ const getSpill = async force => {
 
 const getDocpiazza = async force => {
   const m = moment();
-  const answer = { name: 'docpiazza', data: { error: 'Meny saknas' } };
-
-  return answer;
-  /*try {
+  const answer = { name: 'docpiazza', data: null };
+  try {
+    throw new Error('Meny saknas');
+    /*
     if (force !== true) {
       const file = getFile('./files/docpiazza.json');
       if (file.date === m.format('YYYY-MM-DD')) {
@@ -147,11 +146,11 @@ const getDocpiazza = async force => {
       if (err) throw err;
     });
 
-    return answer;
+    return answer;*/
   } catch (err) {
     console.log(err);
-    return { error: err.toString() };
-  }*/
+    return { name: answer.name, data: { error: err.toString() } };
+  }
 };
 
 const getKolga = async force => {
@@ -336,15 +335,16 @@ const getGlasklart = async force => {
     return answer;
   } catch (err) {
     console.log(err);
-    return { error: err.toString() };
+    return { name: answer.name, data: { error: err.toString() } };
   }*/
 };
 
 const getDockanshamnkrog = async force => {
   const m = moment();
-  const answer = { name: 'dockanshamnkrog', data: { error: 'Not implemented' } };
-  return answer;
-  /*try {
+  const answer = { name: 'dockanshamnkrog', data: null };
+  try {
+    throw new Error('todo');
+    /*
     if (force !== true) {
       const file = getFile('./files/arstiderna.json');
       if (file.date === m.format('YYYY-MM-DD')) {
@@ -385,13 +385,11 @@ const getDockanshamnkrog = async force => {
       if (err) throw err;
     });
 
-    return answer;
-    
-    return null;
+    return answer;*/
   } catch (err) {
     console.log(err);
-    return { error: err.toString() };
-  }*/
+    return { name: answer.name, data: { error: err.toString() } };
+  }
 };
 
 const getStoravarvsgatan = async force => ({ name: 'storavarvsgatan', data: { error: 'Not implemented' } });
