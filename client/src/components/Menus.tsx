@@ -1,12 +1,12 @@
 import React, { Fragment } from 'react';
-import { Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Divider, Link } from '@material-ui/core';
+import { Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Divider, Link } from '@mui/material';
 
 const Menu = React.forwardRef(({ header, url, icon, children }, ref) => (
   <Paper ref={ref}>
     <List>
       <ListItem>
         <ListItemAvatar>
-         <Avatar src={icon} />
+          <Avatar src={icon || ''} />
         </ListItemAvatar>
         <Link href={url} color='inherit'>
           <ListItemText primary={header} />
@@ -16,9 +16,15 @@ const Menu = React.forwardRef(({ header, url, icon, children }, ref) => (
     </List>
   </Paper>
 ));
+Menu.displayName = 'Menu';
 
 export const SimpleArrayMenu = React.forwardRef(({ header, url, icon, data }, ref) => (
-  <Menu header={header} url={url} icon={icon} ref={ref}>
+  <Menu
+    header={header}
+    url={url}
+    icon={icon}
+    ref={ref}
+  >
     {data == null || data.error !== undefined ?
       <ListItem>
         {data?.error ?? 'Loading...'}
@@ -31,12 +37,18 @@ export const SimpleArrayMenu = React.forwardRef(({ header, url, icon, data }, re
           </ListItem>
         ))}
       </>
-    } 
+    }
   </Menu>
 ));
+SimpleArrayMenu.displayName = 'SimpleArrayMenu';
 
 export const ArrayMenu = React.forwardRef(({ header, url, icon, data }, ref) => (
-  <Menu header={header} url={url} icon={icon} ref={ref}>
+  <Menu
+    header={header}
+    url={url}
+    icon={icon}
+    ref={ref}
+  >
     {data == null || data.error !== undefined ?
       <ListItem>
         {data?.error ?? 'Loading...'}
@@ -49,12 +61,18 @@ export const ArrayMenu = React.forwardRef(({ header, url, icon, data }, ref) => 
           </ListItem>
         ))}
       </>
-    } 
+    }
   </Menu>
 ));
+ArrayMenu.displayName = 'ArrayMenu';
 
 export const ObjectMenu = React.forwardRef(({ header, url, icon, data }, ref) => (
-  <Menu header={header} url={url} icon={icon} ref={ref}>
+  <Menu
+    header={header}
+    url={url}
+    icon={icon}
+    ref={ref}
+  >
     {data == null || data.error !== undefined ?
       <ListItem>
         {data?.error ?? 'Loading...'}
@@ -67,12 +85,18 @@ export const ObjectMenu = React.forwardRef(({ header, url, icon, data }, ref) =>
           </ListItem>
         ))}
       </>
-    } 
+    }
   </Menu>
 ));
+ObjectMenu.displayName = 'ObjectMenu';
 
 export const SegmentedMenu = React.forwardRef(({ header, url, icon, data }, ref) => (
-  <Menu header={header} url={url} icon={icon} ref={ref}>
+  <Menu
+    header={header}
+    url={url}
+    icon={icon}
+    ref={ref}
+  >
     {data == null || data.error !== undefined ?
       <ListItem>
         {data?.error ?? 'Loading...'}
@@ -94,12 +118,18 @@ export const SegmentedMenu = React.forwardRef(({ header, url, icon, data }, ref)
           </Fragment>
         ))}
       </>
-    } 
+    }
   </Menu>
 ));
+SegmentedMenu.displayName = 'SegmentedMenu';
 
 export const HyperlinkMenu = React.forwardRef(({ header, url, icon, href }, ref) => (
-  <Menu header={header} url={url} icon={icon} ref={ref}>
+  <Menu
+    header={header}
+    url={url}
+    icon={icon}
+    ref={ref}
+  >
     <ListItem>
       <Link href={href}>
         <ListItemText>
@@ -109,3 +139,4 @@ export const HyperlinkMenu = React.forwardRef(({ header, url, icon, href }, ref)
     </ListItem>
   </Menu>
 ));
+HyperlinkMenu.displayName = 'HyperlinkMenu';

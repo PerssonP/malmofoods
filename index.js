@@ -21,7 +21,7 @@ app.use('/*', (req, res, next) => {
   }
 });
 
-app.use(express.static(new URL('./build/', import.meta.url).pathname));
+app.use(express.static(new URL('./dist/', import.meta.url).pathname));
 
 moment.locale('sv'); // Set global locale to Swedish
 
@@ -422,7 +422,7 @@ app.get('/scrape', async (req, res, next) => {
 });
 
 app.get('/*', function (req, res, next) {
-  res.sendFile(new URL('./build/index.html', import.meta.url).pathname);
+  res.sendFile(new URL('./dist/index.html', import.meta.url).pathname);
 });
 
 app.use((err, req, res, next) => {
