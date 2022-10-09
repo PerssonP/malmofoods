@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.js": "/static/js/main.bef53705.js",
+    "static/media/miamarias.png": "/static/media/miamarias.4e41731e8d709e01ecab.png",
+    "static/media/lol.png": "/static/media/lol.7d460621fcd9d1542ab2.png",
+    "static/media/docpiazza.png": "/static/media/docpiazza.bba1b388eed212f7b4ca.png",
+    "static/media/vhp.png": "/static/media/vhp.939f2e320696ea99ba55.png",
+    "static/media/p2.png": "/static/media/p2.b0ec4349ee2634eb0588.png",
+    "static/media/laziza.webp": "/static/media/laziza.00e3597947935e2da84d.webp",
+    "static/media/variation.png": "/static/media/variation.444395ee2f84ce1b5461.png",
+    "static/media/dockanshamnkrog.png": "/static/media/dockanshamnkrog.0fd8057d658a93eef98f.png",
+    "static/media/glasklart.svg": "/static/media/glasklart.e158fb6087de4bd07691bd46825646ef.svg",
+    "index.html": "/index.html",
+    "main.bef53705.js.map": "/static/js/main.bef53705.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.bef53705.js"
+  ]
+}

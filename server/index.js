@@ -1,11 +1,10 @@
 import express from 'express';
 import cheerio from 'cheerio';
-import fetch from "node-fetch";
-import moment from "moment";
-import compression from "compression";
-import cors from "cors";
-import path from "path";
-import fs from "fs";
+import fetch from 'node-fetch';
+import moment from 'moment';
+import compression from 'compression';
+import cors from 'cors';
+import fs from 'fs';
 import useragent from 'express-useragent';
 
 const app = express();
@@ -22,7 +21,7 @@ app.use('/*', (req, res, next) => {
   }
 });
 
-app.use(express.static(path.join(path.resolve(), 'build')));
+app.use(express.static(new URL('./build/', import.meta.url).pathname));
 
 moment.locale('sv'); // Set global locale to Swedish
 
