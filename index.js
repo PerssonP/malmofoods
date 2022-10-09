@@ -434,7 +434,6 @@ app.use((req, res, next) => {
   res.status(404).send({ message: `Route ${req.originalUrl} (${req.method}) not found` });
 });
 
-
 const port = process.env.APP_SERVER_PORT || 8080;
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);

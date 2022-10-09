@@ -1,13 +1,13 @@
 {
   "name": "malmofoods",
-  "version": "1.1.2",
+  "version": "2.0.0",
   "description": "An app to find foods in Malmö. Hopefully.",
   "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "concurrently -n server,client \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "nodemon --trace-warnings index.js",
-    "dev:client": "cd client && npm dev",
+    "dev:client": "cd client && npm run dev",
     "build": "rm -rf build/ && cd client && npm run build && cp -r dist ../",
     "start": "node index.js"
   },

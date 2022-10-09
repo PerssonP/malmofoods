@@ -131,10 +131,10 @@ const App = () => {
   };
 
   const getData = async force => {
-    /*const result = await fetch(`/scrape${force ? '?forceAll=true' : ''}`);
+    const result = await fetch(`/scrape${force ? '?forceAll=true' : ''}`);
     const body = await result.json();
     console.log(body);
-    setData(body);*/
+    setData(body);
   };
 
   useEffect(() => {
