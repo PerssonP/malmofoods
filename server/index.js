@@ -97,9 +97,9 @@ const getSpill = async force => {
     let node = $('#dagens .uppercase');
     let currentDay = node.text().split(',')[1].trim();
     if (currentDay != m.format('DD/M')) throw new Error('Wrong day');
-    
+
     answer.data = $(node).siblings().children().map((_, el) => $(el).text().trim()).toArray().filter(el => el != '');
-    
+
     fs.writeFile('./files/spill.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
     });
@@ -207,7 +207,7 @@ const getNamdo = async force => {
     const titles = $(node).find('.fdm-item-title');
     const descriptions = $(node).find('.fdm-item-content');
     if (titles.length !== descriptions.length) throw new Error('Parsing length mismatch!');
-    
+
     answer.data = [];
     titles.each((i, el) => {
       answer.data[i] = { title: $(el).text(), description: $(descriptions[i]).text() };
@@ -243,11 +243,11 @@ const getVariation = async force => {
 
     let node = $(`h4:contains("${dayOfWeek}")`);
     if (!$(node)[0]) throw new Error('Wrong day!');
-    
+
     node = $(node.parents()[2]).children()[2];
     let meals = $(node).find('li').map((_, el) => $(el).text()).toArray();
     answer.data = ['Dagens buffé:', ...meals];
-    
+
     fs.writeFile('./files/variation.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
     });
@@ -274,12 +274,12 @@ const getP2 = async force => {
     const body = await result.text();
     const $ = cheerio.load(body);
 
-    if($('.week_number').text().split(' ')[1] != m.week()) throw new Error('Wrong week');
+    if ($('.week_number').text().split(' ')[1] != m.week()) throw new Error('Wrong week');
 
     const node = $(`#${m.locale('en').format('dddd').toLowerCase()}`);
     if (node.length === 0) throw new Error('Wrong day');
     const courses = $(node).find('tr');
-    
+
     answer.data = courses.map((_, el) => {
       const arr = $(el).find('p').map((i, child) => $(child).text()).get();
       if (arr.length < 2) throw new Error('Parsing failed');
@@ -423,7 +423,7 @@ app.get('/scrape', async (req, res, next) => {
 });
 
 app.get('/*', function (req, res, next) {
-  res.sendFile(path.join(__dirname, 'build', '../build/index.html'));
+  res.sendFile(new URL('./build/index.html', import.meta.url).pathname);
 });
 
 app.use((err, req, res, next) => {
