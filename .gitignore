@@ -1,5 +1,5 @@
 node_modules
-client/build
-server/files/*
-!server/files/empty.txt
+files/*
+!files/empty.txt
 .env
+dist
