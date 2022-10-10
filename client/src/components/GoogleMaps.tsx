@@ -38,9 +38,10 @@ export const Maps = ({ pins }:  MapsProps) => (
           ]
         }}
       >
+        {/** 
           <InfoBox position={{ lat: () => 55.613306, lng: () => 12.992183,  }}>
             <Pin text='' handleClick={() => ''} />
-          </InfoBox>
+          </InfoBox>*/}
           <Marker
            position={{ lat: 55.612801, lng: 12.988404 }} />
 

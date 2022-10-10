@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv'; 
+dotenv.config();
 import express from 'express';
 import cheerio from 'cheerio';
 import fetch from 'node-fetch';
@@ -400,6 +402,12 @@ const getThaisushiforyou = async force => ({ name: 'thaisushiforyou', data: { er
 
 const getCurryrepublic = async force => ({ name: 'curryrepublik', data: { error: 'Not implemented' } });
 
+const getVhPizzeria = async force => ({ name: 'vhPizzeria', data: { info: ['Pizzabuffé'] } });
+
+const getDocksideBurgers = async force => ({ name: 'docksideburgers', data: { info: ['Burgare', 'Månadens burgare'] } });
+
+const getLaziza = async force => ({ name: 'laziza', data: { info: ['Libanesisk buffé'] } });
+
 app.get('/scrape', async (req, res, next) => {
   const force = req.query.forceAll === 'true';
 
@@ -415,7 +423,10 @@ app.get('/scrape', async (req, res, next) => {
     getDockanshamnkrog(force),
     getStoravarvsgatan(force),
     getThaisushiforyou(force),
-    getCurryrepublic(force)
+    getCurryrepublic(force),
+    getVhPizzeria(force),
+    getDocksideBurgers(force),
+    getLaziza(force)
   ])).reduce((obj, curr) => {
     obj[curr.name] = curr.data;
     return obj;

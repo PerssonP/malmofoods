@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
 }));*/
 
 const App = () => {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<any>(null);
 
   const pins = {
     miamarias: {
@@ -146,7 +146,7 @@ const App = () => {
     getData(force);
   };
 
-  const showSelected = (element) => {
+  const showSelected = (element: any) => {
     //el.classList.toggle(classes.selected);
     setTimeout(() => {
       //el.classList.toggle(classes.selected);
@@ -191,16 +191,16 @@ const App = () => {
             <ArrayMenu header={'Nam Do'} url={'http://namdo.se/meny/'} icon={'/icons/namdo.svg'} data={data?.namdo} ref={pins.namndo.ref} />
           </Grid>
           <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <SimpleArrayMenu header={'Västra Hamnens Pizzeria'} url={'http://www.vhpizzeria.se/'} icon='/icons/vhp.png' data={{ info: ['Pizzabuffé'] }} ref={pins.vhp.ref} />
+            <SimpleArrayMenu header={'Västra Hamnens Pizzeria'} url={'http://www.vhpizzeria.se/'} icon='/icons/vhp.png' data={data?.vhPizzeria} ref={pins.vhp.ref} />
           </Grid>
           <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <SimpleArrayMenu header={'Dockside Burgers'} url={'https://www.docksideburgers.se/'} icon={'/icons/lol.png'} data={{ info: ['Burgare', 'Månadens burgare'] }} ref={pins.dockside.ref} />
+            <SimpleArrayMenu header={'Dockside Burgers'} url={'https://www.docksideburgers.se/'} icon={'/icons/lol.png'} data={data?.docksideburgers} ref={pins.dockside.ref} />
           </Grid>
           <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
             <ArrayMenu header={'Stora Varvsgatan 6'} url={'https://storavarvsgatan6.se/meny.html'} icon={'/icons/lol.png'} data={data?.storavarvsgatan} ref={pins.storavarvsgatan.ref} />
           </Grid>
           <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <SimpleArrayMenu header={'Laziza Dockan'} url={'https://www.laziza.se/restaurang/'} icon='/icons/laziza.webp' data={{ info: ['Libanesisk buffé'] }} ref={pins.laziza.ref} />
+            <SimpleArrayMenu header={'Laziza Dockan'} url={'https://www.laziza.se/restaurang/'} icon='/icons/laziza.webp' data={data?.laziza} ref={pins.laziza.ref} />
           </Grid>
           <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
             <SimpleArrayMenu header={'Thai n Sushi for you'} url={'https://vhamnen.thainsushiforyou.se/'} icon='/icons/thaisushi.png' data={data?.thaisushiforyou} ref={pins.thaisushiforyou.ref} />

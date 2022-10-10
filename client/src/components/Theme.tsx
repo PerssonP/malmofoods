@@ -1,6 +1,6 @@
 import { ThemeProvider, createTheme } from '@mui/material';
 
-const ThemeWrapper = ({ children }) => {
+const ThemeWrapper = ({ children }: { children: JSX.Element }) => {
   const theme = createTheme({
     palette: {
       background: {
