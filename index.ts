@@ -43,10 +43,14 @@ app.use(express.static(new URL('./client/', import.meta.url).pathname));
 
 moment.locale('sv'); // Set global locale to Swedish
 
-const getFile = (path: string) => {
-  const data = fs.readFileSync(path);
-  const file: { date: string; content: any } = JSON.parse(data.toString());
-  return file;
+const getFile = (path: string): { date: string, content: any } => {
+  try {
+    const data = fs.readFileSync(path);
+    const file = JSON.parse(data.toString());
+    return file;
+  } catch (error) {
+    return { date: '', content: null };
+  }
 };
 
 const getMiamarias = async (force: boolean): Promise<{ name: 'miamarias', data: ArrayData | ErrorData }> => {
