@@ -68,16 +68,15 @@ const getMiamarias = async (force: boolean): Promise<{ name: 'miamarias', data: 
     const body = await result.text();
     const $ = cheerio.load(body);
 
-    const h5arr = $('h5').toArray();
+    const h5arr = $('h5.et_pb_toggle_title').toArray();
 
     const node = h5arr.find(el => {
-      if (el.firstChild === null) return false;
-      return el.childNodes.data.includes(m.format('D/M'));
+      return $(el).text().includes(m.format('D/M'));
     });
 
     if (!node) throw new Error('Wrong day');
 
-    const parse = $(node.parentNode).find('span').map((_, el) => $(el).text().trim()).toArray().filter(x => !!x).filter(x => !x.endsWith(' kr'));
+    const parse = $(node).parent().find('span').toArray().map((el) => $(el).text().trim()).filter(x => !!x).filter(x => !x.endsWith(' kr'));
     answer = {
       name: 'miamarias',
       data: {
@@ -124,7 +123,7 @@ const getSpill = async (force: boolean): Promise<{ name: 'spill'; data: SimpleAr
     answer = {
       name: 'spill',
       data: {
-        info: $(node).siblings().children().map((_, el) => $(el).text().trim()).toArray().filter(el => el != '')
+        info: $(node).siblings().children().toArray().map((el) => $(el).text().trim()).filter(text => text !== '')
       }
     }
 
@@ -287,7 +286,7 @@ const getVariation = async (force: boolean): Promise<{ name: 'variation', data: 
     if (!$(day)[0]) throw new Error('Wrong day!');
 
     let menu = $(day.parents()[2]).children()[2];
-    let meals = $(menu).find('li').map((_, el) => $(el).text()).toArray();
+    let meals = $(menu).find('li').toArray().map((el) => $(el).text())
     answer = { name: 'variation', data: { info: ['Dagens buffé:', ...meals] } };
 
     fs.writeFile('./files/variation.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
@@ -395,7 +394,7 @@ const getDockanshamnkrog = async (force: boolean): Promise<{ name: 'dockanshamnk
   const m = moment();
   let answer: Awaited<ReturnType<typeof getDockanshamnkrog>>;
   try {
-    throw new Error('todo');
+    throw new Error('Not implemented');
     /*
     if (force !== true) {
       const file = getFile('./files/arstiderna.json');
