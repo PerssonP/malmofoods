@@ -6,8 +6,8 @@ import fetch from 'node-fetch';
 import moment from 'moment';
 import compression from 'compression';
 import cors from 'cors';
-import fs from 'fs';
 import useragent from 'express-useragent';
+import NodeCache from 'node-cache';
 import type { ErrorRequestHandler } from 'express';
 
 type SimpleArrayData = {
@@ -25,6 +25,10 @@ type ErrorData = {
   error: string;
 }
 
+const cache = new NodeCache({ stdTTL: 86400 }); // TTL: 24h
+
+moment.locale('sv'); // Set global locale to Swedish
+
 const app = express();
 
 app.use(compression());
@@ -41,25 +45,23 @@ app.use('/*', (req, res, next) => {
 
 app.use(express.static(new URL('./client/', import.meta.url).pathname));
 
-moment.locale('sv'); // Set global locale to Swedish
+const setInCache = (input: { name: string, data: unknown }) => {
+  cache.set(input.name, { date: moment().format('YYYY-MM-DD'), content: input });
+}
 
-const getFile = (path: string): { date: string, content: any } => {
-  if (fs.existsSync(path)) {
-    return JSON.parse(fs.readFileSync(path).toString());
-  } else {
-    return { date: '', content: null };
-  }
-};
+const getFromCache = (key: string): { date: string; content: any} => {
+  const data = cache.get(key);
+  if (data) return data as { date: string; content: unknown} ;
+  return { date: '', content: null };
+}
 
 const getMiamarias = async (force: boolean): Promise<{ name: 'miamarias', data: ArrayData | ErrorData }> => {
   const m = moment();
   let answer: Awaited<ReturnType<typeof getMiamarias>>;
   try {
     if (force !== true) {
-      const file = getFile('./files/miamarias.json');
-      if (file.date === m.format('YYYY-MM-DD')) {
-        return file.content;
-      }
+      const cacheData = getFromCache('miamarias');
+      if (cacheData.date === m.format('YYYY-MM-DD')) return cacheData.content;
     }
 
     const result = await fetch('http://www.miamarias.nu/');
@@ -86,9 +88,7 @@ const getMiamarias = async (force: boolean): Promise<{ name: 'miamarias', data: 
       }
     }
 
-    fs.writeFile('./files/miamarias.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
-      if (err) throw err;
-    });
+    setInCache(answer);
 
     return answer;
   } catch (error) {
@@ -104,10 +104,8 @@ const getSpill = async (force: boolean): Promise<{ name: 'spill'; data: SimpleAr
   let answer: Awaited<ReturnType<typeof getSpill>>;
   try {
     if (force !== true) {
-      const file = getFile('./files/spill.json');
-      if (file.date === m.format('YYYY-MM-DD')) {
-        return file.content;
-      }
+      const cacheData = getFromCache('spill');
+      if (cacheData.date === m.format('YYYY-MM-DD')) return cacheData.content;
     }
 
     const result = await fetch('https://restaurangspill.se/');
@@ -125,9 +123,7 @@ const getSpill = async (force: boolean): Promise<{ name: 'spill'; data: SimpleAr
       }
     }
 
-    fs.writeFile('./files/spill.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
-      if (err) throw err;
-    });
+    setInCache(answer);
 
     return answer;
   } catch (error) {
@@ -187,10 +183,8 @@ const getKolga = async (force: boolean): Promise<{ name: 'kolga', data: SimpleAr
   let answer: Awaited<ReturnType<typeof getKolga>>;
   try {
     if (force !== true) {
-      const file = getFile('./files/kolga.json');
-      if (file.date === m.format('YYYY-MM-DD')) {
-        return file.content;
-      }
+      const cacheData = getFromCache('kolga');
+      if (cacheData.date === m.format('YYYY-MM-DD')) return cacheData.content;
     }
 
     const result = await fetch('https://kolga.gastrogate.com/lunch/');
@@ -208,9 +202,8 @@ const getKolga = async (force: boolean): Promise<{ name: 'kolga', data: SimpleAr
         info: $(content).find('.td_title').map((_, el) => $(el).text().trim()).get()
       }
     }
-    fs.writeFile('./files/kolga.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
-      if (err) throw err;
-    });
+
+    setInCache(answer);
 
     return answer;
   } catch (error) {
@@ -226,10 +219,8 @@ const getNamdo = async (force: boolean): Promise<{ name: 'namdo', data: ArrayDat
   let answer: Awaited<ReturnType<typeof getNamdo>>;
   try {
     if (force !== true) {
-      const file = getFile('./files/namdo.json');
-      if (file.date === m.format('YYYY-MM-DD')) {
-        return file.content;
-      }
+      const cacheData = getFromCache('namdo');
+      if (cacheData.date === m.format('YYYY-MM-DD')) return cacheData.content;
     }
 
     const result = await fetch('http://namdo.se/meny/');
@@ -250,9 +241,7 @@ const getNamdo = async (force: boolean): Promise<{ name: 'namdo', data: ArrayDat
 
     answer = { name: 'namdo', data: data };
 
-    fs.writeFile('./files/namdo.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
-      if (err) throw err;
-    });
+    setInCache(answer);
 
     return answer;
   } catch (error) {
@@ -268,10 +257,8 @@ const getVariation = async (force: boolean): Promise<{ name: 'variation', data: 
   let answer: Awaited<ReturnType<typeof getVariation>>;
   try {
     if (force !== true) {
-      const file = getFile('./files/variation.json');
-      if (file.date === m.format('YYYY-MM-DD')) {
-        return file.content;
-      }
+      const cacheData = getFromCache('variation');
+      if (cacheData.date === m.format('YYYY-MM-DD')) return cacheData.content;
     }
 
     const result = await fetch('https://www.nyavariation.se/matsedel');
@@ -287,9 +274,7 @@ const getVariation = async (force: boolean): Promise<{ name: 'variation', data: 
     let meals = $(menu).find('li').toArray().map((el) => $(el).text())
     answer = { name: 'variation', data: { info: ['Dagens buffé:', ...meals] } };
 
-    fs.writeFile('./files/variation.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
-      if (err) throw err;
-    });
+    setInCache(answer);
 
     return answer;
   } catch (error) {
@@ -305,10 +290,8 @@ const getP2 = async (force: boolean): Promise<{ name: 'p2'; data: ArrayData | Er
   let answer: Awaited<ReturnType<typeof getP2>>;
   try {
     if (force !== true) {
-      const file = getFile('./files/p2.json');
-      if (file.date === m.format('YYYY-MM-DD')) {
-        return file.content;
-      }
+      const cacheData = getFromCache('p2');
+      if (cacheData.date === m.format('YYYY-MM-DD')) return cacheData.content;
     }
 
     const result = await fetch('https://www.restaurangp2.se/lunch');
@@ -332,9 +315,7 @@ const getP2 = async (force: boolean): Promise<{ name: 'p2'; data: ArrayData | Er
       }
     }
 
-    fs.writeFile('./files/p2.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
-      if (err) throw err;
-    });
+    setInCache(answer);
 
     return answer;
   } catch (error) {
