@@ -1,7 +1,13 @@
 import React, { Fragment } from 'react';
 import { Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Divider, Link } from '@mui/material';
 
-const Menu = React.forwardRef(({ header, url, icon, children }, ref) => (
+type MenuProps = {
+  header: string;
+  url: string;
+  icon: string;
+}
+
+const Menu = React.forwardRef<HTMLDivElement, MenuProps & { children: JSX.Element }>(({ header, url, icon, children }, ref) => (
   <Paper ref={ref}>
     <List>
       <ListItem>
@@ -18,7 +24,15 @@ const Menu = React.forwardRef(({ header, url, icon, children }, ref) => (
 ));
 Menu.displayName = 'Menu';
 
-export const SimpleArrayMenu = React.forwardRef(({ header, url, icon, data }, ref) => (
+type SimpleArrayData = {
+  info: string[];
+  error: never;
+} | {
+  info: never;
+  error: string;
+} | null;
+
+export const SimpleArrayMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: SimpleArrayData }>(({ header, url, icon, data }, ref) => (
   <Menu
     header={header}
     url={url}
@@ -31,7 +45,7 @@ export const SimpleArrayMenu = React.forwardRef(({ header, url, icon, data }, re
       </ListItem>
       :
       <>
-        {data.map((row, i) => (
+        {data.info.map((row, i) => (
           <ListItem key={i}>
             <ListItemText primary={row} />
           </ListItem>
@@ -42,7 +56,18 @@ export const SimpleArrayMenu = React.forwardRef(({ header, url, icon, data }, re
 ));
 SimpleArrayMenu.displayName = 'SimpleArrayMenu';
 
-export const ArrayMenu = React.forwardRef(({ header, url, icon, data }, ref) => (
+type ArrayData = {
+  info: {
+    title: string;
+    description: string;
+  }[];
+  error: never;
+} | {
+  info: never;
+  error: string;
+} | null;
+
+export const ArrayMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: ArrayData }>(({ header, url, icon, data }, ref) => (
   <Menu
     header={header}
     url={url}
@@ -55,7 +80,7 @@ export const ArrayMenu = React.forwardRef(({ header, url, icon, data }, ref) => 
       </ListItem>
       :
       <>
-        {data.map((row, i) => (
+        {data.info.map((row, i) => (
           <ListItem key={i}>
             <ListItemText primary={row.description} secondary={row.title} />
           </ListItem>
@@ -66,7 +91,17 @@ export const ArrayMenu = React.forwardRef(({ header, url, icon, data }, ref) => 
 ));
 ArrayMenu.displayName = 'ArrayMenu';
 
-export const ObjectMenu = React.forwardRef(({ header, url, icon, data }, ref) => (
+type ObjectData = {
+  info: {
+    [key: string]: string
+  };
+  error: never;
+} | {
+  info: never;
+  error: string;
+} | null;
+
+export const ObjectMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: ObjectData }>(({ header, url, icon, data }, ref) => (
   <Menu
     header={header}
     url={url}
@@ -79,9 +114,9 @@ export const ObjectMenu = React.forwardRef(({ header, url, icon, data }, ref) =>
       </ListItem>
       :
       <>
-        {Object.keys(data).map(key => (
+        {Object.keys(data.info).map(key => (
           <ListItem key={key}>
-            <ListItemText primary={data[key]} secondary={key} />
+            <ListItemText primary={data.info[key]} secondary={key} />
           </ListItem>
         ))}
       </>
@@ -90,7 +125,21 @@ export const ObjectMenu = React.forwardRef(({ header, url, icon, data }, ref) =>
 ));
 ObjectMenu.displayName = 'ObjectMenu';
 
-export const SegmentedMenu = React.forwardRef(({ header, url, icon, data }, ref) => (
+type SegmentedData = {
+  info: {
+    header: string;
+    contents: {
+      title: string;
+      description: string;
+    }[]
+  }[];
+  error: never;
+} | {
+  info: never;
+  error: string;
+} | null;
+
+export const SegmentedMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: SegmentedData }>(({ header, url, icon, data }, ref) => (
   <Menu
     header={header}
     url={url}
@@ -103,7 +152,7 @@ export const SegmentedMenu = React.forwardRef(({ header, url, icon, data }, ref)
       </ListItem>
       :
       <>
-        {data.map(segment => (
+        {data.info.map(segment => (
           <Fragment key={segment.header}>
             <Divider />
             <ListItem>
@@ -123,7 +172,7 @@ export const SegmentedMenu = React.forwardRef(({ header, url, icon, data }, ref)
 ));
 SegmentedMenu.displayName = 'SegmentedMenu';
 
-export const HyperlinkMenu = React.forwardRef(({ header, url, icon, href }, ref) => (
+export const HyperlinkMenu = React.forwardRef<HTMLDivElement, MenuProps & { href: string }>(({ header, url, icon, href }, ref) => (
   <Menu
     header={header}
     url={url}

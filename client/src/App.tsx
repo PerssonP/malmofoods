@@ -130,7 +130,7 @@ const App = () => {
     }
   };
 
-  const getData = async force => {
+  const getData = async (force: boolean) => {
     const result = await fetch(`/scrape${force ? '?forceAll=true' : ''}`);
     const body = await result.json();
     console.log(body);
@@ -138,21 +138,21 @@ const App = () => {
   };
 
   useEffect(() => {
-    getData();
+    getData(false);
   }, []);
 
-  const recheck = async (force) => {
+  const recheck = async (force: boolean) => {
     setData(null);
     getData(force);
   };
 
-  const showSelected = el => {
+  const showSelected = (element) => {
     //el.classList.toggle(classes.selected);
     setTimeout(() => {
       //el.classList.toggle(classes.selected);
     }, 1500);
 
-    el.scrollIntoView({ behavior: 'smooth' });
+    element.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -191,16 +191,16 @@ const App = () => {
             <ArrayMenu header={'Nam Do'} url={'http://namdo.se/meny/'} icon={'/icons/namdo.svg'} data={data?.namdo} ref={pins.namndo.ref} />
           </Grid>
           <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <SimpleArrayMenu header={'Västra Hamnens Pizzeria'} url={'http://www.vhpizzeria.se/'} icon='/icons/vhp.png' data={['Pizzabuffé']} ref={pins.vhp.ref} />
+            <SimpleArrayMenu header={'Västra Hamnens Pizzeria'} url={'http://www.vhpizzeria.se/'} icon='/icons/vhp.png' data={{ info: ['Pizzabuffé'] }} ref={pins.vhp.ref} />
           </Grid>
           <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <SimpleArrayMenu header={'Dockside Burgers'} url={'https://www.docksideburgers.se/'} icon={'/icons/lol.png'} data={['Burgare', 'Månadens burgare']} ref={pins.dockside.ref} />
+            <SimpleArrayMenu header={'Dockside Burgers'} url={'https://www.docksideburgers.se/'} icon={'/icons/lol.png'} data={{ info: ['Burgare', 'Månadens burgare'] }} ref={pins.dockside.ref} />
           </Grid>
           <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
             <ArrayMenu header={'Stora Varvsgatan 6'} url={'https://storavarvsgatan6.se/meny.html'} icon={'/icons/lol.png'} data={data?.storavarvsgatan} ref={pins.storavarvsgatan.ref} />
           </Grid>
           <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <SimpleArrayMenu header={'Laziza Dockan'} url={'https://www.laziza.se/restaurang/'} icon='/icons/laziza.webp' data={['Libanesisk buffé']} ref={pins.laziza.ref} />
+            <SimpleArrayMenu header={'Laziza Dockan'} url={'https://www.laziza.se/restaurang/'} icon='/icons/laziza.webp' data={{ info: ['Libanesisk buffé'] }} ref={pins.laziza.ref} />
           </Grid>
           <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
             <SimpleArrayMenu header={'Thai n Sushi for you'} url={'https://vhamnen.thainsushiforyou.se/'} icon='/icons/thaisushi.png' data={data?.thaisushiforyou} ref={pins.thaisushiforyou.ref} />

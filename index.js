@@ -61,11 +61,13 @@ const getMiamarias = async force => {
     if (!node) throw new Error('Wrong day');
 
     const parse = $(node.parentNode).find('span').map((_, el) => $(el).text().trim()).toArray().filter(x => !!x).filter(x => !x.endsWith(' kr'));
-    answer.data = [
-      { title: 'Fisk', description: parse[0] },
-      { title: 'Kött', description: parse[1] },
-      { title: 'Veg', description: parse[2] }
-    ];
+    answer.data = {
+      info: [
+        { title: 'Fisk', description: parse[0] },
+        { title: 'Kött', description: parse[1] },
+        { title: 'Veg', description: parse[2] }
+      ]
+    };
 
     fs.writeFile('./files/miamarias.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
@@ -97,7 +99,7 @@ const getSpill = async force => {
     let currentDay = node.text().split(',')[1].trim();
     if (currentDay != m.format('DD/M')) throw new Error('Wrong day');
 
-    answer.data = $(node).siblings().children().map((_, el) => $(el).text().trim()).toArray().filter(el => el != '');
+    answer.data = { info: $(node).siblings().children().map((_, el) => $(el).text().trim()).toArray().filter(el => el != '') };
 
     fs.writeFile('./files/spill.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
@@ -172,8 +174,7 @@ const getKolga = async force => {
     if (header.length === 0) throw new Error('Wrong day');
 
     const content = $(header).parents('thead').siblings('tbody')[0];
-    answer.data = $(content).find('.td_title').map((_, el) => $(el).text().trim()).get();
-
+    answer.data = { info: $(content).find('.td_title').map((_, el) => $(el).text().trim()).get() };
     fs.writeFile('./files/kolga.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
     });
@@ -207,9 +208,9 @@ const getNamdo = async force => {
     const descriptions = $(node).find('.fdm-item-content');
     if (titles.length !== descriptions.length) throw new Error('Parsing length mismatch!');
 
-    answer.data = [];
+    answer.data = { info: [] };
     titles.each((i, el) => {
-      answer.data[i] = { title: $(el).text(), description: $(descriptions[i]).text() };
+      answer.data.info[i] = { title: $(el).text(), description: $(descriptions[i]).text() };
     });
 
     fs.writeFile('./files/namdo.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
@@ -245,7 +246,7 @@ const getVariation = async force => {
 
     node = $(node.parents()[2]).children()[2];
     let meals = $(node).find('li').map((_, el) => $(el).text()).toArray();
-    answer.data = ['Dagens buffé:', ...meals];
+    answer.data = { info: ['Dagens buffé:', ...meals] };
 
     fs.writeFile('./files/variation.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
@@ -279,11 +280,13 @@ const getP2 = async force => {
     if (node.length === 0) throw new Error('Wrong day');
     const courses = $(node).find('tr');
 
-    answer.data = courses.map((_, el) => {
-      const arr = $(el).find('p').map((i, child) => $(child).text()).get();
-      if (arr.length < 2) throw new Error('Parsing failed');
-      return { title: arr[0], description: arr[1] };
-    }).get();
+    answer.data = {
+      info: courses.map((_, el) => {
+        const arr = $(el).find('p').map((i, child) => $(child).text()).get();
+        if (arr.length < 2) throw new Error('Parsing failed');
+        return { title: arr[0], description: arr[1] };
+      }).get()
+    };
 
     fs.writeFile('./files/p2.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;

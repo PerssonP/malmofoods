@@ -2,9 +2,12 @@ import React from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 import { Room } from '@mui/icons-material';
 
-const Pin = ({ text, handleClick }) => {
+type PinProps = {
+  text: string;
+  handleClick: () => void
+}
 
-
+const Pin = ({ text, handleClick }: PinProps) => {
   return (
     <Tooltip title={text}>
       <IconButton

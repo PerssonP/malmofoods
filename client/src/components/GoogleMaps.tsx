@@ -7,7 +7,18 @@ import { Room } from '@mui/icons-material';
 
 import Pin from '../components/Pin';
 
-export const Maps = ({ pins }) => (
+type MapsProps = {
+  pins: {
+    [key: string]:  {
+      name: string;
+      lat: number;
+      lng: number;
+      ref: React.MutableRefObject<null>,
+    }
+  }
+}
+
+export const Maps = ({ pins }:  MapsProps) => (
   <Box sx={{ height: '800px', width: '100%' }}>
     <LoadScriptNext googleMapsApiKey={import.meta.env.VITE_MAPS_KEY}>
       <GoogleMap
@@ -27,8 +38,8 @@ export const Maps = ({ pins }) => (
           ]
         }}
       >
-          <InfoBox position={{ lat: 55.613306, lng: 12.992183 }}>
-            <Pin />
+          <InfoBox position={{ lat: () => 55.613306, lng: () => 12.992183,  }}>
+            <Pin text='' handleClick={() => ''} />
           </InfoBox>
           <Marker
            position={{ lat: 55.612801, lng: 12.988404 }} />
