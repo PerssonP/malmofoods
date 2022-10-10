@@ -1,4 +1,4 @@
-import * as dotenv from 'dotenv'; 
+import * as dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
 import cheerio from 'cheerio';
@@ -8,6 +8,22 @@ import compression from 'compression';
 import cors from 'cors';
 import fs from 'fs';
 import useragent from 'express-useragent';
+import type { ErrorRequestHandler } from 'express';
+
+type SimpleArrayData = {
+  info: string[];
+}
+
+type ArrayData = {
+  info: {
+    title: string;
+    description: string;
+  }[];
+}
+
+type ErrorData = {
+  error: string;
+}
 
 const app = express();
 
@@ -16,31 +32,26 @@ app.use(cors());
 app.use(useragent.express());
 
 app.use('/*', (req, res, next) => {
-  if (req.useragent.browser === 'IE') {
-    res.send('Please use a real browser..').status(400);
+  if (req.useragent?.browser === 'IE') {
+    res.send('Please use a real browser').status(400);
   } else {
     next();
   }
 });
 
-app.use(express.static(new URL('./dist/', import.meta.url).pathname));
+app.use(express.static(new URL('./client/', import.meta.url).pathname));
 
 moment.locale('sv'); // Set global locale to Swedish
 
-const getFile = path => {
-  try {
-    const data = fs.readFileSync(path);
-    const file = JSON.parse(data);
-    return file;
-  } catch (err) {
-    console.log(err);
-    return {};
-  }
+const getFile = (path: string) => {
+  const data = fs.readFileSync(path);
+  const file: { date: string; content: any } = JSON.parse(data.toString());
+  return file;
 };
 
-const getMiamarias = async force => {
+const getMiamarias = async (force: boolean): Promise<{ name: 'miamarias', data: ArrayData | ErrorData }> => {
   const m = moment();
-  const answer = { name: 'miamarias', data: null };
+  let answer: Awaited<ReturnType<typeof getMiamarias>>;
   try {
     if (force !== true) {
       const file = getFile('./files/miamarias.json');
@@ -57,34 +68,39 @@ const getMiamarias = async force => {
 
     const node = h5arr.find(el => {
       if (el.firstChild === null) return false;
-      return el.firstChild.data.includes(m.format('D/M'));
+      return el.childNodes.data.includes(m.format('D/M'));
     });
 
     if (!node) throw new Error('Wrong day');
 
     const parse = $(node.parentNode).find('span').map((_, el) => $(el).text().trim()).toArray().filter(x => !!x).filter(x => !x.endsWith(' kr'));
-    answer.data = {
-      info: [
-        { title: 'Fisk', description: parse[0] },
-        { title: 'Kött', description: parse[1] },
-        { title: 'Veg', description: parse[2] }
-      ]
-    };
+    answer = {
+      name: 'miamarias',
+      data: {
+        info: [
+          { title: 'Fisk', description: parse[0] },
+          { title: 'Kött', description: parse[1] },
+          { title: 'Veg', description: parse[2] }
+        ]
+      }
+    }
 
     fs.writeFile('./files/miamarias.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
     });
 
     return answer;
-  } catch (err) {
-    console.log(err);
-    return { name: answer.name, data: { error: err.toString() } };
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Error) answer = { name: 'miamarias', data: { error: error.message } };
+    else answer = { name: 'miamarias', data: { error: String(error) } };
+    return answer;
   }
 };
 
-const getSpill = async force => {
+const getSpill = async (force: boolean): Promise<{ name: 'spill'; data: SimpleArrayData | ErrorData }> => {
   const m = moment();
-  const answer = { name: 'spill', data: null };
+  let answer: Awaited<ReturnType<typeof getSpill>>;
   try {
     if (force !== true) {
       const file = getFile('./files/spill.json');
@@ -101,22 +117,29 @@ const getSpill = async force => {
     let currentDay = node.text().split(',')[1].trim();
     if (currentDay != m.format('DD/M')) throw new Error('Wrong day');
 
-    answer.data = { info: $(node).siblings().children().map((_, el) => $(el).text().trim()).toArray().filter(el => el != '') };
+    answer = {
+      name: 'spill',
+      data: {
+        info: $(node).siblings().children().map((_, el) => $(el).text().trim()).toArray().filter(el => el != '')
+      }
+    }
 
     fs.writeFile('./files/spill.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
     });
 
     return answer;
-  } catch (err) {
-    console.log(err);
-    return { name: answer.name, data: { error: err.toString() } };
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Error) answer = { name: 'spill', data: { error: error.message } };
+    else answer = { name: 'spill', data: { error: String(error) } };
+    return answer;
   }
 };
 
-const getDocpiazza = async force => {
+const getDocpiazza = async (force: boolean): Promise<{ name: 'docpiazza', data: ErrorData }> => {
   const m = moment();
-  const answer = { name: 'docpiazza', data: null };
+  let answer: Awaited<ReturnType<typeof getDocpiazza>>;
   try {
     throw new Error('Meny saknas');
     /*
@@ -150,15 +173,17 @@ const getDocpiazza = async force => {
     });
 
     return answer;*/
-  } catch (err) {
-    console.log(err);
-    return { name: answer.name, data: { error: err.toString() } };
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Error) answer = { name: 'docpiazza', data: { error: error.message } };
+    else answer = { name: 'docpiazza', data: { error: String(error) } };
+    return answer;
   }
 };
 
-const getKolga = async force => {
+const getKolga = async (force: boolean): Promise<{ name: 'kolga', data: SimpleArrayData | ErrorData }> => {
   const m = moment();
-  const answer = { name: 'kolga', data: null };
+  let answer: Awaited<ReturnType<typeof getKolga>>;
   try {
     if (force !== true) {
       const file = getFile('./files/kolga.json');
@@ -176,21 +201,28 @@ const getKolga = async force => {
     if (header.length === 0) throw new Error('Wrong day');
 
     const content = $(header).parents('thead').siblings('tbody')[0];
-    answer.data = { info: $(content).find('.td_title').map((_, el) => $(el).text().trim()).get() };
+    answer = {
+      name: 'kolga',
+      data: {
+        info: $(content).find('.td_title').map((_, el) => $(el).text().trim()).get()
+      }
+    }
     fs.writeFile('./files/kolga.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
     });
 
     return answer;
-  } catch (err) {
-    console.log(err);
-    return { name: answer.name, data: { error: err.toString() } };
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Error) answer = { name: 'kolga', data: { error: error.message } };
+    else answer = { name: 'kolga', data: { error: String(error) } };
+    return answer;
   }
 };
 
-const getNamdo = async force => {
+const getNamdo = async (force: boolean): Promise<{ name: 'namdo', data: ArrayData | ErrorData }> => {
   const m = moment();
-  const answer = { name: 'namdo', data: null };
+  let answer: Awaited<ReturnType<typeof getNamdo>>;
   try {
     if (force !== true) {
       const file = getFile('./files/namdo.json');
@@ -210,25 +242,29 @@ const getNamdo = async force => {
     const descriptions = $(node).find('.fdm-item-content');
     if (titles.length !== descriptions.length) throw new Error('Parsing length mismatch!');
 
-    answer.data = { info: [] };
+    const data: ArrayData = { info: [] };
     titles.each((i, el) => {
-      answer.data.info[i] = { title: $(el).text(), description: $(descriptions[i]).text() };
+      data.info[i] = { title: $(el).text(), description: $(descriptions[i]).text() };
     });
+
+    answer = { name: 'namdo', data: data };
 
     fs.writeFile('./files/namdo.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
     });
 
     return answer;
-  } catch (err) {
-    console.log(err);
-    return { name: answer.name, data: { error: err.toString() } };
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Error) answer = { name: 'namdo', data: { error: error.message } };
+    else answer = { name: 'namdo', data: { error: String(error) } };
+    return answer;
   }
 };
 
-const getVariation = async force => {
+const getVariation = async (force: boolean): Promise<{ name: 'variation', data: SimpleArrayData | ErrorData }> => {
   const m = moment();
-  const answer = { name: 'variation', data: null };
+  let answer: Awaited<ReturnType<typeof getVariation>>;
   try {
     if (force !== true) {
       const file = getFile('./files/variation.json');
@@ -243,27 +279,29 @@ const getVariation = async force => {
 
     let dayOfWeek = m.format('dddd').charAt(0).toUpperCase() + m.format('dddd').slice(1);
 
-    let node = $(`h4:contains("${dayOfWeek}")`);
-    if (!$(node)[0]) throw new Error('Wrong day!');
+    let day = $(`h4:contains("${dayOfWeek}")`);
+    if (!$(day)[0]) throw new Error('Wrong day!');
 
-    node = $(node.parents()[2]).children()[2];
-    let meals = $(node).find('li').map((_, el) => $(el).text()).toArray();
-    answer.data = { info: ['Dagens buffé:', ...meals] };
+    let menu = $(day.parents()[2]).children()[2];
+    let meals = $(menu).find('li').map((_, el) => $(el).text()).toArray();
+    answer = { name: 'variation', data: { info: ['Dagens buffé:', ...meals] } };
 
     fs.writeFile('./files/variation.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
     });
 
     return answer;
-  } catch (err) {
-    console.log(err);
-    return { name: answer.name, data: { error: err.toString() } };
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Error) answer = { name: 'variation', data: { error: error.message } };
+    else answer = { name: 'variation', data: { error: String(error) } };
+    return answer;
   }
 };
 
-const getP2 = async force => {
+const getP2 = async (force: boolean): Promise<{ name: 'p2'; data: ArrayData | ErrorData }> => {
   const m = moment();
-  const answer = { name: 'p2', data: null };
+  let answer: Awaited<ReturnType<typeof getP2>>;
   try {
     if (force !== true) {
       const file = getFile('./files/p2.json');
@@ -276,34 +314,40 @@ const getP2 = async force => {
     const body = await result.text();
     const $ = cheerio.load(body);
 
-    if ($('.week_number').text().split(' ')[1] != m.week()) throw new Error('Wrong week');
+    if ($('.week_number').text().split(' ')[1] !== m.week().toString()) throw new Error('Wrong week');
 
     const node = $(`#${m.locale('en').format('dddd').toLowerCase()}`);
     if (node.length === 0) throw new Error('Wrong day');
     const courses = $(node).find('tr');
 
-    answer.data = {
-      info: courses.map((_, el) => {
-        const arr = $(el).find('p').map((i, child) => $(child).text()).get();
-        if (arr.length < 2) throw new Error('Parsing failed');
-        return { title: arr[0], description: arr[1] };
-      }).get()
-    };
+    answer = {
+      name: 'p2',
+      data: {
+        info: courses.map((_, el) => {
+          const arr = $(el).find('p').map((i, child) => $(child).text()).get();
+          if (arr.length < 2) throw new Error('Parsing failed');
+          return { title: arr[0], description: arr[1] };
+        }).get()
+      }
+    }
 
     fs.writeFile('./files/p2.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
       if (err) throw err;
     });
 
     return answer;
-  } catch (err) {
-    console.log(err);
-    return { name: answer.name, data: { error: err.toString() } };
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Error) answer = { name: 'p2', data: { error: error.message } };
+    else answer = { name: 'p2', data: { error: String(error) } };
+    return answer;
   }
 };
 
-const getGlasklart = async force => {
+const getGlasklart = async (force: boolean): Promise<{ name: 'glasklart', data: ErrorData }> => {
   const m = moment();
-  const answer = { name: 'glasklart', data: { error: 'Tillsvidare håller lunchrestaurangen stängt.' } };
+  let answer: Awaited<ReturnType<typeof getGlasklart>>;
+  answer = { name: 'glasklart', data: { error: 'Tillsvidare håller lunchrestaurangen stängt.' } };
   return answer;
   /*
   try {
@@ -343,9 +387,9 @@ const getGlasklart = async force => {
   }*/
 };
 
-const getDockanshamnkrog = async force => {
+const getDockanshamnkrog = async (force: boolean): Promise<{ name: 'dockanshamnkrog', data: ErrorData }> => {
   const m = moment();
-  const answer = { name: 'dockanshamnkrog', data: null };
+  let answer: Awaited<ReturnType<typeof getDockanshamnkrog>>;
   try {
     throw new Error('todo');
     /*
@@ -390,23 +434,25 @@ const getDockanshamnkrog = async force => {
     });
 
     return answer;*/
-  } catch (err) {
-    console.log(err);
-    return { name: answer.name, data: { error: err.toString() } };
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Error) answer = { name: 'dockanshamnkrog', data: { error: error.message } };
+    else answer = { name: 'dockanshamnkrog', data: { error: String(error) } };
+    return answer;
   }
 };
 
-const getStoravarvsgatan = async force => ({ name: 'storavarvsgatan', data: { error: 'Not implemented' } });
+const getStoravarvsgatan = async (force: boolean): Promise<{ name: 'storavarvsgatan', data: ErrorData }> => ({ name: 'storavarvsgatan', data: { error: 'Not implemented' } });
 
-const getThaisushiforyou = async force => ({ name: 'thaisushiforyou', data: { error: 'Not implemented' } });
+const getThaisushiforyou = async (force: boolean): Promise<{ name: 'thaisushiforyou', data: ErrorData }> => ({ name: 'thaisushiforyou', data: { error: 'Not implemented' } });
 
-const getCurryrepublic = async force => ({ name: 'curryrepublik', data: { error: 'Not implemented' } });
+const getCurryrepublic = async (force: boolean): Promise<{ name: 'curryrepublik', data: ErrorData }> => ({ name: 'curryrepublik', data: { error: 'Not implemented' } });
 
-const getVhPizzeria = async force => ({ name: 'vhPizzeria', data: { info: ['Pizzabuffé'] } });
+const getVhPizzeria = async (force: boolean): Promise<{ name: 'vhPizzeria', data: SimpleArrayData | ErrorData }> => ({ name: 'vhPizzeria', data: { info: ['Pizzabuffé'] } });
 
-const getDocksideBurgers = async force => ({ name: 'docksideburgers', data: { info: ['Burgare', 'Månadens burgare'] } });
+const getDocksideBurgers = async (force: boolean): Promise<{ name: 'docksideburgers', data: SimpleArrayData | ErrorData }> => ({ name: 'docksideburgers', data: { info: ['Burgare', 'Månadens burgare'] } });
 
-const getLaziza = async force => ({ name: 'laziza', data: { info: ['Libanesisk buffé'] } });
+const getLaziza = async (force: boolean): Promise<{ name: 'laziza', data: SimpleArrayData | ErrorData }> => ({ name: 'laziza', data: { info: ['Libanesisk buffé'] } });
 
 app.get('/scrape', async (req, res, next) => {
   const force = req.query.forceAll === 'true';
@@ -427,7 +473,7 @@ app.get('/scrape', async (req, res, next) => {
     getVhPizzeria(force),
     getDocksideBurgers(force),
     getLaziza(force)
-  ])).reduce((obj, curr) => {
+  ])).reduce<{ [key: string]: SimpleArrayData | ArrayData | ErrorData }>((obj, curr) => {
     obj[curr.name] = curr.data;
     return obj;
   }, {});
@@ -436,13 +482,15 @@ app.get('/scrape', async (req, res, next) => {
 });
 
 app.get('/*', function (req, res, next) {
-  res.sendFile(new URL('./dist/index.html', import.meta.url).pathname);
+  res.sendFile(new URL('./client/index.html', import.meta.url).pathname);
 });
 
-app.use((err, req, res, next) => {
+
+
+app.use(((err, req, res, next) => {
   console.log(err);
   res.status(500).send({ message: 'Something went wrong in express server', error: err.message });
-});
+}) as ErrorRequestHandler);
 
 app.use((req, res, next) => {
   res.status(404).send({ message: `Route ${req.originalUrl} (${req.method}) not found` });
