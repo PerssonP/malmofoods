@@ -1,5 +1,4 @@
 import { IconButton, Tooltip } from '@mui/material';
-import { Room } from '@mui/icons-material';
 import { Marker } from '@react-google-maps/api';
 
 type PinProps = {
