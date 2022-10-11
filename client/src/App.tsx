@@ -1,10 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Grid, Button, CircularProgress, Box } from '@mui/material';
-import { GoogleMap, useJsApiLoader, LoadScript, LoadScriptNext } from '@react-google-maps/api';
-import { red } from '@mui/material/colors';
 
 import { Maps } from './components/GoogleMaps';
-import Pin from './components/Pin';
 import { ArrayMenu, SimpleArrayMenu, ObjectMenu, SegmentedMenu, HyperlinkMenu } from './components/Menus';
 
 /* TODO

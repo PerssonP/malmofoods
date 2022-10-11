@@ -1,15 +1,15 @@
 import React from 'react';
-import { GoogleMap, LoadScriptNext, Marker, InfoBox, OverlayView } from '@react-google-maps/api';
+import { GoogleMap, LoadScriptNext, Marker, InfoBox, OverlayView, Polygon } from '@react-google-maps/api';
 import { Box, CircularProgress, Grid } from '@mui/material';
 import { red } from '@mui/material/colors';
 import { FlashlightOnRounded } from '@mui/icons-material';
 import { Room } from '@mui/icons-material';
 
-import Pin from '../components/Pin';
+import { Pin2 } from '../components/Pin';
 
 type MapsProps = {
   pins: {
-    [key: string]:  {
+    [key: string]: {
       name: string;
       lat: number;
       lng: number;
@@ -18,7 +18,16 @@ type MapsProps = {
   }
 }
 
-export const Maps = ({ pins }:  MapsProps) => (
+const showSelected = (element: any) => {
+  //el.classList.toggle(classes.selected);
+  setTimeout(() => {
+    //el.classList.toggle(classes.selected);
+  }, 1500);
+
+  element.scrollIntoView({ behavior: 'smooth' });
+};
+
+export const Maps = ({ pins }: MapsProps) => (
   <Box sx={{ height: '800px', width: '100%' }}>
     <LoadScriptNext googleMapsApiKey={import.meta.env.VITE_MAPS_KEY}>
       <GoogleMap
@@ -38,13 +47,12 @@ export const Maps = ({ pins }:  MapsProps) => (
           ]
         }}
       >
-        {/** 
-          <InfoBox position={{ lat: () => 55.613306, lng: () => 12.992183,  }}>
-            <Pin text='' handleClick={() => ''} />
-          </InfoBox>*/}
-          <Marker
-           position={{ lat: 55.612801, lng: 12.988404 }} />
-
+          {Object.values(pins).map((pin) => (
+            <Pin2
+              position={{ lat: pin.lat, lng: pin.lng }}
+              handleClick={() => showSelected(pin.ref)}
+            />
+          ))}
       </GoogleMap>
     </LoadScriptNext>
   </Box>

@@ -2,4 +2,6 @@ node_modules
 files/*
 !files/empty.txt
 .env
+.env.*
+!.env.example
 dist
