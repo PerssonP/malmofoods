@@ -1,11 +1,8 @@
 import React from 'react';
-import { GoogleMap, LoadScriptNext, Marker, InfoBox, OverlayView, Polygon } from '@react-google-maps/api';
-import { Box, CircularProgress, Grid } from '@mui/material';
-import { red } from '@mui/material/colors';
-import { FlashlightOnRounded } from '@mui/icons-material';
-import { Room } from '@mui/icons-material';
+import { GoogleMap, LoadScriptNext } from '@react-google-maps/api';
+import { Box } from '@mui/material';
 
-import { Pin2 } from '../components/Pin';
+import { Pin } from '../components/Pin';
 
 type MapsProps = {
   pins: {
@@ -48,7 +45,7 @@ export const Maps = ({ pins }: MapsProps) => (
         }}
       >
           {Object.values(pins).map((pin) => (
-            <Pin2
+            <Pin
               position={{ lat: pin.lat, lng: pin.lng }}
               handleClick={() => showSelected(pin.ref)}
             />

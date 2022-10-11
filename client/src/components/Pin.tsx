@@ -3,11 +3,6 @@ import { Room } from '@mui/icons-material';
 import { Marker } from '@react-google-maps/api';
 
 type PinProps = {
-  text: string;
-  handleClick?: () => void
-}
-
-type PinProps2 = {
   position: {
     lat: number;
     lng: number;
@@ -15,26 +10,7 @@ type PinProps2 = {
   handleClick?: () => void
 }
 
-export const Pin = ({ text, handleClick }: PinProps) => {
-  return (
-    <Tooltip title={text}>
-      <IconButton
-        color='secondary'
-        onClick={handleClick}
-        size='small'
-        sx={{
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)'
-        }}
-      >
-        <Room fontSize='large' />
-      </IconButton>
-    </Tooltip>
-  );
-};
-
-export const Pin2 = ({ position, handleClick }: PinProps2) => (
+export const Pin = ({ position, handleClick }: PinProps) => (
   <Marker
     position={position}
     icon={{
