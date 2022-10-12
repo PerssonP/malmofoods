@@ -194,7 +194,7 @@ const App = () => {
             <SimpleArrayMenu header={'Dockside Burgers'} url={'https://www.docksideburgers.se/'} icon={'/icons/lol.png'} data={data?.docksideburgers} ref={pins.dockside.ref} />
           </Grid>
           <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <ArrayMenu header={'Stora Varvsgatan 6'} url={'https://storavarvsgatan6.se/meny.html'} icon={'/icons/lol.png'} data={data?.storavarvsgatan} ref={pins.storavarvsgatan.ref} />
+            <SimpleArrayMenu header={'Stora Varvsgatan 6'} url={'https://storavarvsgatan6.se/meny.html'} icon={'/icons/storavarvsgatan6.png'} data={data?.storavarvsgatan6} ref={pins.storavarvsgatan.ref} />
           </Grid>
           <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
             <SimpleArrayMenu header={'Laziza Dockan'} url={'https://www.laziza.se/restaurang/'} icon='/icons/laziza.webp' data={data?.laziza} ref={pins.laziza.ref} />

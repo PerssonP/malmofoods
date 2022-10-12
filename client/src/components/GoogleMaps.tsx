@@ -46,8 +46,9 @@ export const Maps = ({ pins }: MapsProps) => (
       >
           {Object.values(pins).map((pin) => (
             <Pin
+              key={pin.name}
               position={{ lat: pin.lat, lng: pin.lng }}
-              handleClick={() => showSelected(pin.ref)}
+              handleClick={() => showSelected(pin.ref.current)}
             />
           ))}
       </GoogleMap>

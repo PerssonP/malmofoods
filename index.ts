@@ -49,9 +49,9 @@ const setInCache = (input: { name: string, data: unknown }) => {
   cache.set(input.name, { date: moment().format('YYYY-MM-DD'), content: input });
 }
 
-const getFromCache = (key: string): { date: string; content: any} => {
+const getFromCache = (key: string): { date: string; content: any } => {
   const data = cache.get(key);
-  if (data) return data as { date: string; content: unknown} ;
+  if (data) return data as { date: string; content: unknown };
   return { date: '', content: null };
 }
 
@@ -424,7 +424,49 @@ const getDockanshamnkrog = async (force: boolean): Promise<{ name: 'dockanshamnk
   }
 };
 
-const getStoravarvsgatan = async (force: boolean): Promise<{ name: 'storavarvsgatan', data: ErrorData }> => ({ name: 'storavarvsgatan', data: { error: 'Not implemented' } });
+const getStoravarvsgatan6 = async (force: boolean): Promise<{ name: 'storavarvsgatan6', data: SimpleArrayData | ErrorData }> => {
+  const m = moment();
+  let answer: Awaited<ReturnType<typeof getStoravarvsgatan6>>;
+  try {
+    if (force !== true) {
+      const cacheData = getFromCache('storavarvsgatan6');
+      if (cacheData.date === m.format('YYYY-MM-DD')) return cacheData.content;
+    }
+
+    const result = await fetch('https://storavarvsgatan6.se/meny.html');
+    const body = await result.text();
+    const $ = cheerio.load(body);
+
+    const weekNode = $('p:contains("Veckans meny")').first();
+    if (Number(weekNode.text().trim().split('.').pop()) !== m.week()) throw new Error('Weekly menu not yet posted');
+    
+    const weekDayNode = weekNode.siblings(`p:contains(${m.format('dddd')[0].toUpperCase() + m.format('dddd').slice(1)})`);
+    const menu = [];
+    let row = weekDayNode.next();
+    while (row.text().trim() !== '') {
+      menu.push(row.text());
+      row = row.next();
+    }
+
+    answer = {
+      name: 'storavarvsgatan6',
+      data: {
+        info: menu
+      }
+    };
+
+    console.log(answer)
+
+    setInCache(answer);
+
+    return answer;
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Error) answer = { name: 'storavarvsgatan6', data: { error: error.message } };
+    else answer = { name: 'storavarvsgatan6', data: { error: String(error) } };
+    return answer;
+  }
+}
 
 const getThaisushiforyou = async (force: boolean): Promise<{ name: 'thaisushiforyou', data: ErrorData }> => ({ name: 'thaisushiforyou', data: { error: 'Not implemented' } });
 
@@ -449,7 +491,7 @@ app.get('/scrape', async (req, res, next) => {
     getP2(force),
     getGlasklart(force),
     getDockanshamnkrog(force),
-    getStoravarvsgatan(force),
+    getStoravarvsgatan6(force),
     getThaisushiforyou(force),
     getCurryrepublic(force),
     getVhPizzeria(force),
