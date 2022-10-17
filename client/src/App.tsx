@@ -1,15 +1,74 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Grid, Button } from '@mui/material';
 
 import { Maps } from './components/GoogleMaps';
 import { ArrayMenu, SimpleArrayMenu, ObjectMenu, SegmentedMenu, HyperlinkMenu } from './components/Menus';
 
+type ArrayMenu = {
+  name: string;
+  variant: 'Array';
+  url: string;
+  icon: string;
+  lat: number;
+  lng: number;
+  selected: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+  ref: React.RefObject<HTMLDivElement>;
+}
+
+type SimpleArrayMenu = {
+  name: string;
+  variant: 'SimpleArray';
+  url: string;
+  icon: string;
+  lat: number;
+  lng: number;
+  selected: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+  ref: React.RefObject<HTMLDivElement>;
+}
+
+type ObjectMenu = {
+  name: string;
+  variant: 'Object';
+  url: string;
+  icon: string;
+  lat: number;
+  lng: number;
+  selected: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+  ref: React.RefObject<HTMLDivElement>;
+}
+
+type SegmentedMenu = {
+  name: string;
+  variant: 'Segmented';
+  url: string;
+  icon: string;
+  lat: number;
+  lng: number;
+  selected: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+  ref: React.RefObject<HTMLDivElement>;
+}
+
+type HyperlinkMenu = {
+  name: string;
+  variant: 'Hyperlink';
+  url: string;
+  icon: string;
+  href: string;
+  lat: number;
+  lng: number;
+  selected: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+  ref: React.RefObject<HTMLDivElement>;
+}
+
 const App = () => {
   const [data, setData] = useState<any>(null);
 
-  const pins = {
+  const menus: { [key: string]: ArrayMenu | SimpleArrayMenu | ObjectMenu | SegmentedMenu | HyperlinkMenu } = {
     miamarias: {
       name: 'Mia Marias',
+      variant: 'Array',
+      url: 'http://www.miamarias.nu/',
+      icon: '/icons/miamarias.png',
       lat: 55.613306,
       lng: 12.992183,
       selected: useState<boolean>(false),
@@ -17,13 +76,19 @@ const App = () => {
     },
     spill: {
       name: 'Spill',
+      variant: 'SimpleArray',
+      url: 'https://restaurangspill.se/',
+      icon: '/icons/spill.png',
       lat: 55.612801,
       lng: 12.988404,
       selected: useState<boolean>(false),
       ref: useRef<HTMLDivElement>(null),
     },
-    docPiazza: {
+    docpiazza: {
       name: 'Doc Piazza',
+      variant: 'Array',
+      url: 'https://www.facebook.com/docpiazza',
+      icon: '/icons/docpiazza.png',
       lat: 55.614333,
       lng: 12.989664,
       selected: useState<boolean>(false),
@@ -31,6 +96,9 @@ const App = () => {
     },
     kolga: {
       name: 'Kolga',
+      variant: 'SimpleArray',
+      url: 'https://kolga.gastrogate.com/lunch/',
+      icon: '/icons/kolga.png',
       lat: 55.612290,
       lng: 12.998474,
       selected: useState<boolean>(false),
@@ -38,20 +106,19 @@ const App = () => {
     },
     variation: {
       name: 'Variation',
+      variant: 'SimpleArray',
+      url: 'https://www.nyavariation.se/matsedel',
+      icon: '/icons/variation.png',
       lat: 55.607990,
       lng: 12.981666,
       selected: useState<boolean>(false),
       ref: useRef<HTMLDivElement>(null),
     },
-    namndo: {
-      name: 'Nam Do',
-      lat: 55.604493,
-      lng: 12.997683,
-      selected: useState<boolean>(false),
-      ref: useRef<HTMLDivElement>(null),
-    },
     p2: {
       name: 'P2',
+      variant: 'Array',
+      url: 'https://www.restaurangp2.se/lunch',
+      icon: '/icons/p2.png',
       lat: 55.614380,
       lng: 12.988521,
       selected: useState<boolean>(false),
@@ -59,6 +126,9 @@ const App = () => {
     },
     glasklart: {
       name: 'Glasklart',
+      variant: 'Array',
+      url: 'https://glasklart.eu/sv/lunch/',
+      icon: '/icons/glasklart.svg',
       lat: 55.614924,
       lng: 12.990561,
       selected: useState<boolean>(false),
@@ -66,59 +136,84 @@ const App = () => {
     },
     dockanshamnkrog: {
       name: 'Dockans Hamnkrog',
+      variant: 'SimpleArray',
+      url: 'http://dockanshamnkrog.se/lunchmeny/',
       lat: 55.615186,
       lng: 12.988838,
       selected: useState<boolean>(false),
       ref: useRef<HTMLDivElement>(null),
+      icon: '/icons/dockanshamnkrog.png'
     },
     curryrepublik: {
       name: 'Curry Republik',
+      variant: 'SimpleArray',
+      url: 'https://www.wokkitchen.se/curry_meny.html',
       lat: 55.611586,
       lng: 12.980412,
       selected: useState<boolean>(false),
       ref: useRef<HTMLDivElement>(null),
+      icon: '/icons/lol.png'
     },
-    vhp: {
-      name: 'Västra Hamnens Pizzeria',
-      lat: 55.616906,
-      lng: 12.979608,
+    namdo: {
+      name: 'Nam Do',
+      variant: 'Array',
+      url: 'http://namdo.se/meny/',
+      lat: 55.604493,
+      lng: 12.997683,
       selected: useState<boolean>(false),
       ref: useRef<HTMLDivElement>(null),
+      icon: '/icons/namdo.svg'
     },
-    dockside: {
+    docksideburgers: {
       name: 'Dockside Burgers',
+      variant: 'SimpleArray',
+      url: 'https://www.docksideburgers.se/',
       lat: 55.614418,
       lng: 12.990020,
       selected: useState<boolean>(false),
       ref: useRef<HTMLDivElement>(null),
+      icon: '/icons/lol.png'
     },
     storavarvsgatan6: {
       name: 'Stora Varvsgatan 6',
+      variant: 'SimpleArray',
+      url: 'https://storavarvsgatan6.se/meny.html',
       lat: 55.612501,
       lng: 12.991662,
       selected: useState<boolean>(false),
       ref: useRef<HTMLDivElement>(null),
+      icon: '/icons/storavarvsgatan6.png'
     },
     laziza: {
       name: 'Laziza Dockan',
+      variant: 'SimpleArray',
+      url: 'https://www.laziza.se/restaurang/',
       lat: 55.614113,
       lng: 12.988982,
       selected: useState<boolean>(false),
       ref: useRef<HTMLDivElement>(null),
+      icon: '/icons/laziza.webp'
     },
     thaisushiforyou: {
       name: 'Thai n Sushi for you',
+      variant: 'SimpleArray',
+      url: 'https://vhamnen.thainsushiforyou.se/',
       lat: 55.614201,
       lng: 12.981888,
       selected: useState<boolean>(false),
       ref: useRef<HTMLDivElement>(null),
+      icon: '/icons/thaisushi.png'
     },
     mrsSaigon: {
       name: 'Mrs Saigon',
+      variant: 'Hyperlink',
+      url: 'https://www.mrs-saigon.se/',
+      icon: '/icons/mrssaigon.png',
+      href: 'https://www.mrs-saigon.se/menyer',
       lat: 55.603335,
       lng: 12.998333,
       selected: useState<boolean>(false),
-      ref: useRef<HTMLDivElement>(null),
+      ref: useRef<HTMLDivElement>(null)
     }
   };
 
@@ -138,76 +233,87 @@ const App = () => {
     getData(force);
   };
 
-  const showSelected = (element: any) => {
-    //el.classList.toggle(classes.selected);
-    setTimeout(() => {
-      //el.classList.toggle(classes.selected);
-    }, 1500);
-
-    element.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
-    <>
-      <main>
-        <Maps pins={pins} />
-        <Grid container spacing={2} style={{ width: 'calc(100% - 5px)', margin: '5px' }}>
-          <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <ArrayMenu header={'Mia Marias'} url={'http://www.miamarias.nu/'} icon='/icons/miamarias.png' showSelected={pins.miamarias.selected[0]} data={data?.miamarias} ref={pins.miamarias.ref} />
-          </Grid>
-          <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <SimpleArrayMenu header={'Spill'} url={'https://restaurangspill.se/'} icon='/icons/spill.png' showSelected={pins.spill.selected[0]} data={data?.spill} ref={pins.spill.ref} />
-          </Grid>
-          <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <ArrayMenu header={'Doc Piazza'} url={'https://www.facebook.com/docpiazza'} icon='/icons/docpiazza.png' showSelected={pins.docPiazza.selected[0]} data={data?.docpiazza} ref={pins.docPiazza.ref} />
-          </Grid>
-          <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <SimpleArrayMenu header={'Kolga'} url={'https://kolga.gastrogate.com/lunch/'} icon='/icons/kolga.png' showSelected={pins.kolga.selected[0]} data={data?.kolga} ref={pins.kolga.ref} />
-          </Grid>
-          <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <SimpleArrayMenu header={'Variation'} url={'https://www.nyavariation.se/matsedel'} icon='/icons/variation.png' showSelected={pins.variation.selected[0]} data={data?.variation} ref={pins.variation.ref} />
-          </Grid>
-          <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <ArrayMenu header={'P2'} url={'https://www.restaurangp2.se/lunch'} icon='/icons/p2.png' showSelected={pins.p2.selected[0]} data={data?.p2} ref={pins.p2.ref} />
-          </Grid>
-          <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <ArrayMenu header={'Glasklart'} url={'https://glasklart.eu/sv/lunch/'} icon='/icons/glasklart.svg' showSelected={pins.glasklart.selected[0]} data={data?.glasklart} ref={pins.glasklart.ref} />
-          </Grid>
-          <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <SimpleArrayMenu header={'Dockans Hamnkrog'} url={'http://dockanshamnkrog.se/lunchmeny/'} icon='/icons/dockanshamnkrog.png' showSelected={pins.dockanshamnkrog.selected[0]} data={data?.dockanshamnkrog} ref={pins.dockanshamnkrog.ref} />
-          </Grid>
-          <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <SimpleArrayMenu header={'Curry Republik'} url={'https://www.wokkitchen.se/curry_meny.html'} icon='/icons/lol.png' showSelected={pins.curryrepublik.selected[0]} data={data?.curryrepublik} ref={pins.curryrepublik.ref} />
-          </Grid>
-          <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <ArrayMenu header={'Nam Do'} url={'http://namdo.se/meny/'} icon={'/icons/namdo.svg'} showSelected={pins.namndo.selected[0]} data={data?.namdo} ref={pins.namndo.ref} />
-          </Grid>
-          <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <SimpleArrayMenu header={'Västra Hamnens Pizzeria'} url={'http://www.vhpizzeria.se/'} icon='/icons/vhp.png' showSelected={pins.vhp.selected[0]} data={data?.vhPizzeria} ref={pins.vhp.ref} />
-          </Grid>
-          <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <SimpleArrayMenu header={'Dockside Burgers'} url={'https://www.docksideburgers.se/'} icon='/icons/lol.png' showSelected={pins.dockside.selected[0]} data={data?.docksideburgers} ref={pins.dockside.ref} />
-          </Grid>
-          <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <SimpleArrayMenu header={'Stora Varvsgatan 6'} url={'https://storavarvsgatan6.se/meny.html'} icon='/icons/storavarvsgatan6.png' showSelected={pins.storavarvsgatan6.selected[0]} data={data?.storavarvsgatan6} ref={pins.storavarvsgatan6.ref} />
-          </Grid>
-          <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <SimpleArrayMenu header={'Laziza Dockan'} url={'https://www.laziza.se/restaurang/'} icon='/icons/laziza.webp' showSelected={pins.laziza.selected[0]} data={data?.laziza} ref={pins.laziza.ref} />
-          </Grid>
-          <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <SimpleArrayMenu header={'Thai n Sushi for you'} url={'https://vhamnen.thainsushiforyou.se/'} icon='/icons/thaisushi.png' showSelected={pins.thaisushiforyou.selected[0]} data={data?.thaisushiforyou} ref={pins.thaisushiforyou.ref} />
-          </Grid>
-          <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-            <HyperlinkMenu header={'Mrs Saigon'} url={'https://www.mrs-saigon.se/'} icon='/icons/mrssaigon.png' href='https://www.mrs-saigon.se/menyer' showSelected={pins.mrsSaigon.selected[0]} ref={pins.mrsSaigon.ref} />
-          </Grid>
-        </Grid>
+    <main>
+      <Maps pins={menus} />
+      <Grid container spacing={2} style={{ width: 'calc(100% - 5px)', margin: '5px' }}>
+        {Object.keys(menus).map((key) => {
+          const menu = menus[key];
 
-        <Grid container justifyContent='flex-end'>
-          <Button variant='contained' onClick={() => recheck(false)}>Recheck</Button>
-          <Button variant='contained' onClick={() => recheck(true)}>Recheck (force)</Button>
-        </Grid>
-      </main>
-    </>
+          switch (menu.variant) {
+            case 'Array':
+              return (
+                <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
+                  <ArrayMenu
+                    header={menu.name}
+                    url={menu.url}
+                    icon={menu.icon}
+                    showSelected={menu.selected[0]}
+                    data={data?.[key]}
+                    ref={menu.ref}
+                  />
+                </Grid>
+              );
+            case 'SimpleArray':
+              return (
+                <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
+                  <SimpleArrayMenu
+                    header={menu.name}
+                    url={menu.url}
+                    icon={menu.icon}
+                    showSelected={menu.selected[0]}
+                    data={data?.[key]}
+                    ref={menu.ref}
+                  />
+                </Grid>
+              );
+            case 'Object':
+              return (
+                <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
+                  <ObjectMenu
+                    header={menu.name}
+                    url={menu.url}
+                    icon={menu.icon}
+                    showSelected={menu.selected[0]}
+                    data={data?.[key]}
+                    ref={menu.ref}
+                  />
+                </Grid>
+              );
+            case 'Segmented':
+              return (
+                <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
+                  <SegmentedMenu
+                    header={menu.name}
+                    url={menu.url}
+                    icon={menu.icon}
+                    showSelected={menu.selected[0]}
+                    data={data?.[key]}
+                    ref={menu.ref}
+                  />
+                </Grid>
+              )
+            case 'Hyperlink':
+              return (
+                <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
+                  <HyperlinkMenu
+                    header={menu.name}
+                    url={menu.url}
+                    icon={menu.icon}
+                    showSelected={menu.selected[0]}
+                    href={menu.href}
+                    ref={menu.ref}
+                  />
+                </Grid>
+              );
+          }
+        })}
+      </Grid>
+      <Grid container justifyContent='flex-end'>
+        <Button variant='contained' onClick={() => recheck(false)}>Recheck</Button>
+        <Button variant='contained' onClick={() => recheck(true)}>Recheck (force)</Button>
+      </Grid>
+    </main>
   );
 };
 

@@ -455,8 +455,6 @@ const getStoravarvsgatan6 = async (force: boolean): Promise<{ name: 'storavarvsg
       }
     };
 
-    console.log(answer)
-
     setInCache(answer);
 
     return answer;
@@ -471,8 +469,6 @@ const getStoravarvsgatan6 = async (force: boolean): Promise<{ name: 'storavarvsg
 const getThaisushiforyou = async (force: boolean): Promise<{ name: 'thaisushiforyou', data: ErrorData }> => ({ name: 'thaisushiforyou', data: { error: 'Not implemented' } });
 
 const getCurryrepublic = async (force: boolean): Promise<{ name: 'curryrepublik', data: ErrorData }> => ({ name: 'curryrepublik', data: { error: 'Not implemented' } });
-
-const getVhPizzeria = async (force: boolean): Promise<{ name: 'vhPizzeria', data: SimpleArrayData | ErrorData }> => ({ name: 'vhPizzeria', data: { info: ['Pizzabuffé'] } });
 
 const getDocksideBurgers = async (force: boolean): Promise<{ name: 'docksideburgers', data: SimpleArrayData | ErrorData }> => ({ name: 'docksideburgers', data: { info: ['Burgare', 'Månadens burgare'] } });
 
@@ -494,7 +490,6 @@ app.get('/scrape', async (req, res, next) => {
     getStoravarvsgatan6(force),
     getThaisushiforyou(force),
     getCurryrepublic(force),
-    getVhPizzeria(force),
     getDocksideBurgers(force),
     getLaziza(force)
   ])).reduce<{ [key: string]: SimpleArrayData | ArrayData | ErrorData }>((obj, curr) => {
