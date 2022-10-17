@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Grid, Button } from '@mui/material';
+import { Button } from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2'; // TODO: Replace with import from @mui/material when stable
 
 import { Maps } from './components/GoogleMaps';
 import { ArrayMenu, SimpleArrayMenu, ObjectMenu, SegmentedMenu, HyperlinkMenu } from './components/Menus';
@@ -230,78 +231,74 @@ const App = () => {
   return (
     <main>
       <Maps pins={menus} />
-      <Grid container spacing={2} style={{ width: 'calc(100% - 5px)', margin: '5px' }}>
+      <Grid container spacing={2} sx={{ width: 'calc(100%)', margin: 0 }}>
         {Object.keys(menus).map((key) => {
           const menu = menus[key];
 
-          switch (menu.variant) {
-            case 'Array':
-              return (
-                <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-                  <ArrayMenu
-                    header={menu.name}
-                    url={menu.url}
-                    icon={menu.icon}
-                    showSelected={menu.selected[0]}
-                    data={data?.[key]}
-                    ref={menu.ref}
-                  />
-                </Grid>
-              );
-            case 'SimpleArray':
-              return (
-                <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-                  <SimpleArrayMenu
-                    header={menu.name}
-                    url={menu.url}
-                    icon={menu.icon}
-                    showSelected={menu.selected[0]}
-                    data={data?.[key]}
-                    ref={menu.ref}
-                  />
-                </Grid>
-              );
-            case 'Object':
-              return (
-                <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-                  <ObjectMenu
-                    header={menu.name}
-                    url={menu.url}
-                    icon={menu.icon}
-                    showSelected={menu.selected[0]}
-                    data={data?.[key]}
-                    ref={menu.ref}
-                  />
-                </Grid>
-              );
-            case 'Segmented':
-              return (
-                <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-                  <SegmentedMenu
-                    header={menu.name}
-                    url={menu.url}
-                    icon={menu.icon}
-                    showSelected={menu.selected[0]}
-                    data={data?.[key]}
-                    ref={menu.ref}
-                  />
-                </Grid>
-              )
-            case 'Hyperlink':
-              return (
-                <Grid item xs={2} sx={{ minWidth: '300px', height: '100%' }}>
-                  <HyperlinkMenu
-                    header={menu.name}
-                    url={menu.url}
-                    icon={menu.icon}
-                    showSelected={menu.selected[0]}
-                    href={menu.href}
-                    text={menu.text}
-                    ref={menu.ref}
-                  />
-                </Grid>
-              );
-          }
+          return (
+            <Grid key={key} xs={2}>
+              {(() => {
+                switch (menu.variant) {
+                  case 'Array':
+                    return (
+                      <ArrayMenu
+                        header={menu.name}
+                        url={menu.url}
+                        icon={menu.icon}
+                        showSelected={menu.selected[0]}
+                        data={data?.[key]}
+                        ref={menu.ref}
+                      />
+                    );
+                  case 'SimpleArray':
+                    return (
+                      <SimpleArrayMenu
+                        header={menu.name}
+                        url={menu.url}
+                        icon={menu.icon}
+                        showSelected={menu.selected[0]}
+                        data={data?.[key]}
+                        ref={menu.ref}
+                      />
+                    );
+                  case 'Object':
+                    return (
+                      <ObjectMenu
+                        header={menu.name}
+                        url={menu.url}
+                        icon={menu.icon}
+                        showSelected={menu.selected[0]}
+                        data={data?.[key]}
+                        ref={menu.ref}
+                      />
+                    );
+                  case 'Segmented':
+                    return (
+                      <SegmentedMenu
+                        header={menu.name}
+                        url={menu.url}
+                        icon={menu.icon}
+                        showSelected={menu.selected[0]}
+                        data={data?.[key]}
+                        ref={menu.ref}
+                      />
+                    )
+                  case 'Hyperlink':
+                    return (
+                      <HyperlinkMenu
+                        header={menu.name}
+                        url={menu.url}
+                        icon={menu.icon}
+                        showSelected={menu.selected[0]}
+                        href={menu.href}
+                        text={menu.text}
+                        ref={menu.ref}
+                      />
+                    );
+                }
+              })()}
+            </Grid>
+          )
         })}
       </Grid>
       <Grid container justifyContent='flex-end'>
