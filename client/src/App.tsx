@@ -53,6 +53,7 @@ type HyperlinkMenu = {
   variant: 'Hyperlink';
   url: string;
   icon: string;
+  text: string;
   href: string;
   lat: number;
   lng: number;
@@ -86,9 +87,11 @@ const App = () => {
     },
     docpiazza: {
       name: 'Doc Piazza',
-      variant: 'Array',
+      variant: 'Hyperlink',
       url: 'https://www.facebook.com/docpiazza',
       icon: '/icons/docpiazza.png',
+      text: 'Meny på FB',
+      href: 'https://www.facebook.com/docpiazza',
       lat: 55.614333,
       lng: 12.989664,
       selected: useState<boolean>(false),
@@ -97,7 +100,7 @@ const App = () => {
     kolga: {
       name: 'Kolga',
       variant: 'SimpleArray',
-      url: 'https://kolga.gastrogate.com/lunch/',
+      url: 'https://kolga.gastrogate.com/',
       icon: '/icons/kolga.png',
       lat: 55.612290,
       lng: 12.998474,
@@ -107,7 +110,7 @@ const App = () => {
     variation: {
       name: 'Variation',
       variant: 'SimpleArray',
-      url: 'https://www.nyavariation.se/matsedel',
+      url: 'https://www.nyavariation.se',
       icon: '/icons/variation.png',
       lat: 55.607990,
       lng: 12.981666,
@@ -117,27 +120,17 @@ const App = () => {
     p2: {
       name: 'P2',
       variant: 'Array',
-      url: 'https://www.restaurangp2.se/lunch',
+      url: 'https://www.restaurangp2.se',
       icon: '/icons/p2.png',
       lat: 55.614380,
       lng: 12.988521,
       selected: useState<boolean>(false),
       ref: useRef<HTMLDivElement>(null),
     },
-    glasklart: {
-      name: 'Glasklart',
-      variant: 'Array',
-      url: 'https://glasklart.eu/sv/lunch/',
-      icon: '/icons/glasklart.svg',
-      lat: 55.614924,
-      lng: 12.990561,
-      selected: useState<boolean>(false),
-      ref: useRef<HTMLDivElement>(null),
-    },
     dockanshamnkrog: {
       name: 'Dockans Hamnkrog',
       variant: 'SimpleArray',
-      url: 'http://dockanshamnkrog.se/lunchmeny/',
+      url: 'http://dockanshamnkrog.se',
       lat: 55.615186,
       lng: 12.988838,
       selected: useState<boolean>(false),
@@ -147,7 +140,7 @@ const App = () => {
     curryrepublik: {
       name: 'Curry Republik',
       variant: 'SimpleArray',
-      url: 'https://www.wokkitchen.se/curry_meny.html',
+      url: 'https://www.wokkitchen.se',
       lat: 55.611586,
       lng: 12.980412,
       selected: useState<boolean>(false),
@@ -157,7 +150,7 @@ const App = () => {
     namdo: {
       name: 'Nam Do',
       variant: 'Array',
-      url: 'http://namdo.se/meny/',
+      url: 'http://namdo.se',
       lat: 55.604493,
       lng: 12.997683,
       selected: useState<boolean>(false),
@@ -167,7 +160,7 @@ const App = () => {
     docksideburgers: {
       name: 'Dockside Burgers',
       variant: 'SimpleArray',
-      url: 'https://www.docksideburgers.se/',
+      url: 'https://www.docksideburgers.se',
       lat: 55.614418,
       lng: 12.990020,
       selected: useState<boolean>(false),
@@ -177,7 +170,7 @@ const App = () => {
     storavarvsgatan6: {
       name: 'Stora Varvsgatan 6',
       variant: 'SimpleArray',
-      url: 'https://storavarvsgatan6.se/meny.html',
+      url: 'https://storavarvsgatan6.se',
       lat: 55.612501,
       lng: 12.991662,
       selected: useState<boolean>(false),
@@ -187,7 +180,7 @@ const App = () => {
     laziza: {
       name: 'Laziza Dockan',
       variant: 'SimpleArray',
-      url: 'https://www.laziza.se/restaurang/',
+      url: 'https://www.laziza.se',
       lat: 55.614113,
       lng: 12.988982,
       selected: useState<boolean>(false),
@@ -197,7 +190,7 @@ const App = () => {
     thaisushiforyou: {
       name: 'Thai n Sushi for you',
       variant: 'SimpleArray',
-      url: 'https://vhamnen.thainsushiforyou.se/',
+      url: 'https://vhamnen.thainsushiforyou.se',
       lat: 55.614201,
       lng: 12.981888,
       selected: useState<boolean>(false),
@@ -207,9 +200,10 @@ const App = () => {
     mrsSaigon: {
       name: 'Mrs Saigon',
       variant: 'Hyperlink',
-      url: 'https://www.mrs-saigon.se/',
+      url: 'https://www.mrs-saigon.se',
       icon: '/icons/mrssaigon.png',
-      href: 'https://www.mrs-saigon.se/menyer',
+      text: 'Oförändrande lunchmeny',
+      href: 'https://www.mrs-saigon.se/meny/',
       lat: 55.603335,
       lng: 12.998333,
       selected: useState<boolean>(false),
@@ -302,6 +296,7 @@ const App = () => {
                     icon={menu.icon}
                     showSelected={menu.selected[0]}
                     href={menu.href}
+                    text={menu.text}
                     ref={menu.ref}
                   />
                 </Grid>

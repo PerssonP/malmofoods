@@ -9,6 +9,7 @@ import cors from 'cors';
 import useragent from 'express-useragent';
 import NodeCache from 'node-cache';
 import type { ErrorRequestHandler } from 'express';
+import { data } from 'cheerio/lib/api/attributes';
 
 type SimpleArrayData = {
   info: string[];
@@ -130,50 +131,6 @@ const getSpill = async (force: boolean): Promise<{ name: 'spill'; data: SimpleAr
     console.log(error);
     if (error instanceof Error) answer = { name: 'spill', data: { error: error.message } };
     else answer = { name: 'spill', data: { error: String(error) } };
-    return answer;
-  }
-};
-
-const getDocpiazza = async (force: boolean): Promise<{ name: 'docpiazza', data: ErrorData }> => {
-  const m = moment();
-  let answer: Awaited<ReturnType<typeof getDocpiazza>>;
-  try {
-    throw new Error('Meny saknas');
-    /*
-    if (force !== true) {
-      const file = getFile('./files/docpiazza.json');
-      if (file.date === m.format('YYYY-MM-DD')) {
-        return file.content;
-      }
-    }
-
-    const result = await fetch('https://kyparn.se/ort/malmo/doc-piazza');
-    const body = await result.text();
-    const $ = cheerio.load(body);
-
-    const headers = $('div.restaurang-content h2.rubrik');
-
-    if (headers.length < 1) throw new Error('Parsing failed');
-    if (!$(headers[0]).text().endsWith(m.week())) throw new Error('Wrong week');
-
-
-    let weekday = moment.localeData('en').weekdays()[enM.weekday()];
-    const titles = $(`div.${weekday.toLowerCase()} h3.rubrik`)
-    const descriptions = $(`div.${weekday.toLowerCase()} p.beskrivning`).toArray();
-
-    if (titles.length !== descriptions.length) throw new Error('Parsing failed');
-
-    answer.data = titles.map((i, el) => ({ title: $(descriptions[i]).text(), description: $(el).text() })).toArray(); // Yes, title and description is reversed
-
-    fs.writeFile('./files/docpiazza.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
-      if (err) throw err;
-    });
-
-    return answer;*/
-  } catch (error) {
-    console.log(error);
-    if (error instanceof Error) answer = { name: 'docpiazza', data: { error: error.message } };
-    else answer = { name: 'docpiazza', data: { error: String(error) } };
     return answer;
   }
 };
@@ -326,96 +283,41 @@ const getP2 = async (force: boolean): Promise<{ name: 'p2'; data: ArrayData | Er
   }
 };
 
-const getGlasklart = async (force: boolean): Promise<{ name: 'glasklart', data: ErrorData }> => {
-  const m = moment();
-  let answer: Awaited<ReturnType<typeof getGlasklart>>;
-  answer = { name: 'glasklart', data: { error: 'Tillsvidare håller lunchrestaurangen stängt.' } };
-  return answer;
-  /*
-  try {
-    if (force !== true) {
-      const file = getFile('./files/glasklart.json');
-      if (file.date === m.format('YYYY-MM-DD')) {
-        return file.content;
-      }
-    }
-
-    const result = await fetch('https://glasklart.eu/sv/lunch/');
-    const body = await result.text();
-    const $ = cheerio.load(body);
-
-    const weekNode = $('ul h2').first();
-    if (!weekNode.text().endsWith(m.week())) throw new Error('Wrong week!');
-
-    const h4 = weekNode.siblings('h4').toArray();
-    const todayNode = $(h4.find(el => $(el).text().toLowerCase() === m.format('dddd')));
-    if (todayNode.length !== 1) throw new Error('Wrong day!');
-
-    const vegNode = $(h4[h4.length - 1]);
-
-    answer.data = [
-      { title: '', description: todayNode.next().text() },
-      { title: vegNode.text(), description: vegNode.next().text() }
-    ];
-
-    fs.writeFile('./files/glasklart.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
-      if (err) throw err;
-    });
-
-    return answer;
-  } catch (err) {
-    console.log(err);
-    return { name: answer.name, data: { error: err.toString() } };
-  }*/
-};
-
-const getDockanshamnkrog = async (force: boolean): Promise<{ name: 'dockanshamnkrog', data: ErrorData }> => {
+const getDockanshamnkrog = async (force: boolean): Promise<{ name: 'dockanshamnkrog', data: SimpleArrayData | ErrorData }> => {
   const m = moment();
   let answer: Awaited<ReturnType<typeof getDockanshamnkrog>>;
   try {
-    throw new Error('Not implemented');
-    /*
     if (force !== true) {
-      const file = getFile('./files/arstiderna.json');
-      if (file.date === m.format('YYYY-MM-DD')) {
-        return file.content;
-      }
+      const cacheData = getFromCache('dockanshamnkrog');
+      if (cacheData.date === m.format('YYYY-MM-DD')) return cacheData.content;
     }
-
     
     const result = await fetch('http://dockanshamnkrog.se/lunchmeny/');
     const body = await result.text();
     const $ = cheerio.load(body);
 
-    let weekNode = $()
+    const menu = $('h2:contains(Lunch)').parent();
+    const week = menu.children(':contains(VECKA)');
+    if (!week.text().trim().endsWith(m.week().toString())) {
+      throw new Error('Wrong week');
+    }
+
+    const day = menu.children(`p:contains(${m.format('dddd')[0].toUpperCase() + m.format('dddd').slice(1)})`)
+
+    if (day.text() === '') throw new Error('Day not found');
     
-
-    
-    const result = await fetch('http://arstidernabythesea.se/lunch/');
-    const body = await result.text();
-    const $ = cheerio.load(body);
-
-    const weekNode = $('.fy-content h3 span');
-    if (!weekNode.text().endsWith(m.week())) throw new Error('Wrong week!');
-
-    const today = m.format('dddd').charAt(0).toUpperCase() + m.format('dddd').slice(1);
-    const tomorrow = moment().add(1, 'day').format('dddd');
-    const todayNode = weekNode.parent().siblings(`:contains(${today})`);
-    if (todayNode.length !== 1) throw new Error('Wrong day!');
-
-    answer.data = [];
-    let current = todayNode.next();
-    while(current.text().toLowerCase() !== tomorrow && current.text().trim() !== '') {
-      answer.data.push(current.text().slice(0, current.text().lastIndexOf(' ')).trim());
-      current = current.next();
+    answer = {
+      name: 'dockanshamnkrog',
+      data: {
+        info: [
+          day.text().split('\n')[1]
+        ]
+      }
     }
     
+    setInCache(answer);
 
-    fs.writeFile('./files/arstiderna.json', JSON.stringify({ date: m.format('YYYY-MM-DD'), content: answer }), err => {
-      if (err) throw err;
-    });
-
-    return answer;*/
+    return answer;
   } catch (error) {
     console.log(error);
     if (error instanceof Error) answer = { name: 'dockanshamnkrog', data: { error: error.message } };
@@ -480,12 +382,10 @@ app.get('/scrape', async (req, res, next) => {
   const answer = (await Promise.all([
     getMiamarias(force),
     getSpill(force),
-    getDocpiazza(force),
     getKolga(force),
     getNamdo(force),
     getVariation(force),
     getP2(force),
-    getGlasklart(force),
     getDockanshamnkrog(force),
     getStoravarvsgatan6(force),
     getThaisushiforyou(force),
