@@ -2,22 +2,15 @@ import { GoogleMap, LoadScriptNext } from '@react-google-maps/api';
 import { Box } from '@mui/material';
 
 import { Pin } from '../components/Pin';
+import type { ArrayMenu, SimpleArrayMenu, ObjectMenu, SegmentedMenu, HyperlinkMenu } from '../App';
 
 type MapsProps = {
   pins: {
-    [key: string]: PinData
+    [key: string]: ArrayMenu | SimpleArrayMenu | ObjectMenu | SegmentedMenu | HyperlinkMenu
   }
 }
 
-type PinData = {
-  name: string;
-  lat: number;
-  lng: number;
-  selected: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
-  ref: React.RefObject<HTMLDivElement>;
-}
-
-const showSelected = (pin: PinData) => {
+const showSelected = (pin: ArrayMenu | SimpleArrayMenu | ObjectMenu | SegmentedMenu | HyperlinkMenu) => {
   if (pin.ref.current === null) {
     console.log(`Element ref is null. This shouldn't happen`);
     return;
@@ -55,6 +48,7 @@ export const Maps = ({ pins }: MapsProps) => (
           <Pin
             key={pin.name}
             position={{ lat: pin.lat, lng: pin.lng }}
+            title={pin.name}
             handleClick={() => showSelected(pin)}
           />
         ))}

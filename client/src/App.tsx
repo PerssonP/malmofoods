@@ -4,7 +4,7 @@ import { Grid, Button } from '@mui/material';
 import { Maps } from './components/GoogleMaps';
 import { ArrayMenu, SimpleArrayMenu, ObjectMenu, SegmentedMenu, HyperlinkMenu } from './components/Menus';
 
-type ArrayMenu = {
+export type ArrayMenu = {
   name: string;
   variant: 'Array';
   url: string;
@@ -15,7 +15,7 @@ type ArrayMenu = {
   ref: React.RefObject<HTMLDivElement>;
 }
 
-type SimpleArrayMenu = {
+export type SimpleArrayMenu = {
   name: string;
   variant: 'SimpleArray';
   url: string;
@@ -26,7 +26,7 @@ type SimpleArrayMenu = {
   ref: React.RefObject<HTMLDivElement>;
 }
 
-type ObjectMenu = {
+export type ObjectMenu = {
   name: string;
   variant: 'Object';
   url: string;
@@ -37,7 +37,7 @@ type ObjectMenu = {
   ref: React.RefObject<HTMLDivElement>;
 }
 
-type SegmentedMenu = {
+export type SegmentedMenu = {
   name: string;
   variant: 'Segmented';
   url: string;
@@ -48,7 +48,7 @@ type SegmentedMenu = {
   ref: React.RefObject<HTMLDivElement>;
 }
 
-type HyperlinkMenu = {
+export type HyperlinkMenu = {
   name: string;
   variant: 'Hyperlink';
   url: string;

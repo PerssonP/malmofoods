@@ -9,7 +9,6 @@ import cors from 'cors';
 import useragent from 'express-useragent';
 import NodeCache from 'node-cache';
 import type { ErrorRequestHandler } from 'express';
-import { data } from 'cheerio/lib/api/attributes';
 
 type SimpleArrayData = {
   info: string[];
