@@ -1,4 +1,3 @@
-import React from 'react';
 import { GoogleMap, LoadScriptNext } from '@react-google-maps/api';
 import { Box } from '@mui/material';
 
@@ -6,22 +5,30 @@ import { Pin } from '../components/Pin';
 
 type MapsProps = {
   pins: {
-    [key: string]: {
-      name: string;
-      lat: number;
-      lng: number;
-      ref: React.MutableRefObject<null>,
-    }
+    [key: string]: PinData
   }
 }
 
-const showSelected = (element: any) => {
-  //el.classList.toggle(classes.selected);
+type PinData = {
+  name: string;
+  lat: number;
+  lng: number;
+  selected: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+  ref: React.RefObject<HTMLDivElement>;
+}
+
+const showSelected = (pin: PinData) => {
+  if (pin.ref.current === null) {
+    console.log(`Element ref is null. This shouldn't happen`);
+    return;
+  }
+
+  pin.selected[1](true);
   setTimeout(() => {
-    //el.classList.toggle(classes.selected);
+    pin.selected[1](false);
   }, 1500);
 
-  element.scrollIntoView({ behavior: 'smooth' });
+  pin.ref.current.scrollIntoView({ behavior: 'smooth' });
 };
 
 export const Maps = ({ pins }: MapsProps) => (
@@ -44,15 +51,14 @@ export const Maps = ({ pins }: MapsProps) => (
           ]
         }}
       >
-          {Object.values(pins).map((pin) => (
-            <Pin
-              key={pin.name}
-              position={{ lat: pin.lat, lng: pin.lng }}
-              handleClick={() => showSelected(pin.ref.current)}
-            />
-          ))}
+        {Object.values(pins).map((pin) => (
+          <Pin
+            key={pin.name}
+            position={{ lat: pin.lat, lng: pin.lng }}
+            handleClick={() => showSelected(pin)}
+          />
+        ))}
       </GoogleMap>
     </LoadScriptNext>
   </Box>
-)
-
+);

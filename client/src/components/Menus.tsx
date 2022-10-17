@@ -5,10 +5,28 @@ type MenuProps = {
   header: string;
   url: string;
   icon: string;
+  showSelected: boolean;
 }
 
-const Menu = React.forwardRef<HTMLDivElement, MenuProps & { children: JSX.Element }>(({ header, url, icon, children }, ref) => (
-  <Paper ref={ref}>
+const Menu = React.forwardRef<HTMLDivElement, MenuProps & { children: JSX.Element }>(({ header, url, icon, showSelected, children }, ref) => (
+  <Paper
+    ref={ref}
+    sx={{
+      '@keyframes pulse': {
+        '0%': {
+          boxShadow: '0 0 3pt 2pt rgba(230, 0, 0, 0)'
+        },
+        '50%': {
+          boxShadow: '0 0 3pt 2pt rgba(230, 0, 0, 0.75)'
+        },
+        '100%': {
+          boxShadow: '0 0 3pt 2pt rgba(230, 0, 0, 0)'
+        }
+      },
+      animation: showSelected ? 'pulse 0.5s 2 0.5s' : ''
+    }}
+
+  >
     <List>
       <ListItem>
         <ListItemAvatar>
@@ -32,11 +50,12 @@ type SimpleArrayData = {
   error: string;
 } | null;
 
-export const SimpleArrayMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: SimpleArrayData }>(({ header, url, icon, data }, ref) => (
+export const SimpleArrayMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: SimpleArrayData }>(({ header, url, icon, showSelected, data }, ref) => (
   <Menu
     header={header}
     url={url}
     icon={icon}
+    showSelected={showSelected}
     ref={ref}
   >
     {data == null || data.error !== undefined ?
@@ -67,11 +86,12 @@ type ArrayData = {
   error: string;
 } | null;
 
-export const ArrayMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: ArrayData }>(({ header, url, icon, data }, ref) => (
+export const ArrayMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: ArrayData }>(({ header, url, icon, showSelected, data }, ref) => (
   <Menu
     header={header}
     url={url}
     icon={icon}
+    showSelected={showSelected}
     ref={ref}
   >
     {data == null || data.error !== undefined ?
@@ -101,11 +121,12 @@ type ObjectData = {
   error: string;
 } | null;
 
-export const ObjectMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: ObjectData }>(({ header, url, icon, data }, ref) => (
+export const ObjectMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: ObjectData }>(({ header, url, icon, showSelected, data }, ref) => (
   <Menu
     header={header}
     url={url}
     icon={icon}
+    showSelected={showSelected}
     ref={ref}
   >
     {data == null || data.error !== undefined ?
@@ -139,11 +160,12 @@ type SegmentedData = {
   error: string;
 } | null;
 
-export const SegmentedMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: SegmentedData }>(({ header, url, icon, data }, ref) => (
+export const SegmentedMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: SegmentedData }>(({ header, url, icon, showSelected, data }, ref) => (
   <Menu
     header={header}
     url={url}
     icon={icon}
+    showSelected={showSelected}
     ref={ref}
   >
     {data == null || data.error !== undefined ?
@@ -172,11 +194,12 @@ export const SegmentedMenu = React.forwardRef<HTMLDivElement, MenuProps & { data
 ));
 SegmentedMenu.displayName = 'SegmentedMenu';
 
-export const HyperlinkMenu = React.forwardRef<HTMLDivElement, MenuProps & { href: string }>(({ header, url, icon, href }, ref) => (
+export const HyperlinkMenu = React.forwardRef<HTMLDivElement, MenuProps & { href: string }>(({ header, url, icon, showSelected, href }, ref) => (
   <Menu
     header={header}
     url={url}
     icon={icon}
+    showSelected={showSelected}
     ref={ref}
   >
     <ListItem>
