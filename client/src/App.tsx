@@ -231,12 +231,22 @@ const App = () => {
   return (
     <main>
       <Maps pins={menus} />
-      <Grid container spacing={2} sx={{ width: 'calc(100%)', margin: 0 }}>
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          margin: '0'
+        }}
+      >
         {Object.keys(menus).map((key) => {
           const menu = menus[key];
 
           return (
-            <Grid key={key} xs={2}>
+            <Grid
+              sx={{
+                width: '317.156px'
+              }}
+            >
               {(() => {
                 switch (menu.variant) {
                   case 'Array':
