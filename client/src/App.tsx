@@ -140,8 +140,10 @@ const App = () => {
     },
     curryrepublik: {
       name: 'Curry Republik',
-      variant: 'SimpleArray',
+      variant: 'Hyperlink',
       url: 'https://www.wokkitchen.se',
+      text: 'Meny på FB',
+      href: 'https://www.facebook.com/curryrepublik/menu',
       lat: 55.611586,
       lng: 12.980412,
       selected: useState<boolean>(false),
@@ -243,6 +245,7 @@ const App = () => {
 
           return (
             <Grid
+              key={key}
               sx={{
                 width: '317.156px'
               }}

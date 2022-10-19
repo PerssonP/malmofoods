@@ -369,8 +369,6 @@ const getStoravarvsgatan6 = async (force: boolean): Promise<{ name: 'storavarvsg
 
 const getThaisushiforyou = async (force: boolean): Promise<{ name: 'thaisushiforyou', data: ErrorData }> => ({ name: 'thaisushiforyou', data: { error: 'Not implemented' } });
 
-const getCurryrepublic = async (force: boolean): Promise<{ name: 'curryrepublik', data: ErrorData }> => ({ name: 'curryrepublik', data: { error: 'Not implemented' } });
-
 const getDocksideBurgers = async (force: boolean): Promise<{ name: 'docksideburgers', data: SimpleArrayData | ErrorData }> => ({ name: 'docksideburgers', data: { info: ['Burgare', 'Månadens burgare'] } });
 
 const getLaziza = async (force: boolean): Promise<{ name: 'laziza', data: SimpleArrayData | ErrorData }> => ({ name: 'laziza', data: { info: ['Libanesisk buffé'] } });
@@ -388,7 +386,6 @@ app.get('/scrape', async (req, res, next) => {
     getDockanshamnkrog(force),
     getStoravarvsgatan6(force),
     getThaisushiforyou(force),
-    getCurryrepublic(force),
     getDocksideBurgers(force),
     getLaziza(force)
   ])).reduce<{ [key: string]: SimpleArrayData | ArrayData | ErrorData }>((obj, curr) => {
