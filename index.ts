@@ -76,7 +76,7 @@ const getMiamarias = async (force: boolean): Promise<{ name: 'miamarias', data: 
 
     if (!node) throw new Error('Wrong day');
 
-    const parse = $(node).parent().find('span').toArray().map((el) => $(el).text().trim()).filter(x => !!x).filter(x => !x.endsWith(' kr'));
+    const parse = $(node).parent().find('p').toArray().map((el) => $(el).text().trim()).filter(x => !!x).filter(x => !x.endsWith(' kr'));
     answer = {
       name: 'miamarias',
       data: {
