@@ -190,16 +190,6 @@ const App = () => {
       ref: useRef<HTMLDivElement>(null),
       icon: '/icons/laziza.webp'
     },
-    thaisushiforyou: {
-      name: 'Thai n Sushi for you',
-      variant: 'SimpleArray',
-      url: 'https://vhamnen.thainsushiforyou.se',
-      lat: 55.614201,
-      lng: 12.981888,
-      selected: useState<boolean>(false),
-      ref: useRef<HTMLDivElement>(null),
-      icon: '/icons/thaisushi.png'
-    },
     mrsSaigon: {
       name: 'Mrs Saigon',
       variant: 'Hyperlink',
@@ -211,6 +201,16 @@ const App = () => {
       lng: 12.998333,
       selected: useState<boolean>(false),
       ref: useRef<HTMLDivElement>(null)
+    },
+    thapthim: {
+      name: 'Thap Thim',
+      variant: 'Array',
+      url: 'https://thapthim.se/',
+      lat: 55.6119874494682,
+      lng: 12.981234241631247,
+      selected: useState<boolean>(false),
+      ref: useRef<HTMLDivElement>(null),
+      icon: '/icons/thapthim.png'
     }
   };
 

@@ -12,18 +12,24 @@ import type { ErrorRequestHandler } from 'express';
 
 type SimpleArrayData = {
   info: string[];
-}
+};
 
 type ArrayData = {
   info: {
     title: string;
     description: string;
   }[];
-}
+};
+
+type ObjectData = {
+  info: {
+    [key: string]: string
+  }
+};
 
 type ErrorData = {
   error: string;
-}
+};
 
 const cache = new NodeCache({ stdTTL: 86400 }); // TTL: 24h
 
@@ -374,11 +380,51 @@ const getStoravarvsgatan6 = async (force: boolean): Promise<{ name: 'storavarvsg
   }
 }
 
-const getThaisushiforyou = async (force: boolean): Promise<{ name: 'thaisushiforyou', data: ErrorData }> => ({ name: 'thaisushiforyou', data: { error: 'Not implemented' } });
-
 const getDocksideBurgers = async (force: boolean): Promise<{ name: 'docksideburgers', data: SimpleArrayData | ErrorData }> => ({ name: 'docksideburgers', data: { info: ['Burgare', 'Månadens burgare'] } });
 
 const getLaziza = async (force: boolean): Promise<{ name: 'laziza', data: SimpleArrayData | ErrorData }> => ({ name: 'laziza', data: { info: ['Libanesisk buffé'] } });
+
+const getThapThim = async (force: boolean): Promise<{ name: 'thapthim', data: ArrayData | ErrorData }> => {
+  const m = moment();
+  let answer: Awaited<ReturnType<typeof getThapThim>>;
+  try {
+    if (force !== true) {
+      const cacheData = getFromCache('thapthim');
+      if (cacheData.date === m.format('YYYY-MM-DD')) return cacheData.content;
+    }
+
+    const result = await fetch('https://cdn.thapthim.se/data/lunchdata.json');
+    const json = await result.json() as any;
+    
+    const weekly: string[][] = json.weekexp.Veckans.filter((value: string | string[]) => !!value);
+
+    const data: ArrayData = { info: [] };
+    for (const meal of weekly) {
+      data.info.push({ title: meal[0], description: meal[1] })
+    }
+
+    const currentDayKey = m.format('dddd')[0].toUpperCase() + m.format('dddd').slice(1);
+    const daily = json.weekexp[currentDayKey].filter((value: string | string[]) => !!value);
+    
+    for (const meal of daily) {
+      data.info.push({ title: meal[0], description: meal[1] })
+    }
+
+    answer = {
+      name: 'thapthim',
+      data: data
+    }
+
+    setInCache(answer);
+
+    return answer;
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Error) answer = { name: 'thapthim', data: { error: error.message } };
+    else answer = { name: 'thapthim', data: { error: String(error) } };
+    return answer;
+  }
+}
 
 app.get('/scrape', async (req, res, next) => {
   const force = req.query.forceAll === 'true';
@@ -392,10 +438,10 @@ app.get('/scrape', async (req, res, next) => {
     getP2(force),
     getDockanshamnkrog(force),
     getStoravarvsgatan6(force),
-    getThaisushiforyou(force),
     getDocksideBurgers(force),
-    getLaziza(force)
-  ])).reduce<{ [key: string]: SimpleArrayData | ArrayData | ErrorData }>((obj, curr) => {
+    getLaziza(force),
+    getThapThim(force)
+  ])).reduce<{ [key: string]: SimpleArrayData | ArrayData | ObjectData | ErrorData }>((obj, curr) => {
     obj[curr.name] = curr.data;
     return obj;
   }, {});
