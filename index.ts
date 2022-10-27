@@ -76,7 +76,14 @@ const getMiamarias = async (force: boolean): Promise<{ name: 'miamarias', data: 
 
     if (!node) throw new Error('Wrong day');
 
-    const parse = $(node).parent().find('p, span').toArray().map((el) => $(el).text().trim()).filter(x => !!x).filter(x => !x.endsWith(' kr'));
+    const parse = $(node).parent().find('p, span').toArray()
+      .map((el) => $(el).text().trim()) // Get all texts
+      .filter((value, index, originalArray) =>
+        !!value &&  // Remove empty texts
+        !value.endsWith(' kr') && // Remove categories
+        originalArray.slice(index + 1).indexOf(value) === -1 // Remove possible duplicates
+      );
+
     answer = {
       name: 'miamarias',
       data: {
@@ -290,7 +297,7 @@ const getDockanshamnkrog = async (force: boolean): Promise<{ name: 'dockanshamnk
       const cacheData = getFromCache('dockanshamnkrog');
       if (cacheData.date === m.format('YYYY-MM-DD')) return cacheData.content;
     }
-    
+
     const result = await fetch('http://dockanshamnkrog.se/lunchmeny/');
     const body = await result.text();
     const $ = cheerio.load(body);
@@ -304,7 +311,7 @@ const getDockanshamnkrog = async (force: boolean): Promise<{ name: 'dockanshamnk
     const day = menu.children(`p:contains(${m.format('dddd')[0].toUpperCase() + m.format('dddd').slice(1)})`)
 
     if (day.text() === '') throw new Error('Day not found');
-    
+
     answer = {
       name: 'dockanshamnkrog',
       data: {
@@ -313,7 +320,7 @@ const getDockanshamnkrog = async (force: boolean): Promise<{ name: 'dockanshamnk
         ]
       }
     }
-    
+
     setInCache(answer);
 
     return answer;
@@ -340,7 +347,7 @@ const getStoravarvsgatan6 = async (force: boolean): Promise<{ name: 'storavarvsg
 
     const weekNode = $('p:contains("Veckans meny")').first();
     if (Number(weekNode.text().trim().split('.').pop()) !== m.week()) throw new Error('Weekly menu not yet posted');
-    
+
     const weekDayNode = weekNode.siblings(`p:contains(${m.format('dddd')[0].toUpperCase() + m.format('dddd').slice(1)})`);
     const menu = [];
     let row = weekDayNode.next();
