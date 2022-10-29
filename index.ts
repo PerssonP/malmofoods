@@ -106,8 +106,8 @@ const getMiamarias = async (force: boolean): Promise<{ name: 'miamarias', data: 
     return answer;
   } catch (error) {
     console.log(error);
-    if (error instanceof Error) answer = { name: 'miamarias', data: { error: error.message } };
-    else answer = { name: 'miamarias', data: { error: String(error) } };
+    if (error instanceof Error) answer = { name: 'miamarias', data: { error: `Error: ${error.message}` } };
+    else answer = { name: 'miamarias', data: { error: `Error: ${error}` } };
     return answer;
   }
 };
@@ -141,8 +141,8 @@ const getSpill = async (force: boolean): Promise<{ name: 'spill'; data: SimpleAr
     return answer;
   } catch (error) {
     console.log(error);
-    if (error instanceof Error) answer = { name: 'spill', data: { error: error.message } };
-    else answer = { name: 'spill', data: { error: String(error) } };
+    if (error instanceof Error) answer = { name: 'spill', data: { error: `Error: ${error.message}` } };
+    else answer = { name: 'spill', data: { error: `Error: ${error}` } };
     return answer;
   }
 };
@@ -177,8 +177,8 @@ const getKolga = async (force: boolean): Promise<{ name: 'kolga', data: SimpleAr
     return answer;
   } catch (error) {
     console.log(error);
-    if (error instanceof Error) answer = { name: 'kolga', data: { error: error.message } };
-    else answer = { name: 'kolga', data: { error: String(error) } };
+    if (error instanceof Error) answer = { name: 'kolga', data: { error: `Error: ${error.message}` } };
+    else answer = { name: 'kolga', data: { error: `Error: ${error}` } };
     return answer;
   }
 };
@@ -215,8 +215,8 @@ const getNamdo = async (force: boolean): Promise<{ name: 'namdo', data: ArrayDat
     return answer;
   } catch (error) {
     console.log(error);
-    if (error instanceof Error) answer = { name: 'namdo', data: { error: error.message } };
-    else answer = { name: 'namdo', data: { error: String(error) } };
+    if (error instanceof Error) answer = { name: 'namdo', data: { error: `Error: ${error.message}` } };
+    else answer = { name: 'namdo', data: { error: `Error: ${error}` } };
     return answer;
   }
 };
@@ -248,8 +248,8 @@ const getVariation = async (force: boolean): Promise<{ name: 'variation', data: 
     return answer;
   } catch (error) {
     console.log(error);
-    if (error instanceof Error) answer = { name: 'variation', data: { error: error.message } };
-    else answer = { name: 'variation', data: { error: String(error) } };
+    if (error instanceof Error) answer = { name: 'variation', data: { error: `Error: ${error.message}` } };
+    else answer = { name: 'variation', data: { error: `Error: ${error}` } };
     return answer;
   }
 };
@@ -289,8 +289,8 @@ const getP2 = async (force: boolean): Promise<{ name: 'p2'; data: ArrayData | Er
     return answer;
   } catch (error) {
     console.log(error);
-    if (error instanceof Error) answer = { name: 'p2', data: { error: error.message } };
-    else answer = { name: 'p2', data: { error: String(error) } };
+    if (error instanceof Error) answer = { name: 'p2', data: { error: `Error: ${error.message}` } };
+    else answer = { name: 'p2', data: { error: `Error: ${error}` } };
     return answer;
   }
 };
@@ -332,8 +332,8 @@ const getDockanshamnkrog = async (force: boolean): Promise<{ name: 'dockanshamnk
     return answer;
   } catch (error) {
     console.log(error);
-    if (error instanceof Error) answer = { name: 'dockanshamnkrog', data: { error: error.message } };
-    else answer = { name: 'dockanshamnkrog', data: { error: String(error) } };
+    if (error instanceof Error) answer = { name: 'dockanshamnkrog', data: { error: `Error: ${error.message}` } };
+    else answer = { name: 'dockanshamnkrog', data: { error: `Error: ${error}` } };
     return answer;
   }
 };
@@ -374,8 +374,8 @@ const getStoravarvsgatan6 = async (force: boolean): Promise<{ name: 'storavarvsg
     return answer;
   } catch (error) {
     console.log(error);
-    if (error instanceof Error) answer = { name: 'storavarvsgatan6', data: { error: error.message } };
-    else answer = { name: 'storavarvsgatan6', data: { error: String(error) } };
+    if (error instanceof Error) answer = { name: 'storavarvsgatan6', data: { error: `Error: ${error.message}` } };
+    else answer = { name: 'storavarvsgatan6', data: { error: `Error: ${error}` } };
     return answer;
   }
 }
@@ -420,8 +420,8 @@ const getThapThim = async (force: boolean): Promise<{ name: 'thapthim', data: Ar
     return answer;
   } catch (error) {
     console.log(error);
-    if (error instanceof Error) answer = { name: 'thapthim', data: { error: error.message } };
-    else answer = { name: 'thapthim', data: { error: String(error) } };
+    if (error instanceof Error) answer = { name: 'thapthim', data: { error: `Error: ${error.message}` } };
+    else answer = { name: 'thapthim', data: { error: `Error: ${error}` } };
     return answer;
   }
 }
