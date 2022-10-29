@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Button } from '@mui/material';
+import { Button, Box } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2'; // TODO: Replace with import from @mui/material when stable
 
 import { Maps } from './components/GoogleMaps';
@@ -231,7 +231,18 @@ const App = () => {
   };
 
   return (
-    <main>
+    <Box
+      component='main'
+      sx={{
+        display: 'grid',
+        minHeight: '100vh',
+        grid: `
+        'map' min-content
+        'menus' min-content
+        'gap' auto
+        'buttons' min-content`
+      }}
+    >
       <Maps pins={menus} />
       <Grid
         container
@@ -314,11 +325,15 @@ const App = () => {
           )
         })}
       </Grid>
-      <Grid container justifyContent='flex-end'>
+      <Grid
+        container
+        justifyContent='flex-end'
+        sx={{ gridArea: 'buttons' }}
+      >
         <Button variant='contained' onClick={() => recheck(false)}>Recheck</Button>
         <Button variant='contained' onClick={() => recheck(true)}>Recheck (force)</Button>
       </Grid>
-    </main>
+    </Box>
   );
 };
 
