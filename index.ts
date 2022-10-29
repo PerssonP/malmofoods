@@ -404,7 +404,9 @@ const getThapThim = async (force: boolean): Promise<{ name: 'thapthim', data: Ar
     }
 
     const currentDayKey = m.format('dddd')[0].toUpperCase() + m.format('dddd').slice(1);
-    const daily = json.weekexp[currentDayKey].filter((value: string | string[]) => !!value);
+    const daily = json.weekexp[currentDayKey]?.filter((value: string | string[]) => !!value);
+
+    if (!daily || daily.length === 0) throw new Error('Day not found')
     
     for (const meal of daily) {
       data.info.push({ title: meal[0], description: meal[1] })
