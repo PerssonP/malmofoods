@@ -9,6 +9,7 @@ import cors from 'cors';
 import useragent from 'express-useragent';
 import NodeCache from 'node-cache';
 import type { ErrorRequestHandler } from 'express';
+import { stringify } from 'querystring';
 
 type SimpleArrayData = {
   info: string[];
@@ -230,7 +231,7 @@ const getVariation = async (force: boolean): Promise<{ name: 'variation', data: 
       if (cacheData.date === m.format('YYYY-MM-DD')) return cacheData.content;
     }
 
-    const result = await fetch('https://www.nyavariation.se/matsedel');
+    const result = await fetch('https://www.nyavariation.se/lunch_malmo/');
     const body = await result.text();
     const $ = cheerio.load(body);
 
@@ -239,8 +240,7 @@ const getVariation = async (force: boolean): Promise<{ name: 'variation', data: 
     let day = $(`h4:contains("${dayOfWeek}")`);
     if (!$(day)[0]) throw new Error('Wrong day!');
 
-    let menu = $(day.parents()[2]).children()[2];
-    let meals = $(menu).find('li').toArray().map((el) => $(el).text())
+    let meals = day.nextAll('ul').first().children().toArray().map(el => $(el).text());
     answer = { name: 'variation', data: { info: ['Dagens buffé:', ...meals] } };
 
     setInCache(answer);
@@ -395,7 +395,7 @@ const getThapThim = async (force: boolean): Promise<{ name: 'thapthim', data: Ar
 
     const result = await fetch('https://cdn.thapthim.se/data/lunchdata.json');
     const json = await result.json() as any;
-    
+
     const weekly: string[][] = json.weekexp.Veckans.filter((value: string | string[]) => !!value);
 
     const data: ArrayData = { info: [] };
@@ -407,7 +407,7 @@ const getThapThim = async (force: boolean): Promise<{ name: 'thapthim', data: Ar
     const daily = json.weekexp[currentDayKey]?.filter((value: string | string[]) => !!value);
 
     if (!daily || daily.length === 0) throw new Error('Day not found')
-    
+
     for (const meal of daily) {
       data.info.push({ title: meal[0], description: meal[1] })
     }
