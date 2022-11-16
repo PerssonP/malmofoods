@@ -433,17 +433,17 @@ app.get('/scrape', async (req, res, next) => {
   const force = req.query.forceAll === 'true';
 
   const answer = (await Promise.all([
-    /*getMiamarias(force),
+    getMiamarias(force),
     getSpill(force),
     getKolga(force),
-    getNamdo(force),*/
+    getNamdo(force),
     getVariation(force),
-    /*getP2(force),
+    getP2(force),
     getDockanshamnkrog(force),
     getStoravarvsgatan6(force),
     getDocksideBurgers(force),
     getLaziza(force),
-    getThapThim(force)*/
+    getThapThim(force)
   ])).reduce<{ [key: string]: SimpleArrayData | ArrayData | ObjectData | ErrorData }>((obj, curr) => {
     obj[curr.name] = curr.data;
     return obj;
