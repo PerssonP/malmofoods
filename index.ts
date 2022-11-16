@@ -235,12 +235,13 @@ const getVariation = async (force: boolean): Promise<{ name: 'variation', data: 
     const body = await result.text();
     const $ = cheerio.load(body);
 
-    let dayOfWeek = m.format('dddd').charAt(0).toUpperCase() + m.format('dddd').slice(1);
+    const dayOfWeek = m.format('dddd').charAt(0).toUpperCase() + m.format('dddd').slice(1);
 
-    let day = $(`h4:contains("${dayOfWeek}")`);
+    const day = $(`h4:contains("${dayOfWeek}")`);
     if (!$(day)[0]) throw new Error('Wrong day!');
 
-    let meals = day.nextAll('ul').first().children().toArray().map(el => $(el).text());
+    const ul = day.parents('.elementor-widget-wrap').first().find('.elementor-widget-container').last().find('ul').first();
+    const meals = ul.children().toArray().map(el => $(el).text());
     answer = { name: 'variation', data: { info: ['Dagens buffé:', ...meals] } };
 
     setInCache(answer);
@@ -432,17 +433,17 @@ app.get('/scrape', async (req, res, next) => {
   const force = req.query.forceAll === 'true';
 
   const answer = (await Promise.all([
-    getMiamarias(force),
+    /*getMiamarias(force),
     getSpill(force),
     getKolga(force),
-    getNamdo(force),
+    getNamdo(force),*/
     getVariation(force),
-    getP2(force),
+    /*getP2(force),
     getDockanshamnkrog(force),
     getStoravarvsgatan6(force),
     getDocksideBurgers(force),
     getLaziza(force),
-    getThapThim(force)
+    getThapThim(force)*/
   ])).reduce<{ [key: string]: SimpleArrayData | ArrayData | ObjectData | ErrorData }>((obj, curr) => {
     obj[curr.name] = curr.data;
     return obj;
