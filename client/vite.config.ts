@@ -7,7 +7,8 @@ export default defineConfig({
   server: {
     port: 3000,
     proxy: {
-      '/scrape': 'http://localhost:8080'
+      '/scrape': 'http://localhost:8080',
+      '/api': 'http://localhost:8080'
     }
   }
 })

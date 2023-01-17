@@ -5,66 +5,44 @@ import Grid from '@mui/material/Unstable_Grid2'; // TODO: Replace with import fr
 import { Maps } from './components/GoogleMaps';
 import { ArrayMenu, SimpleArrayMenu, ObjectMenu, SegmentedMenu, HyperlinkMenu } from './components/Menus';
 
-export type ArrayMenu = {
+type Menu = {
   name: string;
-  variant: 'Array';
   url: string;
   icon: string;
   lat: number;
   lng: number;
   selected: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
   ref: React.RefObject<HTMLDivElement>;
-}
+};
+
+type SracpedMenu = {
+  data: [any, React.Dispatch<React.SetStateAction<any>>];
+  dataSource: string;
+} & Menu;
+
+export type ArrayMenu = {
+  variant: 'Array';
+} & SracpedMenu;
 
 export type SimpleArrayMenu = {
-  name: string;
   variant: 'SimpleArray';
-  url: string;
-  icon: string;
-  lat: number;
-  lng: number;
-  selected: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
-  ref: React.RefObject<HTMLDivElement>;
-}
+} & SracpedMenu;
 
 export type ObjectMenu = {
-  name: string;
   variant: 'Object';
-  url: string;
-  icon: string;
-  lat: number;
-  lng: number;
-  selected: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
-  ref: React.RefObject<HTMLDivElement>;
-}
+} & SracpedMenu;
 
 export type SegmentedMenu = {
-  name: string;
   variant: 'Segmented';
-  url: string;
-  icon: string;
-  lat: number;
-  lng: number;
-  selected: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
-  ref: React.RefObject<HTMLDivElement>;
-}
+} & SracpedMenu;
 
 export type HyperlinkMenu = {
-  name: string;
   variant: 'Hyperlink';
-  url: string;
-  icon: string;
   text: string;
   href: string;
-  lat: number;
-  lng: number;
-  selected: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
-  ref: React.RefObject<HTMLDivElement>;
-}
+} & Menu;
 
 const App = () => {
-  const [data, setData] = useState<any>(null);
-
   const menus: { [key: string]: ArrayMenu | SimpleArrayMenu | ObjectMenu | SegmentedMenu | HyperlinkMenu } = {
     miamarias: {
       name: 'Mia Marias',
@@ -74,6 +52,8 @@ const App = () => {
       lat: 55.613306,
       lng: 12.992183,
       selected: useState<boolean>(false),
+      data: useState<any>(null),
+      dataSource: '/api/miamarias',
       ref: useRef<HTMLDivElement>(null),
     },
     spill: {
@@ -84,6 +64,8 @@ const App = () => {
       lat: 55.612801,
       lng: 12.988404,
       selected: useState<boolean>(false),
+      data: useState<any>(null),
+      dataSource: '/api/spill',
       ref: useRef<HTMLDivElement>(null),
     },
     docpiazza: {
@@ -106,6 +88,8 @@ const App = () => {
       lat: 55.612290,
       lng: 12.998474,
       selected: useState<boolean>(false),
+      data: useState<any>(null),
+      dataSource: '/api/kolga',
       ref: useRef<HTMLDivElement>(null),
     },
     variation: {
@@ -116,6 +100,8 @@ const App = () => {
       lat: 55.607990,
       lng: 12.981666,
       selected: useState<boolean>(false),
+      data: useState<any>(null),
+      dataSource: '/api/variation',
       ref: useRef<HTMLDivElement>(null),
     },
     p2: {
@@ -126,17 +112,21 @@ const App = () => {
       lat: 55.614380,
       lng: 12.988521,
       selected: useState<boolean>(false),
+      data: useState<any>(null),
+      dataSource: '/api/p2',
       ref: useRef<HTMLDivElement>(null),
     },
     dockanshamnkrog: {
       name: 'Dockans Hamnkrog',
       variant: 'SimpleArray',
       url: 'http://dockanshamnkrog.se',
+      icon: '/icons/dockanshamnkrog.png',
       lat: 55.615186,
       lng: 12.988838,
       selected: useState<boolean>(false),
-      ref: useRef<HTMLDivElement>(null),
-      icon: '/icons/dockanshamnkrog.png'
+      data: useState<any>(null),
+      dataSource: '/api/dockanshamnkrog',
+      ref: useRef<HTMLDivElement>(null)
     },
     curryrepublik: {
       name: 'Curry Republik',
@@ -158,37 +148,45 @@ const App = () => {
       lng: 12.997683,
       selected: useState<boolean>(false),
       ref: useRef<HTMLDivElement>(null),
+      data: useState<any>(null),
+      dataSource: '/api/namdo',
       icon: '/icons/namdo.svg'
     },
     docksideburgers: {
       name: 'Dockside Burgers',
       variant: 'SimpleArray',
       url: 'https://www.docksideburgers.se',
+      icon: '/icons/lol.png',
       lat: 55.614418,
       lng: 12.990020,
       selected: useState<boolean>(false),
+      data: useState<any>(null),
+      dataSource: '/api/docksideburgers',
       ref: useRef<HTMLDivElement>(null),
-      icon: '/icons/lol.png'
     },
     storavarvsgatan6: {
       name: 'Stora Varvsgatan 6',
       variant: 'SimpleArray',
       url: 'https://storavarvsgatan6.se',
+      icon: '/icons/storavarvsgatan6.png',
       lat: 55.612501,
       lng: 12.991662,
       selected: useState<boolean>(false),
+      data: useState<any>(null),
+      dataSource: '/api/storavarvsgatan6',
       ref: useRef<HTMLDivElement>(null),
-      icon: '/icons/storavarvsgatan6.png'
     },
     laziza: {
       name: 'Laziza Dockan',
       variant: 'SimpleArray',
       url: 'https://www.laziza.se',
+      icon: '/icons/laziza.webp',
       lat: 55.614113,
       lng: 12.988982,
       selected: useState<boolean>(false),
+      data: useState<any>(null),
+      dataSource: '/api/laziza',
       ref: useRef<HTMLDivElement>(null),
-      icon: '/icons/laziza.webp'
     },
     mrsSaigon: {
       name: 'Mrs Saigon',
@@ -206,28 +204,30 @@ const App = () => {
       name: 'Thap Thim',
       variant: 'Array',
       url: 'https://thapthim.se/',
+      icon: '/icons/thapthim.png',
       lat: 55.6119874494682,
       lng: 12.981234241631247,
       selected: useState<boolean>(false),
+      data: useState<any>(null),
+      dataSource: '/api/thapthim',
       ref: useRef<HTMLDivElement>(null),
-      icon: '/icons/thapthim.png'
     }
   };
 
-  const getData = async (force: boolean) => {
-    const result = await fetch(`/scrape${force ? '?forceAll=true' : ''}`);
+  const updateData = async (menu: SracpedMenu, force: boolean = false) => {
+    const result = await fetch(`${menu.dataSource}?force=${force}`);
     const body = await result.json();
-    console.log(body);
-    setData(body);
-  };
+    menu.data[1](body);
+  } 
 
   useEffect(() => {
-    getData(false);
+    recheck(false);
   }, []);
 
-  const recheck = async (force: boolean) => {
-    setData(null);
-    getData(force);
+  const recheck = (force: boolean) => {
+    for (const menu of Object.values(menus)) {
+      if (menu.variant !== 'Hyperlink') updateData(menu, force);
+    }
   };
 
   return (
@@ -270,7 +270,7 @@ const App = () => {
                         url={menu.url}
                         icon={menu.icon}
                         showSelected={menu.selected[0]}
-                        data={data?.[key]}
+                        data={menu.data[0]}
                         ref={menu.ref}
                       />
                     );
@@ -281,7 +281,7 @@ const App = () => {
                         url={menu.url}
                         icon={menu.icon}
                         showSelected={menu.selected[0]}
-                        data={data?.[key]}
+                        data={menu.data[0]}
                         ref={menu.ref}
                       />
                     );
@@ -292,7 +292,7 @@ const App = () => {
                         url={menu.url}
                         icon={menu.icon}
                         showSelected={menu.selected[0]}
-                        data={data?.[key]}
+                        data={menu.data[0]}
                         ref={menu.ref}
                       />
                     );
@@ -303,7 +303,7 @@ const App = () => {
                         url={menu.url}
                         icon={menu.icon}
                         showSelected={menu.selected[0]}
-                        data={data?.[key]}
+                        data={menu.data[0]}
                         ref={menu.ref}
                       />
                     )
@@ -330,8 +330,8 @@ const App = () => {
         justifyContent='flex-end'
         sx={{ gridArea: 'buttons' }}
       >
-        <Button variant='contained' onClick={() => recheck(false)}>Recheck</Button>
-        <Button variant='contained' onClick={() => recheck(true)}>Recheck (force)</Button>
+        <Button variant='contained' onClick={() => recheck(false)}>Recheck all</Button>
+        <Button variant='contained' onClick={() => recheck(true)}>Recheck all (force)</Button>
       </Grid>
     </Box>
   );

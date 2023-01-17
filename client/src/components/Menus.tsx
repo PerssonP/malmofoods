@@ -1,6 +1,10 @@
 import React, { Fragment } from 'react';
 import { Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Divider, Link } from '@mui/material';
 
+type ErrorData = {
+  error: string;
+}
+
 type MenuProps = {
   header: string;
   url: string;
@@ -42,15 +46,9 @@ const Menu = React.forwardRef<HTMLDivElement, MenuProps & { children: JSX.Elemen
 ));
 Menu.displayName = 'Menu';
 
-type SimpleArrayData = {
-  info: string[];
-  error: never;
-} | {
-  info: never;
-  error: string;
-} | null;
+type SimpleArrayData = string[];
 
-export const SimpleArrayMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: SimpleArrayData }>(({ header, url, icon, showSelected, data }, ref) => (
+export const SimpleArrayMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: SimpleArrayData | ErrorData | null }>(({ header, url, icon, showSelected, data }, ref) => (
   <Menu
     header={header}
     url={url}
@@ -58,13 +56,13 @@ export const SimpleArrayMenu = React.forwardRef<HTMLDivElement, MenuProps & { da
     showSelected={showSelected}
     ref={ref}
   >
-    {data == null || data.error !== undefined ?
+    {data == null || 'error' in data ?
       <ListItem>
         {data?.error ?? 'Loading...'}
       </ListItem>
       :
       <>
-        {data.info.map((row, i) => (
+        {data.map((row, i) => (
           <ListItem key={i}>
             <ListItemText primary={row} />
           </ListItem>
@@ -76,17 +74,11 @@ export const SimpleArrayMenu = React.forwardRef<HTMLDivElement, MenuProps & { da
 SimpleArrayMenu.displayName = 'SimpleArrayMenu';
 
 type ArrayData = {
-  info: {
-    title: string;
-    description: string;
-  }[];
-  error: never;
-} | {
-  info: never;
-  error: string;
-} | null;
+  title: string;
+  description: string;
+}[];
 
-export const ArrayMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: ArrayData }>(({ header, url, icon, showSelected, data }, ref) => (
+export const ArrayMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: ArrayData | ErrorData | null }>(({ header, url, icon, showSelected, data }, ref) => (
   <Menu
     header={header}
     url={url}
@@ -94,13 +86,13 @@ export const ArrayMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: Ar
     showSelected={showSelected}
     ref={ref}
   >
-    {data == null || data.error !== undefined ?
+    {data == null || 'error' in data ?
       <ListItem>
         {data?.error ?? 'Loading...'}
       </ListItem>
       :
       <>
-        {data.info.map((row, i) => (
+        {data.map((row, i) => (
           <ListItem key={i}>
             <ListItemText primary={row.description} secondary={row.title} />
           </ListItem>
@@ -112,16 +104,10 @@ export const ArrayMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: Ar
 ArrayMenu.displayName = 'ArrayMenu';
 
 type ObjectData = {
-  info: {
-    [key: string]: string
-  };
-  error: never;
-} | {
-  info: never;
-  error: string;
-} | null;
+  [key: string]: string
+}
 
-export const ObjectMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: ObjectData }>(({ header, url, icon, showSelected, data }, ref) => (
+export const ObjectMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: ObjectData | ErrorData | null }>(({ header, url, icon, showSelected, data }, ref) => (
   <Menu
     header={header}
     url={url}
@@ -129,15 +115,15 @@ export const ObjectMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: O
     showSelected={showSelected}
     ref={ref}
   >
-    {data == null || data.error !== undefined ?
+    {data == null || 'error' in data ?
       <ListItem>
         {data?.error ?? 'Loading...'}
       </ListItem>
       :
       <>
-        {Object.keys(data.info).map(key => (
+        {Object.keys(data).map(key => (
           <ListItem key={key}>
-            <ListItemText primary={data.info[key]} secondary={key} />
+            <ListItemText primary={data[key]} secondary={key} />
           </ListItem>
         ))}
       </>
@@ -147,20 +133,14 @@ export const ObjectMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: O
 ObjectMenu.displayName = 'ObjectMenu';
 
 type SegmentedData = {
-  info: {
-    header: string;
-    contents: {
-      title: string;
-      description: string;
-    }[]
-  }[];
-  error: never;
-} | {
-  info: never;
-  error: string;
-} | null;
+  header: string;
+  contents: {
+    title: string;
+    description: string;
+  }[]
+}[]
 
-export const SegmentedMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: SegmentedData }>(({ header, url, icon, showSelected, data }, ref) => (
+export const SegmentedMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: SegmentedData | ErrorData | null }>(({ header, url, icon, showSelected, data }, ref) => (
   <Menu
     header={header}
     url={url}
@@ -168,13 +148,13 @@ export const SegmentedMenu = React.forwardRef<HTMLDivElement, MenuProps & { data
     showSelected={showSelected}
     ref={ref}
   >
-    {data == null || data.error !== undefined ?
+    {data == null || 'error' in data ?
       <ListItem>
         {data?.error ?? 'Loading...'}
       </ListItem>
       :
       <>
-        {data.info.map(segment => (
+        {data.map(segment => (
           <Fragment key={segment.header}>
             <Divider />
             <ListItem>
