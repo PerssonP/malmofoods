@@ -24,6 +24,7 @@ type Menu = {
 
 moment.locale('sv'); // Set global locale to Swedish
 const m = moment();
+const mEn = moment().locale('en');
 const router = express.Router();
 
 const cache = new NodeCache({ stdTTL: 86400 }); // TTL: 24h
@@ -135,7 +136,7 @@ const sources: { [key: string]: () => Promise<SimpleArrayData | ArrayData | Obje
 
     if ($('.week_number').text().split(' ')[1] !== m.week().toString()) throw new Error('Wrong week');
 
-    const node = $(`#${m.locale('en').format('dddd').toLowerCase()}`);
+    const node = $(`#${mEn.format('dddd').toLowerCase()}`);
     if (node.length === 0) throw new Error('Wrong day');
     const courses = $(node).find('tr');
 
@@ -231,27 +232,26 @@ const sources: { [key: string]: () => Promise<SimpleArrayData | ArrayData | Obje
     return ['Libanesisk buffé']  // todo
   },
   'thapthim': async () => {
-    const result = await fetch('https://cdn.thapthim.se/data/lunchdata.json');
+    const result = await fetch('https://api.thapthim.se/?read=lunchinfo&store=vh');
     const json = await result.json() as any;
-
-    const weekly: string[][] = json.weekexp.Veckans.filter((value: string | string[]) => !!value);
 
     const answer = {
       name: 'thapthim',
       data: [] as ArrayData
     }
 
+    const weekly: any[] = json.weekexp.Veckans.filter((value: any) => !!value?.title);
     for (const meal of weekly) {
-      answer.data.push({ title: meal[0], description: meal[1] })
+      answer.data.push({ title: meal.title, description: meal.desc })
     }
 
     const currentDayKey = m.format('dddd')[0].toUpperCase() + m.format('dddd').slice(1);
-    const daily = json.weekexp[currentDayKey]?.filter((value: string | string[]) => !!value);
+    const daily = json.weekexp[currentDayKey]?.filter((value: any) => !!value?.title);
 
     if (!daily || daily.length === 0) throw new Error('Day not found')
 
     for (const meal of daily) {
-      answer.data.push({ title: meal[0], description: meal[1] })
+      answer.data.push({ title: meal.title, description: meal.desc })
     }
 
     setInCache(answer);
