@@ -1,0 +1,131 @@
+{
+  "miamarias": {
+    "name": "Mia Marias",
+    "variant": "Array",
+    "url": "http://www.miamarias.nu/",
+    "icon": "/icons/miamarias.png",
+    "lat": 55.613306,
+    "lng": 12.992183,
+    "dataSource": "/api/miamarias"
+  },
+  "spill": {
+    "name": "Spill",
+    "variant": "SimpleArray",
+    "url": "https://restaurangspill.se/",
+    "icon": "/icons/spill.png",
+    "lat": 55.612801,
+    "lng": 12.988404,
+    "dataSource": "/api/spill"
+  },
+  "docpiazza": {
+    "name": "Doc Piazza",
+    "variant": "Hyperlink",
+    "url": "https://www.facebook.com/docpiazza",
+    "icon": "/icons/docpiazza.png",
+    "lat": 55.614333,
+    "lng": 12.989664,
+    "text": "Meny på FB",
+    "href": "https://www.facebook.com/docpiazza"
+  },
+  "kolga": {
+    "name": "Kolga",
+    "variant": "SimpleArray",
+    "url": "https://kolga.gastrogate.com/",
+    "icon": "/icons/kolga.png",
+    "lat": 55.612290,
+    "lng": 12.998474,
+    "dataSource": "/api/kolga"
+  },
+  "variation": {
+    "name": "Variation",
+    "variant": "SimpleArray",
+    "url": "https://www.nyavariation.se",
+    "icon": "/icons/variation.png",
+    "lat": 55.607990,
+    "lng": 12.981666,
+    "dataSource": "/api/variation"
+  },
+  "p2": {
+    "name": "P2",
+    "variant": "Array",
+    "url": "https://www.restaurangp2.se",
+    "icon": "/icons/p2.png",
+    "lat": 55.614380,
+    "lng": 12.988521,
+    "dataSource": "/api/p2"
+  },
+  "dockanshamnkrog": {
+    "name": "Dockans Hamnkrog",
+    "variant": "SimpleArray",
+    "url": "http://dockanshamnkrog.se",
+    "icon": "/icons/dockanshamnkrog.png",
+    "lat": 55.615186,
+    "lng": 12.988838,
+    "dataSource": "/api/dockanshamnkrog"
+  },
+  "curryrepublik": {
+    "name": "Curry Republik",
+    "variant": "Hyperlink",
+    "url": "https://www.wokkitchen.se",
+    "icon": "/icons/lol.png",
+    "lat": 55.611586,
+    "lng": 12.980412,
+    "text": "Meny på FB",
+    "href": "https://www.facebook.com/curryrepublik/menu"
+  },
+  "namdo": {
+    "name": "Nam Do",
+    "variant": "Array",
+    "url": "http://namdo.se",
+    "icon": "/icons/namdo.svg",
+    "lat": 55.604493,
+    "lng": 12.997683,
+    "dataSource": "/api/namdo"
+  },
+  "docksideburgers": {
+    "name": "Dockside Burgers",
+    "variant": "SimpleArray",
+    "url": "https://www.docksideburgers.se",
+    "icon": "/icons/lol.png",
+    "lat": 55.614418,
+    "lng": 12.990020,
+    "dataSource": "/api/docksideburgers"
+  },
+  "storavarvsgatan6": {
+    "name": "Stora Varvsgatan 6",
+    "variant": "SimpleArray",
+    "url": "https://storavarvsgatan6.se",
+    "icon": "/icons/storavarvsgatan6.png",
+    "lat": 55.612501,
+    "lng": 12.991662,
+    "dataSource": "/api/storavarvsgatan6"
+  },
+  "laziza": {
+    "name": "Laziza Dockan",
+    "variant": "SimpleArray",
+    "url": "https://www.laziza.se",
+    "icon": "/icons/laziza.webp",
+    "lat": 55.614113,
+    "lng": 12.988982,
+    "dataSource": "/api/laziza"
+  },
+  "mrsSaigon": {
+    "name": "Mrs Saigon",
+    "variant": "Hyperlink",
+    "url": "https://www.mrs-saigon.se",
+    "icon": "/icons/mrssaigon.png",
+    "lat": 55.603335,
+    "lng": 12.998333,
+    "text": "Oförändrande lunchmeny",
+    "href": "https://www.mrs-saigon.se/meny/"
+  },
+  "thapthim": {
+    "name": "Thap Thim",
+    "variant": "Array",
+    "url": "https://thapthim.se/",
+    "icon": "/icons/thapthim.png",
+    "lat": 55.6119874494682,
+    "lng": 12.981234241631247,
+    "dataSource": "/api/thapthim"
+  }
+}

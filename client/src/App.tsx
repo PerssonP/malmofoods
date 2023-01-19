@@ -5,6 +5,8 @@ import Grid from '@mui/material/Unstable_Grid2'; // TODO: Replace with import fr
 import { Maps } from './components/GoogleMaps';
 import { ArrayMenu, SimpleArrayMenu, ObjectMenu, SegmentedMenu, HyperlinkMenu } from './components/Menus';
 
+import menusConfig from './menus.json';
+
 type Menu = {
   name: string;
   url: string;
@@ -42,7 +44,28 @@ export type HyperlinkMenu = {
   href: string;
 } & Menu;
 
+type menu2 = {
+  name: string;
+  variant: 'Array' | 'SimpleArray' | 'Object' | 'Segmented';
+  url: string;
+  icon: string;
+  lat: number;
+  lng: number;
+  dataSource: string;
+} | {
+  name: string;
+  variant: 'Hyperlink';
+  url: string;
+  icon: string;
+  lat: number; 
+  lng: number;
+  text: string;
+  hyperlink: string;
+}
+
 const App = () => {
+  const menus2 = menusConfig.map((menu: menu2) => menu.)
+
   const menus: { [key: string]: ArrayMenu | SimpleArrayMenu | ObjectMenu | SegmentedMenu | HyperlinkMenu } = {
     miamarias: {
       name: 'Mia Marias',
@@ -218,7 +241,7 @@ const App = () => {
     const result = await fetch(`${menu.dataSource}?force=${force}`);
     const body = await result.json();
     menu.data[1](body);
-  } 
+  }
 
   useEffect(() => {
     recheck(false);
