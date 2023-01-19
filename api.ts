@@ -22,9 +22,7 @@ type Menu = {
   data: SimpleArrayData | ArrayData | ObjectData
 }
 
-moment.locale('sv'); // Set global locale to Swedish
-const m = moment();
-const mEn = moment().locale('en');
+moment.locale('sv'); // Set global locale to Swedish;
 const router = express.Router();
 
 const cache = new NodeCache({ stdTTL: 86400 }); // TTL: 24h
@@ -39,8 +37,8 @@ const getFromCache = (key: string): { date: string; content: Menu | null } => {
   return { date: '', content: null };
 }
 
-const sources: { [key: string]: () => Promise<SimpleArrayData | ArrayData | ObjectData> } = {
-  'miamarias': async () => {
+const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | ArrayData | ObjectData> } = {
+  'miamarias': async (m) => {
     const result = await fetch('http://www.miamarias.nu/');
     const body = await result.text();
     const $ = cheerio.load(body);
@@ -74,7 +72,7 @@ const sources: { [key: string]: () => Promise<SimpleArrayData | ArrayData | Obje
 
     return answer.data;
   },
-  'spill': async () => {
+  'spill': async (m) => {
     const result = await fetch('https://restaurangspill.se/');
     const body = await result.text();
     const $ = cheerio.load(body);
@@ -92,7 +90,7 @@ const sources: { [key: string]: () => Promise<SimpleArrayData | ArrayData | Obje
 
     return answer.data;
   },
-  'kolga': async () => {
+  'kolga': async (m) => {
     const result = await fetch('https://kolga.gastrogate.com/lunch/');
     const body = await result.text();
     const $ = cheerio.load(body);
@@ -111,7 +109,7 @@ const sources: { [key: string]: () => Promise<SimpleArrayData | ArrayData | Obje
 
     return answer.data;
   },
-  'variation': async () => {
+  'variation': async (m) => {
     const result = await fetch('https://www.nyavariation.se/lunch_malmo/');
     const body = await result.text();
     const $ = cheerio.load(body);
@@ -129,14 +127,14 @@ const sources: { [key: string]: () => Promise<SimpleArrayData | ArrayData | Obje
 
     return answer.data;
   },
-  'p2': async () => {
+  'p2': async (m) => {
     const result = await fetch('https://www.restaurangp2.se/lunch');
     const body = await result.text();
     const $ = cheerio.load(body);
 
     if ($('.week_number').text().split(' ')[1] !== m.week().toString()) throw new Error('Wrong week');
 
-    const node = $(`#${mEn.format('dddd').toLowerCase()}`);
+    const node = $(`#${m.locale('en').format('dddd').toLowerCase()}`);
     if (node.length === 0) throw new Error('Wrong day');
     const courses = $(node).find('tr');
 
@@ -153,7 +151,7 @@ const sources: { [key: string]: () => Promise<SimpleArrayData | ArrayData | Obje
 
     return answer.data;
   },
-  'dockanshamnkrog': async () => {
+  'dockanshamnkrog': async (m) => {
     const result = await fetch('http://dockanshamnkrog.se/lunchmeny/');
     const body = await result.text();
     const $ = cheerio.load(body);
@@ -179,7 +177,7 @@ const sources: { [key: string]: () => Promise<SimpleArrayData | ArrayData | Obje
 
     return answer.data;
   },
-  'namdo': async () => {
+  'namdo': async (m) => {
     const result = await fetch('http://namdo.se/meny/');
     const body = await result.text();
     const $ = cheerio.load(body);
@@ -203,7 +201,7 @@ const sources: { [key: string]: () => Promise<SimpleArrayData | ArrayData | Obje
   'docksideburgers': async () => {
     return ['Burgare', 'Månadens burgare']  // todo
   },
-  'storavarvsgatan6': async () => {
+  'storavarvsgatan6': async (m) => {
     const result = await fetch('https://storavarvsgatan6.se/meny.html');
     const body = await result.text();
     const $ = cheerio.load(body);
@@ -231,7 +229,7 @@ const sources: { [key: string]: () => Promise<SimpleArrayData | ArrayData | Obje
   'laziza': async () => {
     return ['Libanesisk buffé']  // todo
   },
-  'thapthim': async () => {
+  'thapthim': async (m) => {
     const result = await fetch('https://api.thapthim.se/?read=lunchinfo&store=vh');
     const json = await result.json() as any;
 
@@ -262,13 +260,14 @@ const sources: { [key: string]: () => Promise<SimpleArrayData | ArrayData | Obje
 
 router.get('/api/:source', async (req, res, next) => {
   try {
+    const m = moment();
     const source = req.params.source;
     if (req.query.force !== 'true') {
       const cacheData = getFromCache(source);
       if (cacheData.content !== null && cacheData.date === m.format('YYYY-MM-DD')) return res.send(cacheData.content.data);
     }
 
-    const answer = await sources[source]();
+    const answer = await sources[source](m);
     return res.send(answer);
   } catch (error) {
     console.log(error);
