@@ -1,5 +1,5 @@
-{
-  "miamarias": {
+[
+  {
     "name": "Mia Marias",
     "variant": "Array",
     "url": "http://www.miamarias.nu/",
@@ -8,7 +8,7 @@
     "lng": 12.992183,
     "dataSource": "/api/miamarias"
   },
-  "spill": {
+  {
     "name": "Spill",
     "variant": "SimpleArray",
     "url": "https://restaurangspill.se/",
@@ -17,7 +17,7 @@
     "lng": 12.988404,
     "dataSource": "/api/spill"
   },
-  "docpiazza": {
+  {
     "name": "Doc Piazza",
     "variant": "Hyperlink",
     "url": "https://www.facebook.com/docpiazza",
@@ -27,7 +27,7 @@
     "text": "Meny på FB",
     "href": "https://www.facebook.com/docpiazza"
   },
-  "kolga": {
+  {
     "name": "Kolga",
     "variant": "SimpleArray",
     "url": "https://kolga.gastrogate.com/",
@@ -36,7 +36,7 @@
     "lng": 12.998474,
     "dataSource": "/api/kolga"
   },
-  "variation": {
+  {
     "name": "Variation",
     "variant": "SimpleArray",
     "url": "https://www.nyavariation.se",
@@ -45,7 +45,7 @@
     "lng": 12.981666,
     "dataSource": "/api/variation"
   },
-  "p2": {
+  {
     "name": "P2",
     "variant": "Array",
     "url": "https://www.restaurangp2.se",
@@ -54,7 +54,7 @@
     "lng": 12.988521,
     "dataSource": "/api/p2"
   },
-  "dockanshamnkrog": {
+  {
     "name": "Dockans Hamnkrog",
     "variant": "SimpleArray",
     "url": "http://dockanshamnkrog.se",
@@ -63,7 +63,7 @@
     "lng": 12.988838,
     "dataSource": "/api/dockanshamnkrog"
   },
-  "curryrepublik": {
+  {
     "name": "Curry Republik",
     "variant": "Hyperlink",
     "url": "https://www.wokkitchen.se",
@@ -73,7 +73,7 @@
     "text": "Meny på FB",
     "href": "https://www.facebook.com/curryrepublik/menu"
   },
-  "namdo": {
+  {
     "name": "Nam Do",
     "variant": "Array",
     "url": "http://namdo.se",
@@ -82,7 +82,7 @@
     "lng": 12.997683,
     "dataSource": "/api/namdo"
   },
-  "docksideburgers": {
+  {
     "name": "Dockside Burgers",
     "variant": "SimpleArray",
     "url": "https://www.docksideburgers.se",
@@ -91,7 +91,7 @@
     "lng": 12.990020,
     "dataSource": "/api/docksideburgers"
   },
-  "storavarvsgatan6": {
+  {
     "name": "Stora Varvsgatan 6",
     "variant": "SimpleArray",
     "url": "https://storavarvsgatan6.se",
@@ -100,7 +100,7 @@
     "lng": 12.991662,
     "dataSource": "/api/storavarvsgatan6"
   },
-  "laziza": {
+  {
     "name": "Laziza Dockan",
     "variant": "SimpleArray",
     "url": "https://www.laziza.se",
@@ -109,7 +109,7 @@
     "lng": 12.988982,
     "dataSource": "/api/laziza"
   },
-  "mrsSaigon": {
+  {
     "name": "Mrs Saigon",
     "variant": "Hyperlink",
     "url": "https://www.mrs-saigon.se",
@@ -119,7 +119,7 @@
     "text": "Oförändrande lunchmeny",
     "href": "https://www.mrs-saigon.se/meny/"
   },
-  "thapthim": {
+  {
     "name": "Thap Thim",
     "variant": "Array",
     "url": "https://thapthim.se/",
@@ -128,4 +128,4 @@
     "lng": 12.981234241631247,
     "dataSource": "/api/thapthim"
   }
-}
+]

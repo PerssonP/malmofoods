@@ -2,15 +2,13 @@ import { GoogleMap, LoadScriptNext } from '@react-google-maps/api';
 import { Box } from '@mui/material';
 
 import { Pin } from '../components/Pin';
-import type { ArrayMenu, SimpleArrayMenu, ObjectMenu, SegmentedMenu, HyperlinkMenu } from '../App';
+import type { Menu } from '../App';
 
 type MapsProps = {
-  pins: {
-    [key: string]: ArrayMenu | SimpleArrayMenu | ObjectMenu | SegmentedMenu | HyperlinkMenu
-  }
+  menus: Menu[]
 }
 
-const showSelected = (pin: ArrayMenu | SimpleArrayMenu | ObjectMenu | SegmentedMenu | HyperlinkMenu) => {
+const showSelected = (pin: Menu) => {
   if (pin.ref.current === null) {
     console.log(`Element ref is null. This shouldn't happen`);
     return;
@@ -24,7 +22,7 @@ const showSelected = (pin: ArrayMenu | SimpleArrayMenu | ObjectMenu | SegmentedM
   pin.ref.current.scrollIntoView({ behavior: 'smooth' });
 };
 
-export const Maps = ({ pins }: MapsProps) => (
+export const Maps = ({ menus }: MapsProps) => (
   <Box sx={{ height: '800px', width: '100%' }}>
     <LoadScriptNext googleMapsApiKey={import.meta.env.VITE_MAPS_KEY}>
       <GoogleMap
@@ -44,7 +42,7 @@ export const Maps = ({ pins }: MapsProps) => (
           ]
         }}
       >
-        {Object.values(pins).map((pin) => (
+        {Object.values(menus).map((pin) => (
           <Pin
             key={pin.name}
             position={{ lat: pin.lat, lng: pin.lng }}
