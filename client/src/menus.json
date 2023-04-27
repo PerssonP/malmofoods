@@ -133,8 +133,8 @@
     "variant": "SimpleArray",
     "url": "https://eatery.se/vastra-hamnen/lunchmeny",
     "icon": "/icons/eatery.png",
-    "lat": 55.6119874494682,
-    "lng": 12.981234241631247,
+    "lat": 55.609666631337895,
+    "lng": 12.979232628301896,
     "dataSource": "/api/eatery"
   }
 ]
