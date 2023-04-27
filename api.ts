@@ -256,6 +256,28 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     setInCache(answer);
 
     return answer.data;
+  },
+  'eatery': async (m) => {
+    const result = await fetch('https://api.eatery.se/wp-json/eatery/v1/load');
+    const json = await result.json() as any;
+    
+    const lunchmenuID = json.eateries["\/vastra-hamnen"].menues.lunchmeny
+    const title = json.menues[lunchmenuID].content.title;
+    const content = json.menues[lunchmenuID].content.content;
+
+    if (Number(title.split(' ').at(-1)) !== m.week()) throw new Error('Weekly menu not yet posted');
+    
+    const $ = cheerio.load(content);
+    const items = $(`strong:contains(${m.format('dddd').toUpperCase()})`).parent().text().split('\n');
+    if (items.length < 1) throw new Error('No data found for day');
+
+    const answer = {
+      name: 'eatery',
+      data: items.slice(1)
+    };
+
+    setInCache(answer);
+    return answer.data;
   }
 }
 

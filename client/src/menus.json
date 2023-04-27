@@ -127,5 +127,14 @@
     "lat": 55.6119874494682,
     "lng": 12.981234241631247,
     "dataSource": "/api/thapthim"
+  },
+  {
+    "name": "Eatery Västra Hamnen",
+    "variant": "SimpleArray",
+    "url": "https://eatery.se/vastra-hamnen/lunchmeny",
+    "icon": "/icons/eatery.png",
+    "lat": 55.6119874494682,
+    "lng": 12.981234241631247,
+    "dataSource": "/api/eatery"
   }
 ]
