@@ -5,6 +5,7 @@ import cheerio from 'cheerio';
 import fetch from 'node-fetch';
 import moment from 'moment';
 import NodeCache from 'node-cache';
+import he from 'he';
 
 type SimpleArrayData = string[];
 
@@ -240,7 +241,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
 
     const weekly: any[] = json.weekexp.Veckans.filter((value: any) => !!value?.title);
     for (const meal of weekly) {
-      answer.data.push({ title: meal.title, description: meal.desc })
+      answer.data.push({ title: meal.title, description: he.decode(meal.desc) })
     }
 
     const currentDayKey = m.format('dddd')[0].toUpperCase() + m.format('dddd').slice(1);
@@ -249,7 +250,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     if (!daily || daily.length === 0) throw new Error('Day not found')
 
     for (const meal of daily) {
-      answer.data.push({ title: meal.title, description: meal.desc })
+      answer.data.push({ title: meal.title, description: he.decode(meal.desc) })
     }
 
     setInCache(answer);
