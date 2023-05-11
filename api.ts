@@ -52,7 +52,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
 
     if (!node) throw new Error('Wrong day');
 
-    const parse = $(node).parent().find('p, span').toArray()
+    const parse = $(node).parent().find('p').toArray()
       .map((el) => $(el).text().trim()) // Get all texts
       .filter((value, index, originalArray) =>
         !!value &&  // Remove empty texts
