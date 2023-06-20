@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
-import { Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Divider, Link } from '@mui/material';
+import { Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Divider, Link, IconButton } from '@mui/material';
+import { Cached } from '@mui/icons-material';
 
 type ErrorData = {
   error: string;
@@ -10,9 +11,10 @@ type MenuProps = {
   url: string;
   icon: string;
   showSelected: boolean;
+  update?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
-const Menu = React.forwardRef<HTMLDivElement, MenuProps & { children: JSX.Element }>(({ header, url, icon, showSelected, children }, ref) => (
+const Menu = React.forwardRef<HTMLDivElement, MenuProps & { children: JSX.Element }>(({ header, url, icon, showSelected, update, children }, ref) => (
   <Paper
     ref={ref}
     sx={{
@@ -39,6 +41,15 @@ const Menu = React.forwardRef<HTMLDivElement, MenuProps & { children: JSX.Elemen
         <Link href={url} color='inherit'>
           <ListItemText primary={header} />
         </Link>
+        {update !== undefined &&
+          <IconButton
+            onClick={update}
+            title='Recheck menu&#013;Shift-click to force (bypass cache)'
+            sx={{ marginLeft: 'auto' }}
+          >
+            <Cached />
+          </IconButton>
+        }
       </ListItem>
       {children}
     </List>
@@ -48,12 +59,13 @@ Menu.displayName = 'Menu';
 
 type SimpleArrayData = string[];
 
-export const SimpleArrayMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: SimpleArrayData | ErrorData | null }>(({ header, url, icon, showSelected, data }, ref) => (
+export const SimpleArrayMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: SimpleArrayData | ErrorData | null }>(({ header, url, icon, showSelected, update, data }, ref) => (
   <Menu
     header={header}
     url={url}
     icon={icon}
     showSelected={showSelected}
+    update={update}
     ref={ref}
   >
     {data == null || 'error' in data ?
@@ -78,12 +90,13 @@ type ArrayData = {
   description: string;
 }[];
 
-export const ArrayMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: ArrayData | ErrorData | null }>(({ header, url, icon, showSelected, data }, ref) => (
+export const ArrayMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: ArrayData | ErrorData | null }>(({ header, url, icon, showSelected, update, data }, ref) => (
   <Menu
     header={header}
     url={url}
     icon={icon}
     showSelected={showSelected}
+    update={update}
     ref={ref}
   >
     {data == null || 'error' in data ?
@@ -107,12 +120,13 @@ type ObjectData = {
   [key: string]: string
 }
 
-export const ObjectMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: ObjectData | ErrorData | null }>(({ header, url, icon, showSelected, data }, ref) => (
+export const ObjectMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: ObjectData | ErrorData | null }>(({ header, url, icon, showSelected, update, data }, ref) => (
   <Menu
     header={header}
     url={url}
     icon={icon}
     showSelected={showSelected}
+    update={update}
     ref={ref}
   >
     {data == null || 'error' in data ?
@@ -140,12 +154,13 @@ type SegmentedData = {
   }[]
 }[]
 
-export const SegmentedMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: SegmentedData | ErrorData | null }>(({ header, url, icon, showSelected, data }, ref) => (
+export const SegmentedMenu = React.forwardRef<HTMLDivElement, MenuProps & { data: SegmentedData | ErrorData | null }>(({ header, url, icon, showSelected, update, data }, ref) => (
   <Menu
     header={header}
     url={url}
     icon={icon}
     showSelected={showSelected}
+    update={update}
     ref={ref}
   >
     {data == null || 'error' in data ?

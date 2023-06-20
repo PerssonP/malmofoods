@@ -76,6 +76,7 @@ const App = () => {
   });
 
   const updateData = async (menu: ScrapedMenu, force: boolean = false) => {
+    menu.data[1](null);
     const result = await fetch(`${menu.dataSource}?force=${force}`);
     const body = await result.json();
     menu.data[1](body);
@@ -129,6 +130,7 @@ const App = () => {
                         url={menu.url}
                         icon={menu.icon}
                         showSelected={menu.selected[0]}
+                        update={(e) => updateData(menu, e.shiftKey)} // If button is shift-clicked, send force = true
                         data={menu.data[0]}
                         ref={menu.ref}
                       />
@@ -140,6 +142,7 @@ const App = () => {
                         url={menu.url}
                         icon={menu.icon}
                         showSelected={menu.selected[0]}
+                        update={(e) => updateData(menu, e.shiftKey)}
                         data={menu.data[0]}
                         ref={menu.ref}
                       />
@@ -151,6 +154,7 @@ const App = () => {
                         url={menu.url}
                         icon={menu.icon}
                         showSelected={menu.selected[0]}
+                        update={(e) => updateData(menu, e.shiftKey)}
                         data={menu.data[0]}
                         ref={menu.ref}
                       />
@@ -162,6 +166,7 @@ const App = () => {
                         url={menu.url}
                         icon={menu.icon}
                         showSelected={menu.selected[0]}
+                        update={(e) => updateData(menu, e.shiftKey)}
                         data={menu.data[0]}
                         ref={menu.ref}
                       />
