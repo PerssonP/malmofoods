@@ -37,15 +37,6 @@
     "dataSource": "/api/kolga"
   },
   {
-    "name": "Variation",
-    "variant": "SimpleArray",
-    "url": "https://www.nyavariation.se",
-    "icon": "/icons/variation.png",
-    "lat": 55.607990,
-    "lng": 12.981666,
-    "dataSource": "/api/variation"
-  },
-  {
     "name": "P2",
     "variant": "Array",
     "url": "https://www.restaurangp2.se",

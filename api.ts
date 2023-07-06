@@ -110,24 +110,6 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
 
     return answer.data;
   },
-  'variation': async (m) => {
-    const result = await fetch('https://www.nyavariation.se/lunch_malmo/');
-    const body = await result.text();
-    const $ = cheerio.load(body);
-
-    const dayOfWeek = m.format('dddd').charAt(0).toUpperCase() + m.format('dddd').slice(1);
-
-    const day = $(`h4:contains("${dayOfWeek}")`);
-    if (!$(day)[0]) throw new Error('Wrong day!');
-
-    const ul = day.parents('.elementor-widget-wrap').first().find('.elementor-widget-container').last().find('ul').first();
-    const meals = ul.children().toArray().map(el => $(el).text());
-    const answer = { name: 'variation', data: ['Dagens buffé:', ...meals] };
-
-    setInCache(answer);
-
-    return answer.data;
-  },
   'p2': async (m) => {
     const result = await fetch('https://www.restaurangp2.se/lunch');
     const body = await result.text();
