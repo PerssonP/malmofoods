@@ -193,7 +193,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     if (Number(weekNode.text().trim().split('.').pop()) !== m.week()) throw new Error('Weekly menu not yet posted');
 
     const weekDayNode = weekNode.siblings(`p:contains(${m.format('dddd')[0].toUpperCase() + m.format('dddd').slice(1)})`);
-    const menu = [];
+    const menu: string[] = [];
     let row = weekDayNode.next();
     while (row.text().trim() !== '') {
       menu.push(row.text());

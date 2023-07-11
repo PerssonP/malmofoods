@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Button, Box } from '@mui/material';
+import { Link, Box, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2'; // TODO: Replace with import from @mui/material when stable
 
 import { Maps } from './components/GoogleMaps';
@@ -83,14 +83,10 @@ const App = () => {
   }
 
   useEffect(() => {
-    recheck(false);
-  }, []);
-
-  const recheck = (force: boolean) => {
     for (const menu of menus) {
-      if (menu.variant !== 'Hyperlink') updateData(menu, force);
+      if (menu.variant !== 'Hyperlink') updateData(menu, false);
     }
-  };
+  }, []);
 
   return (
     <Box
@@ -102,7 +98,7 @@ const App = () => {
         'map' min-content
         'menus' min-content
         'gap' auto
-        'buttons' min-content`
+        'footer' min-content`
       }}
     >
       <Maps menus={menus} />
@@ -192,10 +188,11 @@ const App = () => {
       <Grid
         container
         justifyContent='flex-end'
-        sx={{ gridArea: 'buttons' }}
+        sx={{ gridArea: 'footer' }}
       >
-        <Button variant='contained' onClick={() => recheck(false)}>Recheck all</Button>
-        <Button variant='contained' onClick={() => recheck(true)}>Recheck all (force)</Button>
+        <Typography variant='body2' sx={{ paddingRight: 1 }} >
+          If you want a new restaurant added or if something's broken, open an issue on <Link href='https://github.com/MrTwiggles/malmofoods' underline='none'>Github</Link>.
+        </Typography>
       </Grid>
     </Box>
   );
