@@ -6,6 +6,7 @@ import fetch from 'node-fetch';
 import moment from 'moment';
 import NodeCache from 'node-cache';
 import he from 'he';
+import puppeteer from 'puppeteer';
 
 type SimpleArrayData = string[];
 
@@ -182,7 +183,15 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     return answer.data;
   },
   'docksideburgers': async () => {
-    return ['Burgare', 'Månadens burgare']  // todo
+    const browser = await puppeteer.launch({ headless: 'new' });
+    const page = await browser.newPage();
+    await page.goto('https://www.facebook.com/DocksideBurgers/');
+
+    const element = await page.waitForSelector("::-p-xpath(//span[contains(., 'Månadens')])")
+    const text = await element?.evaluate(e => e.textContent);
+
+    await browser.close();
+    return [ 'Från Docksides facebook:', text || '' ]  // todo
   },
   'storavarvsgatan6': async (m) => {
     const result = await fetch('https://storavarvsgatan6.se/meny.html');

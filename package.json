@@ -23,7 +23,8 @@
     "moment": "2.29.4",
     "node-cache": "5.1.2",
     "node-fetch": "3.3.1",
-    "path": "0.12.7"
+    "path": "0.12.7",
+    "puppeteer": "20.8.1"
   },
   "devDependencies": {
     "@types/cheerio": "0.22.31",
