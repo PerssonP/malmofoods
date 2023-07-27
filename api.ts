@@ -2,7 +2,6 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
 import cheerio from 'cheerio';
-import fetch from 'node-fetch';
 import moment from 'moment';
 import NodeCache from 'node-cache';
 import he from 'he';
