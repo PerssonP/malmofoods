@@ -97,8 +97,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     const body = await result.text();
     const $ = cheerio.load(body);
 
-    const currentDay = m.format('dddd').charAt(0).toUpperCase() + m.format('dddd').slice(1);
-    const header = $(`.menu_header h3:contains(${currentDay}):contains(${m.format('D')})`).first();
+    const header = $(`.menu_header h3:contains(${weekdayFirstUpper(m)}):contains(${m.format('D')})`).first();
     if (header.length === 0) throw new Error('Wrong day');
 
     const content = $(header).parents('thead').siblings('tbody')[0];
@@ -142,7 +141,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
       throw new Error('Wrong week');
     }
 
-    const day = menu.children(`p:contains(${m.format('dddd')[0].toUpperCase() + m.format('dddd').slice(1)})`)
+    const day = menu.children(`p:contains(${weekdayFirstUpper(m)})`)
 
     if (day.text() === '') throw new Error('Day not found');
 
@@ -176,7 +175,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     setInCache(answer);
     return answer.data;
   },
-  'docksideburgers': async () => {
+  'docksideburgers': async (m) => {
     const browser = await puppeteer.launch({ headless: 'new' });
     const page = await browser.newPage();
     await page.goto('https://www.facebook.com/DocksideBurgers/');
@@ -195,7 +194,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     const weekNode = $('p:contains("Veckans meny")').first();
     if (Number(weekNode.text().trim().split('.').pop()) !== m.week()) throw new Error('Weekly menu not yet posted');
 
-    const weekDayNode = weekNode.siblings(`p:contains(${m.format('dddd')[0].toUpperCase() + m.format('dddd').slice(1)})`);
+    const weekDayNode = weekNode.siblings(`p:contains(${weekdayFirstUpper(m)})`);
     const menu: string[] = [];
     let row = weekDayNode.next();
     while (row.text().trim() !== '') {
@@ -228,8 +227,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
       answer.data.push({ title: meal.title, description: he.decode(meal.desc) })
     }
 
-    const currentDayKey = m.format('dddd')[0].toUpperCase() + m.format('dddd').slice(1);
-    const daily = json.weekexp[currentDayKey]?.filter((value: any) => !!value?.title);
+    const daily = json.weekexp[weekdayFirstUpper(m)]?.filter((value: any) => !!value?.title);
 
     if (!daily || daily.length === 0) throw new Error('Day not found')
 
