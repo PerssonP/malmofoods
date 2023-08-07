@@ -114,8 +114,6 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     const body = await result.text();
     const $ = cheerio.load(body);
 
-    if ($('.week_number').text().split(' ')[1] !== m.week().toString()) throw new Error('Wrong week');
-
     const node = $(`#${m.locale('en').format('dddd').toLowerCase()}`);
     if (node.length === 0) throw new Error('Wrong day');
     const courses = $(node).find('tr');
