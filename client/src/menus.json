@@ -9,7 +9,7 @@
     "dataSource": "/api/miamarias"
   },
   {
-    "name": "Spill",
+    "name": "Spill Gängtappen",
     "variant": "SimpleArray",
     "url": "https://restaurangspill.se/",
     "icon": "/icons/spill.png",

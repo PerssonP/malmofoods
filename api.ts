@@ -79,8 +79,9 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     const body = await result.text();
     const $ = cheerio.load(body);
 
-    let node = $('#dagens .uppercase');
-    let currentDay = node.text().split(',')[1].trim();
+    const section = $('h2:contains(Gängtappen)').parents()[2];
+    const node = $(section).find('.uppercase');
+    const currentDay = node.text().split(',')[1].trim();
     if (currentDay != m.format('DD/M')) throw new Error('Wrong day');
 
     const answer = {
