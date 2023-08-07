@@ -127,5 +127,14 @@
     "lat": 55.609666631337895,
     "lng": 12.979232628301896,
     "dataSource": "/api/eatery"
+  },
+  {
+    "name": "Välfärden",
+    "variant": "SimpleArray",
+    "url": "https://valfarden.nu/dagens-lunch",
+    "icon": "/icons/valfarden.png",
+    "lat": 55.611235908200264,
+    "lng": 12.994354102667844,
+    "dataSource": "/api/valfarden"
   }
 ]

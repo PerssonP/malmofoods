@@ -7,6 +7,8 @@ import NodeCache from 'node-cache';
 import he from 'he';
 import puppeteer from 'puppeteer';
 
+import { weekdayFirstUpper } from './momentUtil.js';
+
 type SimpleArrayData = string[];
 
 type ArrayData = {
@@ -70,7 +72,6 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     }
 
     setInCache(answer);
-
     return answer.data;
   },
   'spill': async (m) => {
@@ -88,7 +89,6 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     }
 
     setInCache(answer);
-
     return answer.data;
   },
   'kolga': async (m) => {
@@ -107,7 +107,6 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     }
 
     setInCache(answer);
-
     return answer.data;
   },
   'p2': async (m) => {
@@ -131,7 +130,6 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     }
 
     setInCache(answer);
-
     return answer.data;
   },
   'dockanshamnkrog': async (m) => {
@@ -157,7 +155,6 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     }
 
     setInCache(answer);
-
     return answer.data;
   },
   'namdo': async (m) => {
@@ -178,7 +175,6 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     });
 
     setInCache(answer);
-
     return answer.data;
   },
   'docksideburgers': async () => {
@@ -214,7 +210,6 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     };
 
     setInCache(answer);
-
     return answer.data;
   },
   'laziza': async () => {
@@ -244,7 +239,6 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     }
 
     setInCache(answer);
-
     return answer.data;
   },
   'eatery': async (m) => {
@@ -264,6 +258,39 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     const answer = {
       name: 'eatery',
       data: items.slice(1)
+    };
+
+    setInCache(answer);
+    return answer.data;
+  },
+  'valfarden': async (m) => {
+    const result = await fetch('https://valfarden.nu/dagens-lunch/');
+    const body = await result.text();
+    const $ = cheerio.load(body);
+    
+    const weekNode = $('h2:contains(Vecka)');
+    
+    if (weekNode.text().split(' ')[1].slice(0, -1) !== m.week().toString())
+      throw new Error('Wrong week');
+
+    const dayNodes = weekNode.siblings().toArray().map(e => $(e).text());
+    
+    const menu: string[] = [];
+    let index = dayNodes.findIndex(n => n.startsWith(weekdayFirstUpper(m)));
+    if (index === -1) throw new Error('Wrong day');
+    index++;
+    let node = dayNodes.at(index);
+    const endString = weekdayFirstUpper(m.add(1, 'day'));
+    while (node !== undefined && !node.startsWith(endString)) {
+      node = node.trim();
+      if (node !== '' && node !== '–') menu.push(node);
+      index++;
+      node = dayNodes.at(index);
+    }
+
+    const answer = {
+      name: 'valfarden',
+      data: menu
     };
 
     setInCache(answer);
