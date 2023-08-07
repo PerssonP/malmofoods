@@ -49,7 +49,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     const h5arr = $('h5.et_pb_toggle_title').toArray();
 
     const node = h5arr.find(el => {
-      return $(el).text().includes(m.format('D/M'));
+      return $(el).text().includes(weekdayFirstUpper(m));
     });
 
     if (!node) throw new Error('Wrong day');
