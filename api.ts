@@ -267,7 +267,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     
     const weekNode = $('h2:contains(Vecka)');
     
-    if (weekNode.text().split(' ')[1].slice(0, -1) !== m.week().toString())
+    if (weekNode.text().split(' ')[1] !== m.week().toString())
       throw new Error('Wrong week');
 
     const dayNodes = weekNode.siblings().toArray().map(e => $(e).text());
