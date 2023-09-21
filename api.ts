@@ -177,14 +177,19 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
   },
   'docksideburgers': async (m) => {
     const browser = await puppeteer.launch({ headless: 'new' });
-    const page = await browser.newPage();
-    await page.goto('https://www.facebook.com/DocksideBurgers/');
+    try {
+      const page = await browser.newPage();
+      await page.goto('https://www.facebook.com/DocksideBurgers/');
 
-    const element = await page.waitForSelector("::-p-xpath(//span[contains(., 'Månadens')])")
-    const text = await element?.evaluate(e => e.textContent);
+      const element = await page.waitForSelector("::-p-xpath(//span[contains(., 'Månadens')])")
+      const text = await element?.evaluate(e => e.textContent);
 
-    await browser.close();
-    return [ 'Från Docksides facebook:', text || '' ]  // todo
+      await browser.close();
+      return ['Från Docksides facebook:', text || ''];
+    } catch (e) {
+      await browser.close();
+      throw e;
+    }
   },
   'storavarvsgatan6': async (m) => {
     const result = await fetch('https://storavarvsgatan6.se/meny.html');
@@ -241,13 +246,13 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
   'eatery': async (m) => {
     const result = await fetch('https://api.eatery.se/wp-json/eatery/v1/load');
     const json = await result.json() as any;
-    
+
     const lunchmenuID = json.eateries["\/vastra-hamnen"].menues.lunchmeny
     const title = json.menues[lunchmenuID].content.title;
     const content = json.menues[lunchmenuID].content.content;
 
     if (Number(title.split(' ').at(-1)) !== m.week()) throw new Error('Weekly menu not yet posted');
-    
+
     const $ = cheerio.load(content);
     const items = $(`p:contains(${m.format('dddd').toUpperCase()})`).text().split('\n');
     if (items.length < 1) throw new Error('No data found for day');
@@ -264,14 +269,14 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     const result = await fetch('https://valfarden.nu/dagens-lunch/');
     const body = await result.text();
     const $ = cheerio.load(body);
-    
+
     const weekNode = $('h2:contains(Vecka)');
-    
+
     if (weekNode.text().split(' ')[1].trim() !== m.week().toString())
       throw new Error('Wrong week');
 
     const dayNodes = weekNode.siblings().toArray().map(e => $(e).text());
-    
+
     const menu: string[] = [];
     let index = dayNodes.findIndex(n => n.startsWith(weekdayFirstUpper(m)));
     if (index === -1) throw new Error('Wrong day');
