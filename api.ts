@@ -291,7 +291,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     const endString = weekdayFirstUpper(m.add(1, 'day'));
     while (node !== undefined && !node.startsWith(endString)) {
       node = node.trim();
-      if (node !== '' && node !== '–') menu.push(node);
+      if (!['', '–', '—'].includes(node)) menu.push(node);
       index++;
       node = dayNodes.at(index);
     }
