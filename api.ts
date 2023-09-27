@@ -247,19 +247,25 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     const result = await fetch('https://api.eatery.se/wp-json/eatery/v1/load');
     const json = await result.json() as any;
 
-    const lunchmenuID = json.eateries["\/vastra-hamnen"].menues.lunchmeny
-    const title = json.menues[lunchmenuID].content.title;
-    const content = json.menues[lunchmenuID].content.content;
+    const lunchmenuID = json.eateries["\/vastra-hamnen"].menues.lunchmeny;
+    const title: string = json.menues[lunchmenuID].content.title;
+    const content: string[] = json.menues[lunchmenuID].content.content.split('\n');    
 
     if (Number(title.split(' ').at(-1)) !== m.week()) throw new Error('Weekly menu not yet posted');
 
-    const $ = cheerio.load(content);
-    const items = $(`p:contains(${m.format('dddd').toUpperCase()})`).text().split('\n');
-    if (items.length < 1) throw new Error('No data found for day');
+    const start = m.format('dddd').toUpperCase();
+    const end = m.add(1, 'day').format('dddd').toUpperCase();
+    const startIndex = content.findIndex(s => s.includes(start));
+    const endIndex = content.findIndex(s => s.includes(end));
+
+    if (startIndex === -1) throw new Error('Day not found');
+    const menus = content.slice(startIndex + 1, endIndex !== -1 ? endIndex : undefined)
+      .map(s => s.replace(/<\/?[^>]+(>|$)|(&nbsp;)/g, ''))
+      .filter(s => s.trim());
 
     const answer = {
       name: 'eatery',
-      data: items.slice(1)
+      data: menus
     };
 
     setInCache(answer);
