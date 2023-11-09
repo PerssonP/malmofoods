@@ -46,15 +46,6 @@
     "dataSource": "/api/p2"
   },
   {
-    "name": "Dockans Hamnkrog",
-    "variant": "SimpleArray",
-    "url": "http://dockanshamnkrog.se",
-    "icon": "/icons/dockanshamnkrog.png",
-    "lat": 55.615186,
-    "lng": 12.988838,
-    "dataSource": "/api/dockanshamnkrog"
-  },
-  {
     "name": "Curry Republik",
     "variant": "Hyperlink",
     "url": "https://www.wokkitchen.se",

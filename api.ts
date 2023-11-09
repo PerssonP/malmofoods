@@ -130,31 +130,6 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     setInCache(answer);
     return answer.data;
   },
-  'dockanshamnkrog': async (m) => {
-    const result = await fetch('http://dockanshamnkrog.se/lunchmeny/');
-    const body = await result.text();
-    const $ = cheerio.load(body);
-
-    const menu = $('h2:contains(Lunch)').parent();
-    const week = menu.children(':contains(VECKA)');
-    if (!week.text().trim().endsWith(m.week().toString())) {
-      throw new Error('Wrong week');
-    }
-
-    const day = menu.children(`p:contains(${weekdayFirstUpper(m)})`)
-
-    if (day.text() === '') throw new Error('Day not found');
-
-    const answer = {
-      name: 'dockanshamnkrog',
-      data: [
-        day.text().split('\n')[1]
-      ]
-    }
-
-    setInCache(answer);
-    return answer.data;
-  },
   'namdo': async (m) => {
     const result = await fetch('http://namdo.se/meny/');
     const body = await result.text();
