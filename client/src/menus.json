@@ -136,5 +136,14 @@
     "lat": 55.611235908200264,
     "lng": 12.994354102667844,
     "dataSource": "/api/valfarden"
+  },
+  {
+    "name": "Ubåtshallen",
+    "variant": "SimpleArray",
+    "url": "https://www.ubatshallen.se/",
+    "icon": "/icons/ubatshallen.png",
+    "lat": 55.61489114183811,
+    "lng": 12.986217669904093,
+    "dataSource": "/api/ubatshallen"
   }
 ]

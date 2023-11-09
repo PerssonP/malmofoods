@@ -303,6 +303,33 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
 
     setInCache(answer);
     return answer.data;
+  },
+  'ubatshallen': async (m) => {
+    const result = await fetch('https://www.ubatshallen.se/');
+    const body = await result.text();
+    const $ = cheerio.load(body);
+
+    const mainNode = $('div .entry-content');
+    const weekNbr: string | undefined = mainNode.children('figure').html()?.match(/Vecka (\d{1,2})/)?.[1];
+    if (weekNbr === undefined || weekNbr !== m.week().toString())
+      throw new Error('Wrong week');
+
+    const node = mainNode.children(`div:contains(${weekdayFirstUpper(m)})`);
+    if (node.length == 0)
+      throw new Error('No menu found for current day');
+
+    const menu = node.text()
+      .split('\n')
+      .filter(n => !!n)
+      .filter(n => !n.startsWith('Dagens lunch'));
+
+    const answer = {
+      name: 'ubatshallen',
+      data: menu.slice(1)
+    };
+
+    setInCache(answer);
+    return answer.data;
   }
 }
 
