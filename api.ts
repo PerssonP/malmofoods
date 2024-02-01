@@ -293,14 +293,15 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     if (node.length == 0)
       throw new Error('No menu found for current day');
 
-    const menu = node.text()
-      .split('\n')
-      .filter(n => !!n)
-      .filter(n => !n.startsWith('Dagens lunch'));
+    const child = node.children().last().children().last();
+
+    const menu = child.html()!.split('<br>')
+    .map(m => $(m).text().split(':'))
+    .map(m => ({ title: m[0], description: m[1].trim() }))
 
     const answer = {
       name: 'ubatshallen',
-      data: menu.slice(1)
+      data: menu
     };
 
     setInCache(answer);

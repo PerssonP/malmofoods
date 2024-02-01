@@ -130,7 +130,7 @@
   },
   {
     "name": "Ubåtshallen",
-    "variant": "SimpleArray",
+    "variant": "Array",
     "url": "https://www.ubatshallen.se/",
     "icon": "/icons/ubatshallen.png",
     "lat": 55.61489114183811,
