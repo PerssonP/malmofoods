@@ -251,13 +251,12 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     const body = await result.text();
     const $ = cheerio.load(body);
 
-    const weekNode = $('h2:contains(Vecka)');
-
-    if (weekNode.text().split(' ')[1].trim() !== m.week().toString())
+    const firstDayNode = $('p:contains(Måndag)');
+    if (firstDayNode.text().split(' ')[1] !== moment().startOf('isoWeek').format('D/M'))
       throw new Error('Wrong week');
 
-    const dayNodes = weekNode.siblings().toArray().map(e => $(e).text());
-
+    const dayNodes = firstDayNode.siblings().toArray().map(e => $(e).text());
+    
     const menu: string[] = [];
     let index = dayNodes.findIndex(n => n.startsWith(weekdayFirstUpper(m)));
     if (index === -1) throw new Error('Wrong day');
