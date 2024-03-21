@@ -293,11 +293,11 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
       throw new Error('No menu found for current day');
 
     const child = node.children().last().children().last();
+    const food = child.text().split(/(Det gröna: )|(Husman: )|(Internationell: )/).filter(x => !!x)
+    if (food.length !== 6)
+      throw new Error('Parsing failed');
 
-    const menu = child.html()!.split('<br>')
-    .map(m => $(m).text().split(':'))
-    .map(m => ({ title: m[0], description: m[1].trim() }))
-
+    const menu = [{ title: food[0], description: food[1] }, { title: food[2], description: food[3] }, { title: food[4], description: food[5] }];
     const answer = {
       name: 'ubatshallen',
       data: menu
