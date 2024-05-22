@@ -66,12 +66,13 @@
   },
   {
     "name": "Dockside Burgers",
-    "variant": "SimpleArray",
+    "variant": "Hyperlink",
     "url": "https://www.docksideburgers.se",
     "icon": "/icons/lol.png",
     "lat": 55.614418,
     "lng": 12.990020,
-    "dataSource": "/api/docksideburgers"
+    "text": "Meny på FB",
+    "href": "https://www.facebook.com/DocksideBurgers/"
   },
   {
     "name": "Stora Varvsgatan 6",

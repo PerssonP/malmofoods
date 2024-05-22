@@ -151,6 +151,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     return answer.data;
   },
   'docksideburgers': async (m) => {
+    /*
     const browser = await puppeteer.launch({ headless: 'new' });
     try {
       const page = await browser.newPage();
@@ -164,7 +165,8 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     } catch (e) {
       await browser.close();
       throw e;
-    }
+    }*/
+    throw new Error("Not implemented");
   },
   'storavarvsgatan6': async (m) => {
     const result = await fetch('https://storavarvsgatan6.se/meny.html');
