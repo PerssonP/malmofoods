@@ -237,8 +237,8 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
 
     if (startIndex === -1) throw new Error('Day not found');
     const menus = content.slice(startIndex + 1, endIndex !== -1 ? endIndex : undefined)
-      .map(s => s.replace(/<\/?[^>]+(>|$)|(&nbsp;)/g, ''))
-      .filter(s => s.trim());
+      .map(s => s.replace(/<\/?[^>]+(>|$)|(&nbsp;)/g, '')).filter(s => s.trim()) // Clean and remove empty rows
+      .map(s => s.replace(/&#(\d+);/g, (_, $1) => String.fromCharCode($1))); // Decode and replace charCodes, e.g. &#8221; => ”
 
     const answer = {
       name: 'eatery',
