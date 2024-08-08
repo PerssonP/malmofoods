@@ -137,5 +137,15 @@
     "lat": 55.61489114183811,
     "lng": 12.986217669904093,
     "dataSource": "/api/ubatshallen"
+  },
+  {
+    "name": "Asuka Sushi",
+    "variant": "Hyperlink",
+    "url": "https://www.asuka.se/",
+    "icon": "",
+    "lat": 55.615459431361494,
+    "lng": 12.990283053266442,
+    "text": "Oförändrande lunchmeny",
+    "href": "https://www.asuka.se/"
   }
 ]
