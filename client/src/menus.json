@@ -142,7 +142,7 @@
     "name": "Asuka Sushi",
     "variant": "Hyperlink",
     "url": "https://www.asuka.se/",
-    "icon": "",
+    "icon": "/icons/asuka.png",
     "lat": 55.615459431361494,
     "lng": 12.990283053266442,
     "text": "Oförändrande lunchmeny",
