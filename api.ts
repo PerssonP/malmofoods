@@ -173,7 +173,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     const body = await result.text();
     const $ = cheerio.load(body);
 
-    const weekNode = $('p:contains("Veckans")').first();
+    const weekNode = $('p:contains("Meny")').first();
     if (Number(weekNode.text().trim().split('.').pop()) !== m.week()) throw new Error('Weekly menu not yet posted');
 
     const weekDayNode = weekNode.siblings(`p:contains(${weekdayFirstUpper(m)})`);
