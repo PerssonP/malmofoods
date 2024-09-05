@@ -226,9 +226,9 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
 
     const lunchmenuID = json.eateries["\/vastra-hamnen"].menues.lunchmeny;
     const title: string = json.menues[lunchmenuID].content.title;
-    const content: string[] = json.menues[lunchmenuID].content.content.split('\n');    
+    const content: string[] = json.menues[lunchmenuID].content.content.split('\n'); 
 
-    if (Number(title.split(' ').at(-1)) !== m.week()) throw new Error('Weekly menu not yet posted');
+    if (Number(title.match(/\d+/)?.[0]) !== m.week()) throw new Error('Weekly menu not yet posted');
 
     const start = m.format('dddd').toUpperCase();
     const end = m.add(1, 'day').format('dddd').toUpperCase();
