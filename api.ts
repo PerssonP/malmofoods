@@ -295,7 +295,13 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
       throw new Error('No menu found for current day');
 
     const child = node.children().last().children().last();
-    const food = child.text().split(/(Det gröna: )|(Husman: )|(Internationell: )/).filter(x => !!x)
+    const food = child.text().split(/(Det gröna:)|(Husman:)|(Internationell:)/)
+      .filter(x => !!x)
+      .map((x, i)=> {
+        if (i % 2 == 0) return x.slice(0, -1);
+        return x.trim();
+      });
+
     if (food.length !== 6)
       throw new Error('Parsing failed');
 
