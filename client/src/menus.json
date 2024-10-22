@@ -147,5 +147,15 @@
     "lng": 12.990283053266442,
     "text": "Oförändrande lunchmeny",
     "href": "https://www.asuka.se/"
+  },
+  {
+    "name": "Miss Wang",
+    "variant": "Hyperlink",
+    "url": "https://misswang.se/",
+    "icon": "/icons/misswang.png",
+    "lat": 55.614382547778916,
+    "lng": 12.98174786063911,
+    "text": "Oförändrande lunchmeny",
+    "href": "https://misswang.se/#Lunch"
   }
 ]
