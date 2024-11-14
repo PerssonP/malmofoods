@@ -150,12 +150,11 @@
   },
   {
     "name": "Miss Wang",
-    "variant": "Hyperlink",
+    "variant": "Array",
     "url": "https://misswang.se/",
     "icon": "/icons/misswang.png",
     "lat": 55.614382547778916,
     "lng": 12.98174786063911,
-    "text": "Oförändrande lunchmeny",
-    "href": "https://misswang.se/#Lunch"
+    "dataSource": "/api/misswang"
   }
 ]

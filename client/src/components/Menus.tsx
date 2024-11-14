@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Divider, Link, IconButton } from '@mui/material';
+import { Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Divider, Link, IconButton, Box } from '@mui/material';
 import { Cached } from '@mui/icons-material';
 
 type ErrorData = {
@@ -31,7 +31,6 @@ const Menu = React.forwardRef<HTMLDivElement, MenuProps & { children: JSX.Elemen
       },
       animation: showSelected ? 'pulse 0.5s 2 0.5s' : ''
     }}
-
   >
     <List>
       <ListItem>
@@ -51,7 +50,15 @@ const Menu = React.forwardRef<HTMLDivElement, MenuProps & { children: JSX.Elemen
           </IconButton>
         }
       </ListItem>
-      {children}
+      <Box
+        sx={{
+          maxHeight: '45vh',
+          overflow: 'auto',
+          scrollbarWidth: 'thin'
+        }}
+      >
+        {children}
+      </Box>
     </List>
   </Paper>
 ));

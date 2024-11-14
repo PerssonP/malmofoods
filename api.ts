@@ -313,6 +313,32 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
 
     setInCache(answer);
     return answer.data;
+  },
+  'misswang': async (m) => {
+    const result = await fetch('https://misswang.se/');
+    const body = await result.text();
+    const $ = cheerio.load(body);
+
+    const node = $('#Lunch p');
+    const menu = node.toArray()
+      .map(e => $(e).text())
+      .slice(1)
+      .reduce<{title: string, description: string}[]>((acc, curr, i) => {
+        if (curr.match(/^\d.+$/)) {
+          acc.push({ title: curr, description: '' })
+        } else {
+          acc.at(-1)!.description += curr;
+        }
+        return acc;
+      }, []);
+
+    const answer = {
+      name: 'misswang',
+      data: menu
+    };
+
+    setInCache(answer);
+    return answer.data;
   }
 }
 
