@@ -110,20 +110,24 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     return answer.data;
   },
   'p2': async (m) => {
-    const result = await fetch('https://www.restaurangp2.se/lunch');
+    const result = await fetch('https://www.restaurangp2.se');
     const body = await result.text();
     const $ = cheerio.load(body);
 
-    const node = $(`#${m.locale('en').format('dddd').toLowerCase()}`);
+    const node = $(`h3:contains("${weekdayFirstUpper(m)}")`)
     if (node.length === 0) throw new Error('Wrong day');
-    const courses = $(node).find('tr');
+
+    const courses = node.parent().parent().parent().find('.lunchmeny_container');
 
     const answer = {
       name: 'p2',
       data: courses.map((_, el) => {
-        const arr = $(el).find('p').map((i, child) => $(child).text()).get();
-        if (arr.length < 2) throw new Error('Parsing failed');
-        return { title: arr[0], description: arr[1] };
+        const title = $(el).find('.lunch_title').text();
+        const description = $(el).find('.lunch_desc').text();
+
+        if (title.length == 0 || description.length == 0)
+          throw new Error('Parsing failed');
+        return { title, description };
       }).get()
     }
 
@@ -254,10 +258,11 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     const $ = cheerio.load(body);
 
     const firstDayNode = $('p:contains(Måndag)');
-    if (firstDayNode.text().split(' ')[1] !== moment().startOf('isoWeek').format('D/M'))
+    if (firstDayNode.text().split(' ')[1].trim() !== moment().startOf('isoWeek').format('D/M'))
       throw new Error('Wrong week');
 
     const dayNodes = firstDayNode.siblings().toArray().map(e => $(e).text());
+    dayNodes.unshift(firstDayNode.text())
     
     const menu: string[] = [];
     let index = dayNodes.findIndex(n => n.startsWith(weekdayFirstUpper(m)));
@@ -286,7 +291,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     const $ = cheerio.load(body);
 
     const mainNode = $('div .entry-content');
-    const weekNbr: string | undefined = mainNode.children('figure').html()?.match(/Vecka (\d{1,2})/)?.[1];
+    const weekNbr = mainNode.children('h2:contains("Vecka")').text().split(' ').at(-1);
     if (weekNbr === undefined || weekNbr !== m.week().toString())
       throw new Error('Wrong week');
 
