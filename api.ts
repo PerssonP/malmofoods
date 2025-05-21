@@ -1,11 +1,8 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
 import express from 'express';
-import cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 import moment from 'moment';
 import NodeCache from 'node-cache';
 import he from 'he';
-import puppeteer from 'puppeteer';
 
 import { weekdayFirstUpper } from './momentUtil.js';
 
@@ -34,43 +31,40 @@ const setInCache = (input: Menu) => {
   cache.set(input.name, { date: moment().format('YYYY-MM-DD'), content: input });
 }
 
-const getFromCache = (key: string): { date: string; content: Menu | null } => {
+const getFromCache = (key: string): { date: string; content: Menu } | null => {
   const data = cache.get(key);
   if (data) return data as { date: string; content: Menu };
-  return { date: '', content: null };
+  return null;
 }
 
 const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | ArrayData | ObjectData> } = {
   'miamarias': async (m) => {
-    const result = await fetch('http://www.miamarias.nu/');
+    if (m.day() < 1 || m.day() > 5)
+      throw new Error('No menu available for current day of week'); 
+
+    const result = await fetch('https://miamarias.nu/lunch/');
     const body = await result.text();
     const $ = cheerio.load(body);
 
-    const h5arr = $('h5.et_pb_toggle_title').toArray();
+    if (Number($('h2:contains(Meny vecka)').text().trim().split(' ').at(-1)) !== m.week())
+      throw new Error('Wrong week');
 
-    const node = h5arr.find(el => {
-      return $(el).text().includes(weekdayFirstUpper(m));
-    });
+    const menus = $('.e-n-tabs-content').children().toArray();
+    const dishes = $(menus[m.day() - 1]).children().toArray();
 
-    if (!node) throw new Error('Wrong day');
-
-    const parse = $(node).parent().find('p').toArray()
-      .map((el) => $(el).text().trim()) // Get all texts
-      .filter((value, index, originalArray) =>
-        !!value &&  // Remove empty texts
-        !value.endsWith(' kr') && // Remove categories
-        originalArray.slice(index + 1).indexOf(value) === -1 // Remove possible duplicates
-      );
+    const data = [];
+    for (let dish of dishes) {
+      const content = $(dish).children().toArray();
+      const title = $(content[0]).text().trim();
+      const description = $(content[2]).text().trim();
+      data.push({ title, description });
+    }
 
     const answer = {
       name: 'miamarias',
-      data: [
-        { title: 'Fisk', description: parse[0] },
-        { title: 'Kött', description: parse[1] },
-        { title: 'Veg', description: parse[2] }
-      ]
+      data
     }
-
+    
     setInCache(answer);
     return answer.data;
   },
@@ -225,12 +219,13 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     return answer.data;
   },
   'eatery': async (m) => {
+    // https://thatsup.website/storage/462/59069/V.21-MALM%C3%96-NY-.pdf
     const result = await fetch('https://api.eatery.se/wp-json/eatery/v1/load');
     const json = await result.json() as any;
 
     const lunchmenuID = json.eateries["\/vastra-hamnen"].menues.lunchmeny;
     const title: string = json.menues[lunchmenuID].content.title;
-    const content: string[] = json.menues[lunchmenuID].content.content.split('\n'); 
+    const content: string[] = json.menues[lunchmenuID].content.content.split('\n');
 
     if (Number(title.match(/\d+/)?.[0]) !== m.week()) throw new Error('Weekly menu not yet posted');
 
@@ -263,7 +258,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
 
     const dayNodes = firstDayNode.siblings().toArray().map(e => $(e).text());
     dayNodes.unshift(firstDayNode.text())
-    
+
     const menu: string[] = [];
     let index = dayNodes.findIndex(n => n.startsWith(weekdayFirstUpper(m)));
     if (index === -1) throw new Error('Wrong day');
@@ -291,7 +286,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     const $ = cheerio.load(body);
 
     const mainNode = $('div .entry-content');
-    const weekNbr = mainNode.children('h2:contains("Vecka")').text().split(' ').at(-1);
+    const weekNbr = mainNode.children('h2:contains("Vecka")').text().trim().split(' ').at(-1);
     if (weekNbr === undefined || weekNbr !== m.week().toString())
       throw new Error('Wrong week');
 
@@ -301,7 +296,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
 
     const food = node.text().split(/(Det gröna:)|(Husman:)|(Internationell:)/)
       .filter(x => !!x)
-      .map((x, i)=> {
+      .map((x, i) => {
         if (i % 2 == 1) return x.slice(0, -1);
         return x.trim();
       });
@@ -328,7 +323,7 @@ const sources: { [key: string]: (m: moment.Moment) => Promise<SimpleArrayData | 
     const menu = node.toArray()
       .map(e => $(e).text())
       .slice(1)
-      .reduce<{title: string, description: string}[]>((acc, curr, i) => {
+      .reduce<{ title: string, description: string }[]>((acc, curr, i) => {
         if (curr.match(/^\d.+$/)) {
           acc.push({ title: curr, description: '' })
         } else {
@@ -353,15 +348,19 @@ router.get('/api/:source', async (req, res, next) => {
     const source = req.params.source;
     if (req.query.force !== 'true') {
       const cacheData = getFromCache(source);
-      if (cacheData.content !== null && cacheData.date === m.format('YYYY-MM-DD')) return res.send(cacheData.content.data);
+      if (cacheData !== null && cacheData.date === m.format('YYYY-MM-DD')) {
+        res.send(cacheData.content.data);
+        return;
+      }
     }
 
-    const answer = await sources[source](m);
-    return res.send(answer);
+    res.send(await sources[source](m));
   } catch (error) {
     console.log(error);
-    if (error instanceof Error) return res.send({ error: `Error: ${error.message}` });
-    else return res.send({ error: `Error: ${error}` });
+    if (error instanceof Error)
+      res.send({ error: `Error: ${error.message}` });
+    else
+      res.send({ error: `Error: ${error}` });
   }
 });
 

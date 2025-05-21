@@ -1,4 +1,4 @@
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
 import compression from 'compression';
@@ -14,7 +14,7 @@ app.use(compression());
 app.use(cors());
 app.use(useragent.express());
 
-app.use('/*', (req, res, next) => {
+app.use('/*splat', (req, res, next) => {
   if (req.useragent?.browser === 'IE') {
     res.send('Please use a real browser').status(400);
   } else {
@@ -24,9 +24,9 @@ app.use('/*', (req, res, next) => {
 
 app.use(express.static(new URL('./client/', import.meta.url).pathname));
 
-app.get('/api/*', api);
+app.get('/api/*splat', api);
 
-app.get('/*', function (req, res, next) {
+app.get('/*splat', function (req, res, next) {
   res.sendFile(new URL('./client/index.html', import.meta.url).pathname);
 });
 

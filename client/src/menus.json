@@ -75,15 +75,6 @@
     "href": "https://www.facebook.com/DocksideBurgers/"
   },
   {
-    "name": "Stora Varvsgatan 6",
-    "variant": "SimpleArray",
-    "url": "https://storavarvsgatan6.se",
-    "icon": "/icons/storavarvsgatan6.png",
-    "lat": 55.612501,
-    "lng": 12.991662,
-    "dataSource": "/api/storavarvsgatan6"
-  },
-  {
     "name": "Laziza Dockan",
     "variant": "SimpleArray",
     "url": "https://www.laziza.se",
